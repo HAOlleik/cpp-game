@@ -3,10 +3,14 @@
 #include <iostream>
 using std::ostream;
 
-#include "Player.h"
+// forward declaration
+class Player;
 
 class Card
 {
+private:
+    Player *_player;
+
 public:
     Card();
     Card(const Card &c);

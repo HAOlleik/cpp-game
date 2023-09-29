@@ -1,15 +1,14 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include <iostream>
 using std::ostream;
 #include <vector>
 using std::vector;
 
-#include "Territory.h"
+#include "Card.h"
 #include "Order.h"
-
-// forward reference to avoid circular inclusion problem
-class Card
-{
-};
+#include "Territory.h"
 
 class Player
 {
@@ -23,7 +22,14 @@ public:
     Player(const Player &p);
     vector<Territory *> toDefend();
     vector<Territory *> toAttack();
-    void issueOrder();
+    void issueOrder(const OrderType &orderType);
+
+    // needs access to validate
+    friend bool Card::validate();
+    friend void Order::execute(Player &player);
+    friend bool Order::validate(Player &player);
 };
 
 ostream &operator<<(ostream &os, Player &p);
+
+#endif

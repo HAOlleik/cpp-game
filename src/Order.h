@@ -3,6 +3,8 @@
 #include <iostream>
 using std::ostream;
 
+#include "Player.h"
+
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
@@ -19,8 +21,8 @@ class Order
 public:
     Order();
     Order(const Order &o);
-    void execute();
-    bool validate();
+    void execute(Player &player);
+    bool validate(Player &player);
 };
 
 class DeployOrder : public Order
