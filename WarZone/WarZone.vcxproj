@@ -145,6 +145,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Orders.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Territory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
