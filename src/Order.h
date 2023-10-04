@@ -20,12 +20,12 @@ class Order
 {
 public:
 	Order();
-	Order(string str);
+	Order(string* str);
 	Order(const Order& o);
 	void execute(Player& player);
-	bool validate(string player);
+	bool validate(string* player);
 private:
-	string order;
+	string* order;
 };
 
 class DeployOrder : public Order

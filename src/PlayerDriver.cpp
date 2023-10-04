@@ -33,11 +33,18 @@ void testPlayers()
 	cardList.push_back(&airliftC);
 	cardList.push_back(&diplomacy);
 
-	string name = "Yason";
+	string value = "Yason";
+	string* name = &value;
 	Player* p1 = new Player(name, terList, cardList, orderList);
-	(*p1).issueOrder("deploy");
-	(*p1).issueOrder("bomb");
-	(*p1).issueOrder("negotiate");
+	string value1 = "deploy";
+	string* issue1 = &value1;
+	string value2 = "bomb";
+	string* issue2 = &value2;
+	string value3 = "negotiate";
+	string* issue3 = &value3;
+	(*p1).issueOrder(issue1);
+	(*p1).issueOrder(issue2);
+	(*p1).issueOrder(issue3);
 	(*p1).toAttack();
 	(*p1).toDefend();
 }

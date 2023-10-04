@@ -17,7 +17,7 @@ class Player
 {
 public:
 	Player();	// default constructor
-	Player(string name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
+	Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
 	Player(const Player& plr);	// copy constructor
 	Player& operator=(const Player& p);	// Operator assignment
 	~Player();
@@ -25,16 +25,16 @@ public:
 	string getName();	// Get name of the palyer
 	void toDefend();
 	void toAttack();
-	void setName(string str);	// Set name of the player
-	void issueOrder(string str);
+	void setName(string* str);	// Set name of the player
+	void issueOrder(string* str);
 
 	// needs access to validate
 	/*friend bool Card::validate();
 	friend void Order::execute(Player& player);*/
-	friend bool Order::validate(string player);
+	//friend bool Order::validate(string* player);
 
 private:
-	string name;
+	string* name;
 	vector<string*> territories;
 	vector<string*> cards;
 	vector<Order*> orders;

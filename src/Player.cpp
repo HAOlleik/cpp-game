@@ -6,14 +6,14 @@ using namespace std;
 // Default constructor
 Player::Player()
 {
-	name = "Player";
+	*name = "Player";
 	vector<string*>territories;
 	vector<string*>cards;
 	vector<Order*>orders;
 }
 
 // Parameter constructor
-Player::Player(string name, vector<string*>territories, vector<string*>cards, vector<Order*>orders)
+Player::Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders)
 {
 	this->name = name;
 	this->territories = territories;
@@ -43,9 +43,12 @@ Player& Player::operator=(const Player& p)
 // Destructor
 Player::~Player()
 {
-	name = "";
+	*name = "";
+	name = nullptr;
+	delete name;
 	territories.clear();
 	cards.clear();
+
 	//for (auto ord : orders)
 	//{
 	//	delete ord;
@@ -59,11 +62,11 @@ Player::~Player()
 // Get name of the palyer
 string Player::getName()
 {
-	return this->name;
+	return *name;
 }
 
 // Set name of the player
-void Player::setName(string str)
+void Player::setName(string* str)
 {
 	this->name = str;
 }
@@ -87,7 +90,7 @@ void Player::toDefend()
 }
 
 // Creats list of order objects
-void Player::issueOrder(string ord)
+void Player::issueOrder(string* ord)
 {
 	Order* ordObj = new Order(ord);
 	if (ordObj->validate(ord))
