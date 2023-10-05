@@ -15,6 +15,21 @@ enum State
     win
 };
 
+enum Action
+{
+    load_map,
+    validate_map,
+    add_player,
+    assign_countries,
+    issue_order,
+    end_issue_orders,
+    exec_order,
+    end_exec_orders,
+    win_game,
+    play,
+    end_game
+};
+
 class GameEngine
 {
 private:
