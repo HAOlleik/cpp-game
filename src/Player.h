@@ -1,35 +1,41 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
-#include <iostream>
-using std::ostream;
+#include <string>
+//#include <iostream>
+//using std::ostream;
 #include <vector>
 using std::vector;
+using namespace std;
 
 #include "Card.h"
 #include "Order.h"
 #include "Territory.h"
 
+void testPlayers();
+
 class Player
 {
-private:
-    vector<Territory *> _territories;
-    vector<Card *> _cards;
-    vector<Order *> _orders;
-
 public:
-    Player();
-    Player(const Player &p);
-    vector<Territory *> toDefend();
-    vector<Territory *> toAttack();
-    void issueOrder(const OrderType &orderType);
+	Player();	// default constructor
+	Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
+	Player(const Player& plr);	// copy constructor
+	Player& operator=(const Player& p);	// Operator assignment
+	~Player();
 
-    // needs access to validate
-    friend bool Card::validate();
-    friend void Order::execute(Player &player);
-    friend bool Order::validate(Player &player);
+	string getName();	// Get name of the palyer
+	void toDefend();
+	void toAttack();
+	void setName(string* str);	// Set name of the player
+	void issueOrder(string* str);
+
+	// needs access to validate
+	/*friend bool Card::validate();
+	friend void Order::execute(Player& player);*/
+	//friend bool Order::validate(string* player);
+
+private:
+	string* name;
+	vector<string*> territories;
+	vector<string*> cards;
+	vector<Order*> orders;
 };
-
-ostream &operator<<(ostream &os, Player &p);
-
-#endif

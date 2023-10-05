@@ -8,21 +8,24 @@ using std::ostream;
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
-    deploy,
-    advance,
-    bomb,
-    blockade,
-    airlift,
-    negotiate
+	deploy,
+	advance,
+	bomb,
+	blockade,
+	airlift,
+	negotiate
 };
 
 class Order
 {
 public:
-    Order();
-    Order(const Order &o);
-    void execute(Player &player);
-    bool validate(Player &player);
+	Order();
+	Order(string* str);
+	Order(const Order& o);
+	void execute(Player& player);
+	bool validate(string* player);
+private:
+	string* order;
 };
 
 class DeployOrder : public Order
@@ -50,7 +53,7 @@ class NegotiateOrder : public Order
 };
 
 // not sure if it should be defined for each of the order type. I thin not
-ostream &
-operator<<(ostream &os, Order &o);
+ostream&
+operator<<(ostream& os, Order& o);
 
 #endif
