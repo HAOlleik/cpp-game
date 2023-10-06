@@ -1,4 +1,4 @@
-#include <Cards.h>
+#include "Cards.h"
 #include <iostream>
 #include <string>
 
@@ -58,6 +58,13 @@ Card &Card::operator = (const Card &c)
     (*this).cardID = c.cardID;
     (*this).cardType = c.cardType;
     return *this;
+}
+
+//insertion stream operator
+ostream& operator<<(ostream& os, const Card& card) 
+{
+    os << "Card ID: " << card.cardID << ", Card Type: " << card.cardType << endl;
+    return os;
 }
 
 //cardID getter
@@ -149,6 +156,19 @@ Card* Deck::draw()
     }
 }
 
+//insertion stream operator
+ostream& operator<<(ostream& os, const Deck& deck) 
+{
+    os << "Deck Size: " << deck.sizeOfDeck << "\n";
+
+    os << "Cards in the Deck:\n";
+    for (const Card* card : deck.deckVector) {
+        os << *card << "\n"; // This will use the Card's custom operator<<
+    }
+
+    return os;
+}
+
 //method to fill deck with cards randomly
 void Deck::fillDeck()
 {
@@ -219,6 +239,18 @@ Hand::~Hand()
         delete playHand[i];
         playHand[i] = nullptr;
     }
+}
+
+ostream& operator<<(ostream& os, const Hand& hand) //insertion stream operator
+{
+    os << "Hand Size: " << hand.playHand.size() << "\n";
+
+    os << "Cards in the Hand:\n";
+    for (const Card* card : hand.playHand) {
+        os << *card << "\n"; // This will use the Card's custom operator<<
+    }
+
+    return os;
 }
 
 vector<Card*> Hand::getPlayHand() const

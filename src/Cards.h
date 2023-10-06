@@ -24,8 +24,9 @@ class Card
         Card(const Card &c); //copy constructor
         Card(int cardNum); //constructor 
         Card& operator = (const Card &c); //assignment operator overload
-
         //no destructor since Card does not use instance variables of other classes
+
+        friend ostream& operator<<(ostream& os, const Card& card); //insertion stream operator
 
         string getCardType();
         int getCardID();
@@ -47,7 +48,8 @@ class Deck
         ~Deck(); //destructor
         Deck& operator = (const Deck &d); //assignment operator overload
 
-        int getDeckSize;
+        friend ostream& operator<<(ostream& os, const Deck& deck); //insertion stream operator
+
         Card* draw();
         void fillDeck();
         void addCardBackToDeck(int cardID);
@@ -67,6 +69,8 @@ class Hand
         Hand(const Hand &h); //copy constructor
         Hand& operator = (const Hand &h); //assignment operator overload
         ~Hand(); //destructor
+
+        friend ostream& operator<<(ostream& os, const Hand& hand); //insertion stream operator
 
         int getHandSize();
         vector <Card*> getPlayHand() const;
