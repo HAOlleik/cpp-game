@@ -2,6 +2,8 @@
 #define ORDER_H
 #include <iostream>
 using std::ostream;
+#include <queue>
+using std::queue;
 
 #include "Player.h"
 using namespace std;
@@ -79,6 +81,24 @@ public:
     void execute();
     bool validate();
     bool isValid;
+};
+
+class OrdersList
+{
+private:
+    // FIFO queue
+    queue<Order *> _orders;
+
+public:
+    OrdersList();
+    OrdersList(const OrdersList &o);
+    void move(int initialPosition, int desiredPosition);
+    void remove(int index);
+    void execute();
+    void addOrder(Order *order)
+    {
+        _orders.push(order);
+    }
 };
 
 // not sure if it should be defined for each of the order type. I thin not
