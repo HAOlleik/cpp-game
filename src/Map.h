@@ -2,11 +2,16 @@
 #define MAP_H
 #include <iostream>
 using std::ostream;
+#include <map>
+#include <set>
+#include <deque>
 
 #include "Territory.h"
+#include "Continent.h"
 
 enum scroll
 {
+    NONE,
     vertical,
     horizontal
 };
@@ -17,26 +22,29 @@ enum scroll
 
 class Map
 {
+public:
+    Map();
+    Map(const Map &map);
+    ~Map();
+    Map &operator=(const Map &m);
+    int validate();
+    void addTerritory(Territory *t);
+    Territory *getTerritory(const std::string &name);
+    void addContinent(Continent *c);
+    Continent *getContinent(const std::string &name);
+
 private:
-    char *_pAuthor;
-    bool *_pWarn;
-    char *_pImage;
+    std::string *_pAuthor;
+    std::string *_pImage;
     bool *_wrap;
     scroll _scroll;
 
-    Territory _continents[];
+    std::map<std::string, Territory *> *territories;
+    std::map<std::string, Continent *> *continents;
 
     int _connectedGraph();
     int _connectedSubgraphs();
     int _countryBelongsToOneContinent();
-
-public:
-    Map();
-    Map(const Map &map)
-    {
-        Map test = map;
-    }
-    int validate();
 };
 
 ostream &operator<<(ostream &os, Map &m);
