@@ -16,9 +16,13 @@ private:
 public:
     OrdersList();
     OrdersList(const OrdersList &o);
-    void move();
-    void remove();
+    void move(int initialPosition, int desiredPosition);
+    void remove(int index);
     void execute();
+    void addOrder(Order *order)
+    {
+        _orders.push(order);
+    }
 };
 
 ostream &operator<<(ostream &os, OrdersList &o);

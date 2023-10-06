@@ -21,7 +21,6 @@ class Order
 {
 public:
     Order();
-    Order(string *orderName);
     Order(const Order &o); //copy contructor
     void execute(Player &player);
     bool validate();
@@ -32,54 +31,54 @@ class DeployOrder : public Order
 {
 public:
     DeployOrder();
-    DeployOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 class AdvanceOrder : public Order
 {
 public:
     AdvanceOrder();
-    AdvanceOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 class BombOrder : public Order
 {
 public:
     BombOrder();
-    BombOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 class BlockadeOrder : public Order
 {
 public:
     BlockadeOrder();
-    BlockadeOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 class AirliftOrder : public Order
 {
 public:
     AirliftOrder();
-    AirliftOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 class NegotiateOrder : public Order
 {
 public:
     NegotiateOrder();
-    NegotiateOrder(string* orderName);
     void execute();
     bool validate();
+    bool isValid;
 };
 
 // not sure if it should be defined for each of the order type. I thin not
