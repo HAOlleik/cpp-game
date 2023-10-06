@@ -13,6 +13,12 @@ Player::Player()
 }
 
 // Parameter constructor
+Player::Player(string* name)
+{
+	this->name = name;
+}
+
+// Parameter constructor
 Player::Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders)
 {
 	this->name = name;

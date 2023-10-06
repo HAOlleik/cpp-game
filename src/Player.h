@@ -17,6 +17,7 @@ class Player
 {
 public:
 	Player();	// default constructor
+	Player(string* name);
 	Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
 	Player(const Player& plr);	// copy constructor
 	Player& operator=(const Player& p);	// Operator assignment
