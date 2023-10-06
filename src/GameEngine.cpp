@@ -46,3 +46,47 @@ std::map<std::string, Action> actionToString{
     {"win", win_game},
     {"play", play},
     {"end", end_game}};
+
+
+//assignment operator overload
+GameEngine &GameEngine::operator = (const GameEngine &g)
+{
+    (*this).state = g.state;
+    return *this;
+}
+
+ostream& operator<<(ostream& os, GameEngine& gameEngine) { //insert stream operator
+    const char* currentStateString = nullptr; // Initialize to nullptr
+
+    switch (gameEngine.getState()) {
+        case 1:
+            currentStateString = "Start";
+            break;
+        case 2:
+            currentStateString = "Map Loaded";
+            break;
+        case 3:
+            currentStateString = "Map Validated";
+            break;
+        case 4:
+            currentStateString = "Players Added";
+            break;
+        case 5:
+            currentStateString = "Assign Reinforcement";
+            break;
+        case 6:
+            currentStateString = "Issue Orders";
+            break;
+        case 7:
+            currentStateString = "Execute Orders";
+            break;
+        case 8:
+            currentStateString = "Win";
+            break;
+        default:
+            break;
+    }
+
+    os << "The current state is: " << currentStateString << "\n";
+    return os;
+}

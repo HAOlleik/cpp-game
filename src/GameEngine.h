@@ -42,8 +42,9 @@ private:
     State state;
 
 public:
-    GameEngine();
-    GameEngine(const GameEngine &g);
+    GameEngine(); //default
+    GameEngine(const GameEngine &g); //copy constr
+    GameEngine& operator = (const GameEngine &c); //assignment operator overload
     ~GameEngine();
     State getState() { return state; };
     void setState(State &newState) { state = newState; };
