@@ -46,6 +46,12 @@ Player& Player::operator=(const Player& p)
 	return *this;
 }
 
+ostream& operator<<(ostream& os, const Player& player)	//insertion stream operator
+{
+	os << "Name of the player: " << player.name << endl;
+	return os;
+}
+
 // Destructor
 Player::~Player()
 {
