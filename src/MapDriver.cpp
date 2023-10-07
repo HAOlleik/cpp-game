@@ -9,6 +9,6 @@ belongs to one and only one continent.
 
 #include "Map.h"
 
-Map testLoadMaps(){
+void testLoadMaps(){
 
 };
