@@ -12,7 +12,7 @@ using std::endl;
     ----------------------------
 */
 
-int main()
+int testCards()
 {
     Deck testDeck = Deck(10);
     testDeck.fillDeck();
