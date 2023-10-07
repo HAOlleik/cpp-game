@@ -3,9 +3,10 @@
 Order::Order() {}
 
 DeployOrder::DeployOrder() {
-    cout << "Deploy Order" << endl;
-    *orderName = "Deploy";
+    cout << "Deploy Order Created" << endl;
+    this->orderName = "deploy";
     this->isValid = true;
+
 }
 bool DeployOrder::validate(){
     return true;
@@ -18,8 +19,8 @@ void DeployOrder::execute(){
 
 
 AdvanceOrder::AdvanceOrder(){
-    cout << "Advance Order" << endl;
-    *orderName = "Advance";
+    cout << "Advance Order Created" << endl;
+    this->orderName = "advance";
     this->isValid = true;
 }
 bool AdvanceOrder::validate()
@@ -35,8 +36,9 @@ void AdvanceOrder::execute()
 }
 
 BombOrder::BombOrder(){
-    cout << "Bomb Order" << endl;
-    *orderName = "Bomb";
+    cout << "Bomb Order Created" << endl;
+    // *orderName = "Bomb";
+    this->orderName = "Bomb";
     this->isValid = true;
 }
 bool BombOrder::validate()
@@ -51,8 +53,9 @@ void BombOrder::execute()
 }
 
 BlockadeOrder::BlockadeOrder(){
-    cout << "Blockade Order" << endl;
-    *orderName = "Blockade";
+    cout << "Blockade Order Created" << endl;
+    // *orderName = "Blockade";
+    this->orderName = "blockade";
     this->isValid = true;
 }
 bool BlockadeOrder::validate()
@@ -68,8 +71,9 @@ void BlockadeOrder::execute()
 }
 
 AirliftOrder::AirliftOrder(){
-    cout << "Airlift Order" << endl;
-    *orderName = "Airlift";
+    cout << "Airlift Order Created" << endl;
+    // *orderName = "Airlift";
+    this->orderName = "airlift";
     this->isValid = true;
 }
 bool AirliftOrder::validate()
@@ -85,7 +89,8 @@ void AirliftOrder::execute()
 }
 
 NegotiateOrder::NegotiateOrder(){
-    cout << "Negotiate Order" << endl;
+    cout << "Negotiate Order Created" << endl;
+    this->orderName = "negotiate";
     this->isValid = true;
 }
 bool NegotiateOrder::validate()
@@ -100,8 +105,18 @@ void NegotiateOrder::execute()
     }
 }
 
-//methods for orderList
+ostream &operator<<(ostream &os, const Order &o)
+{
+    os << "Order Name: " << o.orderName; // Replace this with the actual output you want
+    return os;
+}
 
+//methods for orderList
+OrdersList::OrdersList(){}
+void OrdersList::addOrder(Order *order){
+    this->_orders.push(order);
+    cout << "done" << endl;
+}
 void OrdersList::move(int initialPosition, int desiredPosition)
 {
     // Check if the initial and desired positions are valid
@@ -147,6 +162,20 @@ void OrdersList::move(int initialPosition, int desiredPosition)
     {
         _orders.push(tempQueue.front());
         tempQueue.pop();
+    }
+}
+
+// Add this member function to your OrdersList class
+void OrdersList::printOrders() const
+{
+    std::queue<Order *> tempQueue = _orders;
+
+    while (!tempQueue.empty())
+    {
+        Order *order = tempQueue.front();
+        tempQueue.pop();
+        // Assuming you have an operator<< overload for Order objects
+        std::cout << *order << std::endl;
     }
 }
 

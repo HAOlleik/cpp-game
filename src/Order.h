@@ -5,7 +5,7 @@ using std::ostream;
 #include <queue>
 using std::queue;
 
-#include "Player.h"
+// #include "Player.h"
 using namespace std;
 
 // Not sure yet if it is usefull, can be removed
@@ -24,10 +24,11 @@ class Order
 public:
     Order();
     Order(const Order &o); //copy contructor
-    void execute(Player &player);
+    // void execute(Player &player);
     bool validate();
-    string* orderName;
+    string orderName;
 };
+ostream &operator<<(ostream &os, const Order &o);
 
 class DeployOrder : public Order
 {
@@ -95,14 +96,12 @@ public:
     void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
-    void addOrder(Order *order)
-    {
-        _orders.push(order);
-    }
+	void addOrder(Order *order);
+	void printOrders() const;
 };
 
 // not sure if it should be defined for each of the order type. I thin not
-ostream &
-operator<<(ostream &os, Order &o);
+// ostream &
+// operator<<(ostream &os, Order &o);
 
 #endif
