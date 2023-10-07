@@ -1,4 +1,6 @@
 #include "Cards.h"
+#include "Player.h"
+#include "Order.h"
 #include <iostream>
 #include <string>
 
@@ -280,7 +282,20 @@ void Hand::removeCard(int index)
     }
 }
 
-void Hand::play(int ind, Deck &deck, Player& player)
+void Hand::play(int index, Deck &deck, Player& player)
 {
-    
+    index -= 1;
+    int orderCard = (playHand[index]->getCardID());
+
+    // DeployOrder* d = new DeployOrder;
+    // AdvanceOrder* a = new AdvanceOrder;
+    // BombOrder* b = new BombOrder;
+    // BlockadeOrder* bd = new BlockadeOrder;
+    // AirliftOrder* al = new AirliftOrder;
+    // NegotiateOrder* n = new NegotiateOrder;
+
+    // switch (orderCard)
+    // {
+
+    // }
 }
