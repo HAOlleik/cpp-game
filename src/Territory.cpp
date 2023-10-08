@@ -4,10 +4,10 @@
 #include "Player.h"
 
 // Default Constructor
-Territory::Territory() : name(""), owner(nullptr), armies(0) {}
+Territory::Territory() : name(new std::string("")), owner(nullptr), armies(new int(0)), adjacentTerritories(new std::vector<Territory *>) {}
 
 // Constructor with Name
-Territory::Territory(const std::string &n) : name(n), owner(nullptr), armies(0) {}
+Territory::Territory(const std::string *nm) : name(new std::string(*nm)), owner(nullptr), armies(new int(0)), adjacentTerritories(new std::vector<Territory *>) {}
 
 // Copy Constructor
 Territory::Territory(const Territory &t) : name(t.name), owner(t.owner), armies(t.armies), adjacentTerritories(t.adjacentTerritories) {}
@@ -15,21 +15,21 @@ Territory::Territory(const Territory &t) : name(t.name), owner(t.owner), armies(
 // Get name of the territory
 std::string Territory::getName()
 {
-    return name;
+    return *name;
 }
 
 // Add adjacent territory
 void Territory::addAdjacent(Territory *territory)
 {
     // It's a good practice to check for duplicates before adding.
-    if (std::find(adjacentTerritories.begin(), adjacentTerritories.end(), territory) == adjacentTerritories.end())
+    if (std::find(adjacentTerritories->begin(), adjacentTerritories->end(), territory) == adjacentTerritories->end())
     {
-        adjacentTerritories.push_back(territory);
+        adjacentTerritories->push_back(territory);
     }
 }
 
 // Return pointer to the vector of adjacent territories
-std::vector<Territory *> Territory::getAdjacentTerritories()
+std::vector<Territory *> *Territory::getAdjacentTerritories()
 {
     return adjacentTerritories; // Returning pointer to the first element in the vector.
 }
@@ -41,7 +41,7 @@ ostream &operator<<(ostream &os, Territory &t)
     os << "Owner: " << (t.owner ? t.owner->getName() : "None") << "\n"; // Assuming Player has a method `getName()`
     os << "Armies: " << t.armies << "\n";
     os << "Adjacent Territories: ";
-    for (auto &adjTerr : t.adjacentTerritories)
+    for (auto &adjTerr : *t.adjacentTerritories)
     {
         os << adjTerr->getName() << " ";
     }

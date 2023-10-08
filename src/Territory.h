@@ -4,22 +4,22 @@
 using std::ostream;
 #include <string>
 
-#include "Player.h"
+class Player;
 
 class Territory
 {
 public:
-    std::string name;
+    std::string *name;
     Player *owner;
-    int armies;
-    std::vector<Territory *> adjacentTerritories;
+    int *armies;
+    std::vector<Territory *> *adjacentTerritories;
 
     Territory();
-    Territory(const std::string &n);
+    Territory(const std::string *n);
     Territory(const Territory &t);
     std::string getName();
     void addAdjacent(Territory *territory);
-    std::vector<Territory *> getAdjacentTerritories();
+    std::vector<Territory *> *getAdjacentTerritories();
 };
 
 ostream &operator<<(ostream &os, Territory &t);

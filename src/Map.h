@@ -32,6 +32,8 @@ public:
     Territory *getTerritory(const std::string &name);
     void addContinent(Continent *c);
     Continent *getContinent(const std::string &name);
+    std::map<std::string, Territory *> *territories;
+    std::map<std::string, Continent *> *continents;
 
 private:
     std::string *_pAuthor;
@@ -39,14 +41,10 @@ private:
     bool *_wrap;
     scroll _scroll;
 
-    std::map<std::string, Territory *> *territories;
-    std::map<std::string, Continent *> *continents;
-
     int _connectedGraph();
     int _connectedSubgraphs();
     int _countryBelongsToOneContinent();
 };
 
 ostream &operator<<(ostream &os, Map &m);
-
 #endif
