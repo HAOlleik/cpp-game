@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-//#include <iostream>
-//using std::ostream;
+#include <iostream>
+using std::ostream;
 #include <vector>
 using std::vector;
 using namespace std;
@@ -17,9 +17,11 @@ class Player
 {
 public:
 	Player();	// default constructor
+	Player(string* name);
 	Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
 	Player(const Player& plr);	// copy constructor
 	Player& operator=(const Player& p);	// Operator assignment
+	friend ostream& operator<<(ostream& os, const Player& player); //insertion stream operator
 	~Player();
 
 	string getName();	// Get name of the palyer
