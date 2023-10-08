@@ -4,7 +4,7 @@
 #include <map>
 using std::ostream;
 
-enum State
+enum State // available states
 {
     start = 1,
     map_loaded = 2,
@@ -16,7 +16,7 @@ enum State
     win = 8
 };
 
-enum Action
+enum Action // available actions
 {
     load_map = 1,
     validate_map = 2,
@@ -34,20 +34,20 @@ enum Action
 extern std::map<State, std::map<Action, State>> mapStateToActions;
 extern std::map<std::string, Action> actionToString;
 
-void inputToLower(char* input);
+void inputToLower(char* input); // free function to change to inputted action to lower case
 
 class GameEngine
 {
 private:
-    State state;
+    State* state;
 
 public:
     GameEngine(); //default
     GameEngine(const GameEngine &g); //copy constr
     GameEngine& operator = (const GameEngine &c); //assignment operator overload
-    ~GameEngine();
-    State getState() { return state; };
-    void setState(State &newState) { state = newState; };
+    ~GameEngine(); // destructor
+    State* getState() { return state; }; //getter for state
+    void setState(State* newState) { state = newState; }; // setter for state
 };
 
 ostream &

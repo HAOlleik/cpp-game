@@ -18,9 +18,9 @@ void testGameEngineStates()
         cin >> inputtedAction;
         inputToLower(inputtedAction);
 
-        nextState = mapStateToActions[newGame.getState()][actionToString[inputtedAction]];
+        nextState = mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]];
 
-        if (newGame.getState() == win & (strcmp(inputtedAction, "end") == 0))
+        if (*(newGame.getState()) == win & (strcmp(inputtedAction, "end") == 0))
         {
             cout << "Thank you for playing, Good Bye\n";
             exit(0);
@@ -28,7 +28,7 @@ void testGameEngineStates()
 
         if (nextState)
         {
-            newGame.setState(nextState);
+            newGame.setState(&nextState);
         }
         else
         {

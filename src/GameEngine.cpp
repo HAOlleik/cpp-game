@@ -1,6 +1,6 @@
 #include "GameEngine.h"
 
-void inputToLower(char* input)
+void inputToLower(char* input) // switches passed arguments to lower case
 {
     int inputCharCounter = 0;
     char inputChar;
@@ -12,19 +12,20 @@ void inputToLower(char* input)
     }
 }
 
-GameEngine::GameEngine() {
-    state = start;
+GameEngine::GameEngine() { // default constructor
+    state = new State(start);
 }
 
-GameEngine::GameEngine(const GameEngine &g) {
+GameEngine::GameEngine(const GameEngine &g) { // copy constructor
     (*this).state = g.state;
 }
 
-GameEngine::~GameEngine() {
+GameEngine::~GameEngine() { // destructor
     std::cout << "Game engine destroyed\n";
+    delete state;
 }
 
-std::map<State, std::map<Action, State>> mapStateToActions{
+std::map<State, std::map<Action, State>> mapStateToActions{ // map of possible actions from a state, and the leading state of that action
     {start, {{load_map, map_loaded}}},
     {map_loaded, {{load_map, map_loaded}, {validate_map, map_validated}}},
     {map_validated, {{add_player, players_added}}},
@@ -34,7 +35,7 @@ std::map<State, std::map<Action, State>> mapStateToActions{
     {execute_orders, {{exec_order, execute_orders}, {end_exec_orders, assign_reinforcement}, {win_game, win}}},
     {win, {{play, start}}}};
 
-std::map<std::string, Action> actionToString{
+std::map<std::string, Action> actionToString{ // map between string and action to be able to compare values
     {"loadmap", load_map},
     {"validatemap", validate_map},
     {"addplayer", add_player},
@@ -58,7 +59,7 @@ GameEngine &GameEngine::operator = (const GameEngine &g)
 ostream& operator<<(ostream& os, GameEngine& gameEngine) { //insert stream operator
     const char* currentStateString = nullptr; // Initialize to nullptr
 
-    switch (gameEngine.getState()) {
+    switch (*(gameEngine.getState())) {
         case 1:
             currentStateString = "Start";
             break;
