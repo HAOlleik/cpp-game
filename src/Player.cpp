@@ -101,11 +101,20 @@ void Player::toDefend()
 	}
 }
 
+// Validates if the irder is correct
+bool validate(string* s)
+{
+	string temps = *s;
+	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade"
+		|| temps == "airlift" || temps == "negotiate")
+		return true;
+}
+
 // Creats list of order objects
 void Player::issueOrder(string* ord)
 {
 	Order* ordObj = new Order(ord);
-	if (ordObj->validate(ord))
+	if (validate(ord))
 	{
 		orders.push_back(ordObj);
 		cout << ord << endl;
