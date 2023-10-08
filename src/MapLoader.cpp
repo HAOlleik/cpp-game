@@ -1,13 +1,5 @@
 #include "MapLoader.h"
 
-// You can use the MapLoader like this:
-// MapLoader loader;
-// if(loader.load("path_to_map_file.map")) {
-//     Map *gameMap = loader.getMap();
-//     // Further processing on gameMap...
-// }
-
-// A helper function to trim whitespace.
 std::string MapLoader::trim(const std::string &s)
 {
     auto start = s.begin();
@@ -26,6 +18,18 @@ std::string MapLoader::trim(const std::string &s)
 }
 
 MapLoader::MapLoader() : map(new Map()) {}
+
+MapLoader::MapLoader(Map *m) : map(m) {}
+
+MapLoader::MapLoader(const MapLoader &m)
+{
+    map = m.getMap();
+}
+
+MapLoader::~MapLoader()
+{
+    delete map;
+}
 
 bool MapLoader::load(const std::string &filePath)
 {
@@ -88,33 +92,6 @@ bool MapLoader::load(const std::string &filePath)
             c->addTerritory(terr);
         }
     }
-    // To print out the map
-    // std::map<std::string, Territory *> *terri = map->territories;
-    // for (const auto &elem : *terri)
-    // {
-    //     std::cout << "MAP:"
-    //               << " " << elem.first << " " << elem.second->getName() << "\n";
-    // }
-    // std::map<std::string, Continent *> *cont = map->continents;
-    // if (cont)
-    // {
-    //     for (const auto &elem : *cont)
-    //     {
-    //         if (elem.second)
-    //         {
-    //             std::cout << "CONTINENT:"
-    //                       << " " << elem.first << " " << elem.second->getName() << "\n";
-    //         }
-    //         else
-    //         {
-    //             std::cout << "Error: Null Continent for key: " << elem.first << "\n";
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     std::cout << "Error: continents map is nullptr." << '\n';
-    // }
 
     // doing second pass to interconnect territories since we created all of them
     file.clear();  // clear flags
@@ -188,4 +165,11 @@ bool MapLoader::load(const std::string &filePath)
 Map *MapLoader::getMap() const
 {
     return map;
+}
+
+MapLoader &MapLoader::operator=(MapLoader &m)
+{
+    map = m.getMap();
+
+    return *this;
 }

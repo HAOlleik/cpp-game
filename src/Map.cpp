@@ -213,8 +213,61 @@ Continent *Map::getContinent(const std::string &name)
     }
 }
 
+std::map<std::string, Territory *> *Map::_getTerritories()
+{
+    return territories;
+}
+std::map<std::string, Continent *> *Map::_getContinents()
+{
+    return continents;
+}
+
 // Validate map by all parameters
 int Map::validate()
 {
     return !(_connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent());
+}
+
+ostream &operator<<(ostream &os, Map &m)
+{
+    // To print out the map
+    std::map<std::string, Territory *> *terri = m._getTerritories();
+    for (const auto &elem : *terri)
+    {
+        os << "MAP:"
+           << " " << elem.first << " " << elem.second->getName() << "\n";
+    }
+    std::map<std::string, Continent *> *cont = m._getContinents();
+    if (cont)
+    {
+        for (const auto &elem : *cont)
+        {
+            if (elem.second)
+            {
+                os << "CONTINENT:"
+                   << " " << elem.first << " " << elem.second->getName() << "\n";
+            }
+            else
+            {
+                os << "Error: Null Continent for key: " << elem.first << "\n";
+            }
+        }
+    }
+    else
+    {
+        os << "Error: continents map is nullptr." << '\n';
+    }
+    return os;
+}
+
+Map &Map::operator=(Map &m)
+{
+    _pAuthor = m._pAuthor;
+    _pImage = m._pImage;
+    _wrap = m._wrap;
+    _scroll = m._scroll;
+    territories = m.territories;
+    continents = m.continents;
+
+    return *this;
 }

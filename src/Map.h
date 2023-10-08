@@ -23,19 +23,36 @@ enum scroll
 class Map
 {
 public:
+    // Default constr
     Map();
+    // Copy constr
     Map(const Map &map);
+    // Destruct
     ~Map();
+    // Operator overlead
     Map &operator=(const Map &m);
+    // Validate map method
     int validate();
+    // Add territory to map
     void addTerritory(Territory *t);
+    // Getter terrtiroy
     Territory *getTerritory(const std::string &name);
-    void addContinent(Continent *c);
+    // Getter for all territories
+    std::map<std::string, Territory *> *_getTerritories();
+    // Add continent method
+    void
+    addContinent(Continent *c);
+    // Getter continents
     Continent *getContinent(const std::string &name);
+    // Getter for all continents
+    std::map<std::string, Continent *> *_getContinents();
+    // Assignment Operator overload
+    Map &operator=(Map &m);
+
+private:
     std::map<std::string, Territory *> *territories;
     std::map<std::string, Continent *> *continents;
 
-private:
     std::string *_pAuthor;
     std::string *_pImage;
     bool *_wrap;
@@ -46,5 +63,5 @@ private:
     int _territoryBelongsToOneContinent();
 };
 
-ostream &operator<<(ostream &os, Map &m);
+ostream &operator<<(ostream &os, const Map &m);
 #endif

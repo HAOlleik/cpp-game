@@ -47,3 +47,13 @@ ostream &operator<<(ostream &os, Territory &t)
     }
     return os;
 }
+
+Territory &Territory::operator=(Territory &t)
+{
+    name = t.name;
+    owner = t.owner;
+    armies = t.armies;
+    adjacentTerritories = t.adjacentTerritories;
+
+    return *this;
+}
