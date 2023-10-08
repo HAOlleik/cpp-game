@@ -287,15 +287,36 @@ void Hand::play(int index, Deck &deck, Player& player)
     index -= 1;
     int orderCard = (playHand[index]->getCardID());
 
-    // DeployOrder* d = new DeployOrder;
-    // AdvanceOrder* a = new AdvanceOrder;
-    // BombOrder* b = new BombOrder;
-    // BlockadeOrder* bd = new BlockadeOrder;
-    // AirliftOrder* al = new AirliftOrder;
-    // NegotiateOrder* n = new NegotiateOrder;
+    BombOrder* b = new BombOrder;
+    BlockadeOrder* bd = new BlockadeOrder;
+    AirliftOrder* al = new AirliftOrder;
+    NegotiateOrder* n = new NegotiateOrder;
 
-    // switch (orderCard)
-    // {
+    switch (orderCard)
+    {
+        case 1:
+            cout <<"A bomb order was added to the player's order list." << endl;
 
-    // }
+            break;
+        case 2:
+            cout <<"A reinforcement order was added to the player's order list." << endl;
+
+            break;
+        case 3:
+            cout <<"A blockade order was added to the player's order list." << endl;
+
+            break;
+        case 4:
+            cout <<"An airlift order was added to the player's order list." << endl;
+
+            break;
+        case 5:
+            cout <<"A negotiate (diplomacy) order was added to the player's order list." << endl;
+
+            break;
+    }
+
+    deck.addCardBackToDeck(orderCard);
+    playHand.erase(playHand.begin()+index);
+    
 }
