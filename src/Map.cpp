@@ -76,7 +76,7 @@ Map &Map::operator=(const Map &m)
 // Check if the entire map forms a connected graph.
 int Map::_connectedGraph()
 {
-    // Use BFS/DFS to traverse the graph.
+    // Use BFS to traverse the graph.
     // If all territories are visited, it's connected.
 
     if (territories->empty())
@@ -115,7 +115,7 @@ int Map::_connectedSubgraphs()
     {
         Continent *continent = cont.second;
 
-        // Apply similar BFS/DFS but limited to territories within the continent.
+        // Apply similar BFS but limited to territories within the continent.
         std::set<Territory *> visited;
         std::deque<Territory *> queue;
 
