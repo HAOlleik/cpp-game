@@ -1,5 +1,3 @@
-#ifndef ORDER_H
-#define ORDER_H
 #include <iostream>
 using std::ostream;
 #include <queue>
@@ -23,10 +21,11 @@ class Order
 {
 public:
     Order();
+    Order(string* str);
     Order(const Order &o); //copy contructor
     // void execute(Player &player);
     bool validate();
-    string orderName;
+    string* orderName;
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -106,5 +105,3 @@ public:
 
 //free function
 void testOrdersLists();
-
-#endif
