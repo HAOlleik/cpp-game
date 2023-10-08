@@ -11,8 +11,7 @@ Order::Order(string* str)
 
 DeployOrder::DeployOrder() {
 	cout << "Deploy Order Created" << endl;
-	string d = "deploy";
-	this->orderName = &d;
+	this->orderName = &deploy1;
 	this->isValid = true;
 
 }
@@ -28,8 +27,7 @@ void DeployOrder::execute() {
 
 AdvanceOrder::AdvanceOrder() {
 	cout << "Advance Order Created" << endl;
-	string a = "advance";
-	this->orderName = &a;
+	this->orderName = &advance1;
 	this->isValid = true;
 }
 bool AdvanceOrder::validate()
@@ -47,8 +45,7 @@ void AdvanceOrder::execute()
 BombOrder::BombOrder() {
 	cout << "Bomb Order Created" << endl;
 	// *orderName = "Bomb";
-	string b = "Bomb";
-	this->orderName = &b;
+	this->orderName = &bomb1;
 	this->isValid = true;
 }
 bool BombOrder::validate()
@@ -65,8 +62,7 @@ void BombOrder::execute()
 BlockadeOrder::BlockadeOrder() {
 	cout << "Blockade Order Created" << endl;
 	// *orderName = "Blockade";
-	string bl = "blockade";
-	this->orderName = &bl;
+	this->orderName = &blockade1;
 	this->isValid = true;
 }
 bool BlockadeOrder::validate()
@@ -84,8 +80,7 @@ void BlockadeOrder::execute()
 AirliftOrder::AirliftOrder() {
 	cout << "Airlift Order Created" << endl;
 	// *orderName = "Airlift";
-	string o = "airlift";
-	this->orderName = &o;
+	this->orderName = &airlift1;
 	this->isValid = true;
 }
 bool AirliftOrder::validate()
@@ -102,8 +97,7 @@ void AirliftOrder::execute()
 
 NegotiateOrder::NegotiateOrder() {
 	cout << "Negotiate Order Created" << endl;
-	string neg = "negotiate";
-	this->orderName = &neg;
+	this->orderName = &negotiate1;
 	this->isValid = true;
 }
 bool NegotiateOrder::validate()

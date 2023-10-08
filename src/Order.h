@@ -6,6 +6,13 @@ using std::queue;
 // #include "Player.h"
 using namespace std;
 
+string deploy1 = "deploy";
+string advance1 = "advance";
+string bomb1 = "bomb";
+string blockade1 = "blockade";
+string airlift1 = "airlift";
+string negotiate1 = "negotiate";
+
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
