@@ -1,13 +1,10 @@
-#pragma once
-
 #include "Player.h"
-
 
 void testPlayers()
 {
-	vector<string*>terList;
-	vector<string*>cardList;
-	vector<Order*>orderList;
+	vector<string *> terList;
+	vector<string *> cardList;
+	vector<Order *> orderList;
 
 	string asia = "Asia";
 	string africa = "Africa";
@@ -34,14 +31,14 @@ void testPlayers()
 	cardList.push_back(&diplomacy);
 
 	string value = "Yason";
-	string* name = &value;
-	Player* p1 = new Player(name, terList, cardList, orderList);
+	string *name = &value;
+	Player *p1 = new Player(name, terList, cardList, orderList);
 	string value1 = "deploy";
-	string* issue1 = &value1;
+	string *issue1 = &value1;
 	string value2 = "bomb";
-	string* issue2 = &value2;
+	string *issue2 = &value2;
 	string value3 = "negotiate";
-	string* issue3 = &value3;
+	string *issue3 = &value3;
 	(*p1).issueOrder(issue1);
 	(*p1).issueOrder(issue2);
 	(*p1).issueOrder(issue3);
