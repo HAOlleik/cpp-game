@@ -132,7 +132,6 @@ bool MapLoader::load(const std::string &filePath)
             std::cout << "Territory not found: " + v[0] << std::endl;
             continue;
         }
-        // std::cout << "origin " << terr->getName() << std::endl;
         //    0 1 2 3         4+
         // Name,-,-,Continent,Territory1A,Territory02,Territory04,Territory05
         if (v.size() < 5)
@@ -140,12 +139,7 @@ bool MapLoader::load(const std::string &filePath)
         int tc = 4;   // counter
         while (tc > 3 && (unsigned long)tc < v.size())
         {
-            // std::cout << line << std::endl;
-            // std::cout << tc << std::endl;
-            // std::cout << v.size() << std::endl;
-
             Territory *t = map->getTerritory(v[tc]);
-            // std::cout << "counter " << tc << " looking for" << v[tc] << " " << t->getName() << std::endl;
             if (t != nullptr)
             {
                 terr->addAdjacent(t);
