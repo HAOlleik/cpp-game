@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Order.h"
 
 int main()
 {
@@ -6,5 +7,6 @@ int main()
 
     // startUpPhase();
     // mainPlayPhase();
+    testOrdersLists();
     return 0;
 }

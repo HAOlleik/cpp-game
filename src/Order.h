@@ -104,4 +104,7 @@ public:
 // ostream &
 // operator<<(ostream &os, Order &o);
 
+//free function
+void testOrdersLists();
+
 #endif
