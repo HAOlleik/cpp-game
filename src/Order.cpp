@@ -13,6 +13,45 @@ Order::Order(string *str)
 {
 	this->orderName = str;
 }
+Order::Order(const Order &o)
+{
+	// Perform a deep copy of the orderName
+	if (o.orderName != nullptr)
+	{
+		orderName = new string(*(o.orderName));
+	}
+	else
+	{
+		orderName = nullptr;
+	}
+}
+
+
+Order &Order::operator=(const Order &other)
+{
+	
+	if (this == &other)
+	{
+		return *this; // Return a reference to the current object
+	}
+
+	// Assign the orderName (assuming it's a pointer to a string)
+	if (orderName != nullptr)
+	{
+		delete orderName; // Release existing resources
+	}
+	if (other.orderName != nullptr)
+	{
+		orderName = new string(*(other.orderName)); // Deep copy the string
+	}
+	else
+	{
+		orderName = nullptr;
+	}
+
+	// Return a reference to the current object
+	return *this;
+}
 
 DeployOrder::DeployOrder()
 {
@@ -136,7 +175,6 @@ OrdersList::OrdersList() {}
 void OrdersList::addOrder(Order *order)
 {
 	this->_orders.push(order);
-	cout << "done" << endl;
 }
 void OrdersList::move(int initialPosition, int desiredPosition)
 {
