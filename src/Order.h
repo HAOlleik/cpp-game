@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 using std::ostream;
 #include <queue>
@@ -5,13 +6,6 @@ using std::queue;
 
 // #include "Player.h"
 using namespace std;
-
-string deploy1 = "deploy";
-string advance1 = "advance";
-string bomb1 = "bomb";
-string blockade1 = "blockade";
-string airlift1 = "airlift";
-string negotiate1 = "negotiate";
 
 // Not sure yet if it is usefull, can be removed
 enum OrderType
@@ -28,11 +22,11 @@ class Order
 {
 public:
     Order();
-    Order(string* str);
-    Order(const Order &o); //copy contructor
+    Order(string *str);
+    Order(const Order &o); // copy contructor
     // void execute(Player &player);
     bool validate();
-    string* orderName;
+    string *orderName;
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -102,13 +96,13 @@ public:
     void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
-	void addOrder(Order *order);
-	void printOrders() const;
+    void addOrder(Order *order);
+    void printOrders() const;
 };
 
 // not sure if it should be defined for each of the order type. I thin not
 // ostream &
 // operator<<(ostream &os, Order &o);
 
-//free function
+// free function
 void testOrdersLists();

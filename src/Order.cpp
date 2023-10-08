@@ -1,31 +1,39 @@
-#pragma once
-
 #include "Order.h"
+
+string deploy1 = "deploy";
+string advance1 = "advance";
+string bomb1 = "bomb";
+string blockade1 = "blockade";
+string airlift1 = "airlift";
+string negotiate1 = "negotiate";
 
 Order::Order() {}
 
-Order::Order(string* str)
+Order::Order(string *str)
 {
 	this->orderName = str;
 }
 
-DeployOrder::DeployOrder() {
+DeployOrder::DeployOrder()
+{
 	cout << "Deploy Order Created" << endl;
 	this->orderName = &deploy1;
 	this->isValid = true;
-
 }
-bool DeployOrder::validate() {
+bool DeployOrder::validate()
+{
 	return true;
 }
-void DeployOrder::execute() {
-	if (this->isValid) {
+void DeployOrder::execute()
+{
+	if (this->isValid)
+	{
 		cout << "Deploy order executing" << endl;
 	}
 }
 
-
-AdvanceOrder::AdvanceOrder() {
+AdvanceOrder::AdvanceOrder()
+{
 	cout << "Advance Order Created" << endl;
 	this->orderName = &advance1;
 	this->isValid = true;
@@ -42,7 +50,8 @@ void AdvanceOrder::execute()
 	}
 }
 
-BombOrder::BombOrder() {
+BombOrder::BombOrder()
+{
 	cout << "Bomb Order Created" << endl;
 	// *orderName = "Bomb";
 	this->orderName = &bomb1;
@@ -54,12 +63,14 @@ bool BombOrder::validate()
 }
 void BombOrder::execute()
 {
-	if (this->isValid) {
+	if (this->isValid)
+	{
 		cout << "Bomb order executing" << endl;
 	}
 }
 
-BlockadeOrder::BlockadeOrder() {
+BlockadeOrder::BlockadeOrder()
+{
 	cout << "Blockade Order Created" << endl;
 	// *orderName = "Blockade";
 	this->orderName = &blockade1;
@@ -77,7 +88,8 @@ void BlockadeOrder::execute()
 	}
 }
 
-AirliftOrder::AirliftOrder() {
+AirliftOrder::AirliftOrder()
+{
 	cout << "Airlift Order Created" << endl;
 	// *orderName = "Airlift";
 	this->orderName = &airlift1;
@@ -95,7 +107,8 @@ void AirliftOrder::execute()
 	}
 }
 
-NegotiateOrder::NegotiateOrder() {
+NegotiateOrder::NegotiateOrder()
+{
 	cout << "Negotiate Order Created" << endl;
 	this->orderName = &negotiate1;
 	this->isValid = true;
@@ -112,15 +125,16 @@ void NegotiateOrder::execute()
 	}
 }
 
-ostream& operator<<(ostream& os, const Order& o)
+ostream &operator<<(ostream &os, const Order &o)
 {
-	os << "Order Name: " << o.orderName; // Replace this with the actual output you want
+	os << "Order Name: " << *o.orderName; // Replace this with the actual output you want
 	return os;
 }
 
-//methods for orderList
+// methods for orderList
 OrdersList::OrdersList() {}
-void OrdersList::addOrder(Order* order) {
+void OrdersList::addOrder(Order *order)
+{
 	this->_orders.push(order);
 	cout << "done" << endl;
 }
@@ -135,7 +149,7 @@ void OrdersList::move(int initialPosition, int desiredPosition)
 	}
 
 	// Temporarily store the elements
-	std::queue<Order*> tempQueue;
+	std::queue<Order *> tempQueue;
 	int currentPos = 0;
 
 	// Remove and save all elements from the queue until the initial position
@@ -147,7 +161,7 @@ void OrdersList::move(int initialPosition, int desiredPosition)
 	}
 
 	// Remove the element to be moved and save it
-	Order* movedOrder = _orders.front();
+	Order *movedOrder = _orders.front();
 	_orders.pop();
 
 	// Skip the desired position, we will insert it later
@@ -175,11 +189,11 @@ void OrdersList::move(int initialPosition, int desiredPosition)
 // Add this member function to your OrdersList class
 void OrdersList::printOrders() const
 {
-	std::queue<Order*> tempQueue = _orders;
+	std::queue<Order *> tempQueue = _orders;
 
 	while (!tempQueue.empty())
 	{
-		Order* order = tempQueue.front();
+		Order *order = tempQueue.front();
 		tempQueue.pop();
 		// Assuming you have an operator<< overload for Order objects
 		std::cout << *order << std::endl;
@@ -196,7 +210,7 @@ void OrdersList::remove(int index)
 	}
 
 	// Temporarily store the elements
-	std::queue<Order*> tempQueue;
+	std::queue<Order *> tempQueue;
 	int currentPos = 0;
 
 	// Remove and save all elements from the queue until the specified index
