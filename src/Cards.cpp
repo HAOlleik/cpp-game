@@ -161,7 +161,7 @@ Card* Deck::draw()
 //insertion stream operator
 ostream& operator<<(ostream& os, const Deck& deck) 
 {
-    os << "Deck Size: " << deck.sizeOfDeck << "\n";
+    os << "Deck Size: " << deck.deckVector.size() << "\n";
 
     os << "Cards in the Deck:\n";
     for (const Card* card : deck.deckVector) {
@@ -188,7 +188,7 @@ void Deck::addCardBackToDeck(int cardID)
     vector<Card *> deckInstance = this->getDeck();
     deckInstance.push_back(returnCard);
     this->setDeck(deckInstance);
-    cout << "The card of type " << returnCard->getCardType() << " has been returned to the deck." << endl;
+    cout << "The card of type " << returnCard->getCardType() << " has been returned to the deck.\n" << endl;
 }
 
 //deck destructor
@@ -245,7 +245,7 @@ Hand::~Hand()
 
 ostream& operator<<(ostream& os, const Hand& hand) //insertion stream operator
 {
-    os << "Hand Size: " << hand.playHand.size() << "\n";
+    os << "Hand Size: " << hand.playHand.size() << "\n\n";
 
     os << "Cards in the Hand:\n";
     for (const Card* card : hand.playHand) {
@@ -282,41 +282,42 @@ void Hand::removeCard(int index)
     }
 }
 
-void Hand::play(int index, Deck &deck, Player& player)
+void Hand::play(int index, Deck &deck, OrdersList &ordersList)
 {
     index -= 1;
     int orderCard = (playHand[index]->getCardID());
 
-    BombOrder* b = new BombOrder;
-    BlockadeOrder* bd = new BlockadeOrder;
-    AirliftOrder* al = new AirliftOrder;
-    NegotiateOrder* n = new NegotiateOrder;
+    BombOrder b;
+    BlockadeOrder bd;
+    AirliftOrder al;
+    NegotiateOrder n;
 
     switch (orderCard)
     {
         case 1:
             cout <<"A bomb order was added to the player's order list." << endl;
-
+            ordersList.addOrder(&b);
             break;
         case 2:
             cout <<"A reinforcement order was added to the player's order list." << endl;
-
             break;
         case 3:
             cout <<"A blockade order was added to the player's order list." << endl;
-
+            ordersList.addOrder(&bd);
             break;
         case 4:
             cout <<"An airlift order was added to the player's order list." << endl;
-
+            ordersList.addOrder(&al);
             break;
         case 5:
             cout <<"A negotiate (diplomacy) order was added to the player's order list." << endl;
-
+            ordersList.addOrder(&n);
             break;
     }
 
     deck.addCardBackToDeck(orderCard);
     playHand.erase(playHand.begin()+index);
-    
+    cout << "Current OrderList: "<< endl;
+    ordersList.printOrders();
+    cout << "\n------------------" << endl;
 }

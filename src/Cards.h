@@ -6,8 +6,9 @@
     using std::string;
 #include <vector>
     using std::vector;
+#include "Order.h"
 
-// forward declaration
+// forward declarations
 class Player;
 
 class Card
@@ -76,7 +77,7 @@ class Hand
         vector <Card*> getPlayHand() const;
         void addCard(Card& myCard);
         void printPlayHand();
-        void play(int index, Deck& deck, Player& newPlayer);
+        void play(int index, Deck& deck, OrdersList& OrdersList);
         void removeCard(int index);
 };
 

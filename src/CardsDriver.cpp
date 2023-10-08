@@ -12,12 +12,13 @@ using std::endl;
     ----------------------------
 */
 
-int testCards()
+void testCards()
 {
     Deck testDeck = Deck(10);
     testDeck.fillDeck();
+    OrdersList testOrdersList = OrdersList();
     
-    cout << "Deck before playing: " << endl << testDeck <<endl;
+    cout << "\n\n********Deck before playing********: " << endl << testDeck <<endl;
 
     Card* c1 = testDeck.draw();
     Card* c2 = testDeck.draw();
@@ -30,7 +31,8 @@ int testCards()
     Card* c9 = testDeck.draw();
     Card* c10 = testDeck.draw();
 
-    cout << "The addressses of the cards drawn from the deck are: " << endl << c1 << c2 << c3 << c4 << c5 << c6 << c7 << c8 << c9 << c10 << endl;
+    cout <<"\n********All cards have been drawn from the deck********"<<endl;
+    cout << "The addressses of the cards drawn from the deck are: " << endl << c1 << endl << c2 << endl << c3 << endl << c4 << endl << c5 << endl << c6 << endl << c7 << endl << c8 << endl << c9 << endl << c10 << endl;
 
 
     Hand testHand;
@@ -45,8 +47,22 @@ int testCards()
     testHand.addCard(*c9);
     testHand.addCard(*c10);
 
-    cout <<"This results in a hand of: " << endl << testHand << endl;
+    cout <<"\n********All cards have now been added to the hand********\n" <<"This results in a hand of: " << endl << testHand << endl;
     cout <<"With a deck that is now: " << endl << testDeck << endl;
 
-    /*Play method still needs to be implemented*/
+    cout <<"\n********Cards will now be played one by one********" << endl;
+
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testDeck, testOrdersList);
+
+    cout <<"\n********All cards have now been played********\n" << "Deck after playing all the cards:\n" << testDeck << endl;
+    cout <<"Player hand after playing all the cards: " << testHand << endl;
 }
