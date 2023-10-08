@@ -128,12 +128,12 @@ int Map::_connectedSubgraphs()
             Territory *current = queue.front();
             queue.pop_front();
 
-            if (visited.find(current) == visited.end())
+            if (current && visited.find(current) == visited.end())
             {
                 visited.insert(current);
                 for (auto &adj : *(current->getAdjacentTerritories()))
                 {
-                    if (visited.find(adj) == visited.end() &&
+                    if (adj && visited.find(adj) == visited.end() &&
                         std::find(continent->getTerritories().begin(), continent->getTerritories().end(), adj) != continent->getTerritories().end())
                     {
                         queue.push_back(adj);
@@ -150,7 +150,7 @@ int Map::_connectedSubgraphs()
 }
 
 // Check if each territory belongs to one and only one continent.
-int Map::_countryBelongsToOneContinent()
+int Map::_territoryBelongsToOneContinent()
 {
     std::cout << "we finished" << std::endl;
 
@@ -216,5 +216,5 @@ Continent *Map::getContinent(const std::string &name)
 // Validate map by all parameters
 int Map::validate()
 {
-    return _connectedGraph() && _connectedSubgraphs() && _countryBelongsToOneContinent();
+    return !(_connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent());
 }

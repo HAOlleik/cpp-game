@@ -38,7 +38,7 @@ std::vector<Territory *> *Territory::getAdjacentTerritories()
 ostream &operator<<(ostream &os, Territory &t)
 {
     os << "Territory Name: " << t.getName() << "\n";
-    os << "Owner: " << (t.owner ? t.owner->getName() : "None") << "\n"; // Assuming Player has a method `getName()`
+    os << "Owner: " << (t.owner ? t.owner->getName() : "None") << "\n";
     os << "Armies: " << t.armies << "\n";
     os << "Adjacent Territories: ";
     for (auto &adjTerr : *t.adjacentTerritories)

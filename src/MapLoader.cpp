@@ -1,9 +1,4 @@
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
 #include "MapLoader.h"
-#include "Territory.h"
 
 // You can use the MapLoader like this:
 // MapLoader loader;
@@ -177,6 +172,10 @@ bool MapLoader::load(const std::string &filePath)
             if (t != nullptr)
             {
                 terr->addAdjacent(t);
+            }
+            else
+            {
+                throw std::runtime_error("Territory not found");
             }
             tc++;
         }

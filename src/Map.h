@@ -43,7 +43,7 @@ private:
 
     int _connectedGraph();
     int _connectedSubgraphs();
-    int _countryBelongsToOneContinent();
+    int _territoryBelongsToOneContinent();
 };
 
 ostream &operator<<(ostream &os, Map &m);

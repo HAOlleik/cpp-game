@@ -1,3 +1,5 @@
+#ifndef CONTINENT_H
+#define CONTINENT_H
 #include <string>
 #include <vector>
 
@@ -18,3 +20,5 @@ public:
     std::vector<Territory *> getTerritories();
     void addTerritory(Territory *territory);
 };
+
+#endif

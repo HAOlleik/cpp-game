@@ -1,5 +1,3 @@
-#ifndef CONTINENT_H
-#define CONTINENT_H
 #include "Continent.h"
 
 Continent::Continent(std::string *n) : name(new std::string(*n)), score(new int(0)), territories(new std::vector<Territory *>()) {}
@@ -35,5 +33,3 @@ void Continent::addTerritory(Territory *territory)
 {
     (*territories).push_back(territory);
 }
-
-#endif
