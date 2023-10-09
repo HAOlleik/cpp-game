@@ -9,13 +9,6 @@
 #include "Territory.h"
 #include "Map.h"
 
-// You can use the MapLoader like this:
-// MapLoader loader;
-// if(loader.load("path_to_map_file.map")) {
-//     Map *gameMap = loader.getMap();
-//     // Further processing on gameMap...
-// }
-
 class MapLoader
 {
 public:
