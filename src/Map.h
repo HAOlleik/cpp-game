@@ -48,6 +48,7 @@ public:
     std::map<std::string, Continent *> *_getContinents();
     // Assignment Operator overload
     Map &operator=(Map &m);
+    friend ostream &operator<<(ostream &os, const Map &m);
 
 private:
     std::map<std::string, Territory *> *territories;

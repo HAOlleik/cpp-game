@@ -11,7 +11,7 @@ belongs to one and only one continent.
 void testLoadMaps()
 {
     MapLoader loader;
-    if (loader.load("maps/Alberta/Alberta.map"))
+    if (loader.load("maps/ABC_Map/ABC_Map.map"))
     {
 
         Map *gameMap = loader.getMap();

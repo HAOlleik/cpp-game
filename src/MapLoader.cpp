@@ -151,6 +151,39 @@ bool MapLoader::load(const std::string &filePath)
             tc++;
         }
     }
+    // To print out the map
+    std::map<std::string, Territory *> *terri = map->_getTerritories();
+    for (const auto &elem : *terri)
+    {
+        std::cout << "MAP:"
+                  << " " << elem.first << " " << elem.second->getName() << "\n";
+    }
+    std::map<std::string, Continent *> *cont = map->_getContinents();
+    if (cont)
+    {
+        for (const auto &elem : *cont)
+        {
+            if (elem.second)
+            {
+                std::cout << "CONTINENT:"
+                          << " " << elem.first << " " << elem.second->getName() << "\n";
+                std::vector<Territory *> cter = elem.second->getTerritories();
+                for (const auto &elem : cter)
+                {
+                    std::cout << "CTER:"
+                              << " " << elem->getName() << "\n";
+                }
+            }
+            else
+            {
+                std::cout << "Error: Null Continent for key: " << elem.first << "\n";
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Error: continents map is nullptr." << '\n';
+    }
 
     file.close();
     return true;

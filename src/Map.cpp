@@ -108,18 +108,25 @@ int Map::_connectedGraph()
     return (visited.size() == territories->size()) ? 1 : 0;
 }
 
-// Check if each continent forms a connected subgraph.
+// Check if a continent is connected subgraph
 int Map::_connectedSubgraphs()
 {
-    for (auto &cont : *continents)
+    for (const auto &contPair : *continents)
     {
-        Continent *continent = cont.second;
+        Continent *continent = contPair.second;
+        const std::vector<Territory *> &continentTerritories = continent->getTerritories();
 
-        // Apply similar BFS but limited to territories within the continent.
+        // Ensure the continent has territories before proceeding.
+        if (continentTerritories.empty())
+        {
+            return 0; // A continent with no territories can't be considered connected.
+        }
+
+        // Apply BFS but limited to territories within the continent.
         std::set<Territory *> visited;
         std::deque<Territory *> queue;
 
-        queue.push_back(continent->getTerritories()[0]);
+        queue.push_back(continentTerritories[0]);
 
         while (!queue.empty())
         {
@@ -129,10 +136,13 @@ int Map::_connectedSubgraphs()
             if (current && visited.find(current) == visited.end())
             {
                 visited.insert(current);
-                for (auto &adj : *(current->getAdjacentTerritories()))
+                const std::vector<Territory *> &adjacentTerritories = *(current->getAdjacentTerritories());
+
+                for (Territory *adj : adjacentTerritories)
                 {
+                    // Only process if territory is unvisited and belongs to the current continent.
                     if (adj && visited.find(adj) == visited.end() &&
-                        std::find(continent->getTerritories().begin(), continent->getTerritories().end(), adj) != continent->getTerritories().end())
+                        std::find(continentTerritories.begin(), continentTerritories.end(), adj) != continentTerritories.end())
                     {
                         queue.push_back(adj);
                     }
@@ -140,25 +150,27 @@ int Map::_connectedSubgraphs()
             }
         }
 
-        if (visited.size() != continent->getTerritories().size())
-            return 0;
+        if (visited.size() != continentTerritories.size())
+            return 0; // Not all territories within the continent were visited.
     }
 
-    return 1;
+    return 1; // Every continent in the map is a connected subgraph.
 }
 
-// Check if each territory belongs to one and only one continent.
 int Map::_territoryBelongsToOneContinent()
 {
-    for (auto &terr : *territories)
+    for (const auto &terrPair : *territories)
     {
-        Territory *territory = terr.second;
+        Territory *territory = terrPair.second;
         int count = 0;
 
-        for (auto &cont : *continents)
+        for (const auto &contPair : *continents)
         {
-            Continent *continent = cont.second;
-            if (std::find(continent->getTerritories().begin(), continent->getTerritories().end(), territory) != continent->getTerritories().end())
+            Continent *continent = contPair.second;
+            const std::vector<Territory *> &continentTerritories = continent->getTerritories();
+
+            // Check if the territory is in the current continent's territories
+            if (std::find(continentTerritories.begin(), continentTerritories.end(), territory) != continentTerritories.end())
             {
                 count++;
             }
@@ -221,7 +233,9 @@ std::map<std::string, Continent *> *Map::_getContinents()
 // Validate map by all parameters
 int Map::validate()
 {
-    return !(_connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent());
+#include <iostream>
+    std::cout << _connectedGraph() << ' ' << _connectedSubgraphs() << ' ' << _territoryBelongsToOneContinent();
+    return _connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent();
 }
 
 ostream &operator<<(ostream &os, Map &m)
