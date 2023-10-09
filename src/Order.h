@@ -22,11 +22,11 @@ class Order
 {
 public:
     Order();
-	// ~Order();
-	Order(string *str);
-	Order(const Order &o); // copy contructor
-	Order &operator=(const Order &c); //assignment operrator
-	// void execute(Player &player);
+    // ~Order();
+    Order(string *str);
+    Order(const Order &o);            // copy contructor
+    Order &operator=(const Order &c); // assignment operrator
+    // void execute(Player &player);
     bool validate();
     string *orderName;
 };
@@ -94,8 +94,8 @@ private:
 
 public:
     OrdersList();
-    OrdersList(const OrdersList &o); //copy constuctor
-	void move(int initialPosition, int desiredPosition);
+    OrdersList(const OrdersList &o); // copy constuctor
+    void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
     void addOrder(Order *order);

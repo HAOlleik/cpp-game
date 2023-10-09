@@ -30,10 +30,7 @@ public:
 	void setName(string* str);	// Set name of the player
 	void issueOrder(string* str);
 
-	// needs access to validate
-	/*friend bool Card::validate();
-	friend void Order::execute(Player& player);*/
-	//friend bool Order::validate(string* player);
+	bool validate(string* s);
 
 private:
 	string* name;
