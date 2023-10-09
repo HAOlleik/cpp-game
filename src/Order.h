@@ -10,12 +10,12 @@ using namespace std;
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
-    deploy,
-    advance,
-    bomb,
-    blockade,
-    airlift,
-    negotiate
+	deploy,
+	advance,
+	bomb,
+	blockade,
+	airlift,
+	negotiate
 };
 
 class Order
@@ -105,6 +105,5 @@ public:
 // not sure if it should be defined for each of the order type. I thin not
 // ostream &
 // operator<<(ostream &os, Order &o);
-
 // free function
 void testOrdersLists();

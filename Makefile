@@ -2,7 +2,7 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17
 LDFLAGS =
-TARGET = bin/conquest.bin
+TARGET = ./bin/conquest.bin
 
 # Directories
 SRCDIR = src
