@@ -98,7 +98,7 @@ Deck::Deck()
 Deck::Deck(const Deck &d)
 {
     //pointer to cards in original deck to populate the copy deck with the original deck's cards
-    for (int i = 0; i < d.deckVector.size(); i++)
+    for (size_t i = 0; i < d.deckVector.size(); i++)
     {
        (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
     }
@@ -116,7 +116,7 @@ Deck &Deck::operator = (const Deck &d)
 {
     (*this).sizeOfDeck = int(d.sizeOfDeck);
 
-    for (int i = 0; i < d.deckVector.size(); i++)
+    for (size_t i = 0; i < d.deckVector.size(); i++)
     {
        (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
     }
@@ -194,7 +194,7 @@ void Deck::addCardBackToDeck(int cardID)
 //deck destructor
 Deck::~Deck()
 {
-    for (int i = 0; i < deckVector.size(); i++)
+    for (size_t i = 0; i < deckVector.size(); i++)
     {
         delete deckVector[i];
         deckVector[i] = nullptr;
@@ -217,7 +217,7 @@ Hand::Hand()
 //copy constructor
 Hand::Hand(const Hand &h)
 {
-    for (int i = 0; i < h.playHand.size(); i++)
+    for (size_t i = 0; i < h.playHand.size(); i++)
     {
         (*this).playHand.push_back(new Card(*(h.playHand[i])));
     }
@@ -226,7 +226,7 @@ Hand::Hand(const Hand &h)
 //assignment operator overload
 Hand &Hand::operator=(const Hand &h)
 {
-    for (int i = 0; i < (h.playHand.size()); i++)
+    for (size_t i = 0; i < (h.playHand.size()); i++)
     {
         (*this).playHand.push_back(new Card(*(h.playHand)[i]));
     }
@@ -236,7 +236,7 @@ Hand &Hand::operator=(const Hand &h)
 //destructor
 Hand::~Hand()
 {
-    for (int i = 0; i < playHand.size(); i++)
+    for (size_t i = 0; i < playHand.size(); i++)
     {
         delete playHand[i];
         playHand[i] = nullptr;
@@ -272,7 +272,7 @@ void Hand::addCard(Card& myCard)
 
 void Hand::removeCard(int index)
 {
-    if (index >= 0 && index <= playHand.size())
+    if (index >= 0 && index <= static_cast<int>(playHand.size())) // cast size from size_t to integer
     {
         playHand.erase(playHand.begin() + index);
     }
