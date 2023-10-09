@@ -32,6 +32,10 @@
 *.app
 
 
-.vscode
 bin
 obj
+# build folder
+/build
+
+# vscode
+/.vscode

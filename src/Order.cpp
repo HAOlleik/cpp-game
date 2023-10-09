@@ -166,6 +166,7 @@ void NegotiateOrder::execute()
 
 ostream &operator<<(ostream &os, const Order &o)
 {
+
 	os << "Order Name: " << *o.orderName; // Replace this with the actual output you want
 	return os;
 }
@@ -227,6 +228,7 @@ void OrdersList::move(int initialPosition, int desiredPosition)
 // Add this member function to your OrdersList class
 void OrdersList::printOrders() const
 {
+
 	std::queue<Order *> tempQueue = _orders;
 
 	while (!tempQueue.empty())
@@ -240,6 +242,7 @@ void OrdersList::printOrders() const
 
 void OrdersList::remove(int index)
 {
+
 	// Check if the index is valid
 	if (index < 0 || index >= _orders.size())
 	{
