@@ -114,7 +114,7 @@ void Player::issueOrder(string *ord)
 	if (validate(ord))
 	{
 		orders.push_back(ordObj);
-		cout << ord << endl;
+		cout << *ord << endl;
 	}
 	else
 		cout << "Wrong order!" << endl;
