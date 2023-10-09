@@ -233,8 +233,6 @@ std::map<std::string, Continent *> *Map::_getContinents()
 // Validate map by all parameters
 int Map::validate()
 {
-#include <iostream>
-    std::cout << _connectedGraph() << ' ' << _connectedSubgraphs() << ' ' << _territoryBelongsToOneContinent();
     return _connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent();
 }
 
