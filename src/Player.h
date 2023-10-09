@@ -11,8 +11,6 @@ using namespace std;
 #include "Order.h"
 #include "Territory.h"
 
-void testPlayers();
-
 class Player
 {
 public:

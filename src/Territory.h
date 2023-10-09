@@ -1,6 +1,8 @@
 #ifndef TERRITORY_H
 #define TERRITORY_H
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using std::ostream;
 #include <string>
 

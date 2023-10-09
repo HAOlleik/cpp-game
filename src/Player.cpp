@@ -1,4 +1,3 @@
-#pragma once
 #include "Player.h"
 using namespace std;
 
@@ -85,7 +84,7 @@ void Player::setName(string *str)
 // Get list of territories that are to be attacked
 void Player::toAttack()
 {
-	for (int i = 0; i < territories.size(); i++)
+	for (size_t i = 0; i < territories.size(); i++)
 	{
 		cout << *territories[i] << endl;
 	}
@@ -94,7 +93,7 @@ void Player::toAttack()
 // Get list of territories that are to be defended
 void Player::toDefend()
 {
-	for (int i = 0; i < territories.size(); i++)
+	for (size_t i = 0; i < territories.size(); i++)
 	{
 		cout << *territories[i] << endl;
 	}
@@ -104,8 +103,10 @@ void Player::toDefend()
 bool Player::validate(string *s)
 {
 	string temps = *s;
-	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate")
+	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate") {
 		return true;
+	}
+	return false;
 }
 
 // Creats list of order objects

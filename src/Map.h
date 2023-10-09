@@ -5,6 +5,8 @@ using std::ostream;
 #include <map>
 #include <set>
 #include <deque>
+#include <vector>
+#include <algorithm>
 
 #include "Territory.h"
 #include "Continent.h"
