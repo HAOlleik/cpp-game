@@ -3,10 +3,10 @@
 
 int main()
 {
-    testLoadMaps();
     testOrdersLists();
     testPlayers();
     testCards();
     testGameEngineStates();
+    testLoadMaps();
     return 0;
 }
