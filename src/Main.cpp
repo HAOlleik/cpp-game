@@ -1,14 +1,13 @@
 #include <iostream>
-#include "Order.h"
 
+#include "Order.h"
+#include "MapDriver.h"
 #include "GameEngineDriver.cpp"
 
 int main()
 {
-    std::cout << "Hello, World!" << std::endl;
+    testLoadMaps();
     testGameEngineStates();
-    // startUpPhase();
-    // mainPlayPhase();
     testOrdersLists();
     return 0;
 }
