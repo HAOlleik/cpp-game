@@ -1,5 +1,4 @@
-#ifndef ORDER_H
-#define ORDER_H
+#pragma once
 #include <iostream>
 using std::ostream;
 #include <queue>
@@ -23,10 +22,13 @@ class Order
 {
 public:
     Order();
-    Order(const Order &o); //copy contructor
-    // void execute(Player &player);
+	// ~Order();
+	Order(string *str);
+	Order(const Order &o); // copy contructor
+	Order &operator=(const Order &c); //assignment operrator
+	// void execute(Player &player);
     bool validate();
-    string orderName;
+    string *orderName;
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -92,19 +94,16 @@ private:
 
 public:
     OrdersList();
-    OrdersList(const OrdersList &o);
-    void move(int initialPosition, int desiredPosition);
+    OrdersList(const OrdersList &o); //copy constuctor
+	void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
-	void addOrder(Order *order);
-	void printOrders() const;
+    void addOrder(Order *order);
+    void printOrders() const;
 };
 
 // not sure if it should be defined for each of the order type. I thin not
 // ostream &
 // operator<<(ostream &os, Order &o);
-
-//free function
+// free function
 void testOrdersLists();
-
-#endif
