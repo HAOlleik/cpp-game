@@ -2,36 +2,29 @@
 #define CONTINENT_H
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Territory.h"
 
 class Continent
 {
-    std::string *name;
-    int *score;
-    std::vector<Territory *> *territories;
+private:
+    std::unique_ptr<std::string> name;
+    std::unique_ptr<int> score;
+    std::unique_ptr<std::vector<std::shared_ptr<Territory>>> territories;
 
 public:
-    // Deafult Consctructor
     Continent();
-    // Parametrized constr
-    Continent(std::string *n);
-    // Parametrized constr
-    Continent(std::string *n, int *s);
-    // Copy Constructor
-    Continent(const Continent &continent);
-    // Destructor
-    ~Continent();
-    // Name getter
-    std::string getName();
-    // Score getter
-    int getScore();
-    // Territories getter
-    std::vector<Territory *> getTerritories();
-    // Add new territory
-    void addTerritory(Territory *territory);
-    // Assignemtn operator overload
-    Continent &operator=(Continent &c);
+    Continent(const std::string &n);
+    Continent(const std::string &n, int s);
+    Continent(const Continent &c);
+    Continent &operator=(const Continent &c);
+    ~Continent() = default;
+
+    std::string getName() const;
+    int getScore() const;
+    const std::vector<std::shared_ptr<Territory>> &getTerritories() const;
+    void addTerritory(std::shared_ptr<Territory> territory);
 };
 
 #endif

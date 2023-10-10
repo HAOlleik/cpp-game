@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 #include "MapLoader.h"
 #include "Territory.h"
@@ -12,24 +13,16 @@
 class MapLoader
 {
 public:
-    // Default constructor
     MapLoader();
-    // Parametrized constr
-    MapLoader(Map *map);
-    // Copy constr
+    MapLoader(const std::shared_ptr<Map> &map);
     MapLoader(const MapLoader &m);
-    // Destructor
     ~MapLoader();
-    // Map loader function
     bool load(const std::string &filepath);
-    // Map getter
-    Map *getMap() const;
-    // Assignment operator overload
-    MapLoader &operator=(MapLoader &m);
+    std::shared_ptr<Map> getMap() const;
+    MapLoader &operator=(const MapLoader &m);
 
 private:
-    Map *map;
-    // A helper function to trim whitespace.
+    std::shared_ptr<Map> map;
     std::string trim(const std::string &s);
 };
 

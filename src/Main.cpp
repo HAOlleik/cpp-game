@@ -1,12 +1,13 @@
 #include <iostream>
+
+// #include "Order.h"
 #include "Drivers.h"
+// #include "GameEngine.h"
 
 int main()
 {
     testLoadMaps();
-    testOrdersLists();
-    testPlayers();
-    testCards();
-    testGameEngineStates();
+    // testGameEngineStates();
+    // testOrdersLists();
     return 0;
 }

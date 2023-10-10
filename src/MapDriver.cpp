@@ -7,6 +7,7 @@ verifications: 1) the map is a connected graph, 2) continents are connected subg
 belongs to one and only one continent.
 */
 #include "Drivers.h"
+#include "MapLoader.h"
 
 void testLoadMaps()
 {
@@ -14,7 +15,7 @@ void testLoadMaps()
     if (loader.load("maps/ABC_Map/ABC_Map.map"))
     {
 
-        Map *gameMap = loader.getMap();
+        std::shared_ptr<Map> gameMap = loader.getMap();
         // Further processing on gameMap...
         if (gameMap->validate())
         {
