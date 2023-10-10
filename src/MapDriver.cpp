@@ -6,7 +6,8 @@ been successfully created, the driver should demonstrate that the Map class impl
 verifications: 1) the map is a connected graph, 2) continents are connected subgraphs, and 3) each country
 belongs to one and only one continent.
 */
-#include "MapDriver.h"
+#include "Drivers.h"
+#include "MapLoader.h"
 
 void testLoadMaps()
 {
@@ -14,7 +15,7 @@ void testLoadMaps()
     if (loader.load("maps/ABC_Map/ABC_Map.map"))
     {
 
-        Map *gameMap = loader.getMap();
+        std::shared_ptr<Map> gameMap = loader.getMap();
         // Further processing on gameMap...
         if (gameMap->validate())
         {

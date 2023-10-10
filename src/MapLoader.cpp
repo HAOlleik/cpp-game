@@ -17,19 +17,16 @@ std::string MapLoader::trim(const std::string &s)
     return std::string(start, end + 1);
 }
 
-MapLoader::MapLoader() : map(new Map()) {}
+MapLoader::MapLoader() : map(std::make_shared<Map>()) {}
 
-MapLoader::MapLoader(Map *m) : map(m) {}
+MapLoader::MapLoader(const std::shared_ptr<Map> &m) : map(m) {}
 
 MapLoader::MapLoader(const MapLoader &m)
 {
     map = m.getMap();
 }
 
-MapLoader::~MapLoader()
-{
-    delete map;
-}
+MapLoader::~MapLoader() {}
 
 bool MapLoader::load(const std::string &filePath)
 {
@@ -73,7 +70,7 @@ bool MapLoader::load(const std::string &filePath)
                 v.push_back(s);
             }
             // Create continent
-            Continent *continent = new Continent(&v[0], new int(atoi(v[1].c_str())));
+            auto continent = std::make_shared<Continent>(v[0], std::stoi(v[1]));
             map->addContinent(continent);
         }
         else if (isReadingTerritories)
@@ -86,9 +83,9 @@ bool MapLoader::load(const std::string &filePath)
                 v.push_back(s);
             };
             // Create Territory
-            Territory *terr = new Territory(&v[0]);
+            auto terr = std::make_shared<Territory>(v[0]);
             map->addTerritory(terr);
-            Continent *c = map->getContinent(v[3]);
+            auto c = map->getContinent(v[3]);
             c->addTerritory(terr);
         }
     }
@@ -126,7 +123,7 @@ bool MapLoader::load(const std::string &filePath)
             v.push_back(s);
         };
 
-        Territory *terr = map->getTerritory(v[0]);
+        std::shared_ptr<Territory> terr = map->getTerritory(v[0]);
         if (terr == nullptr)
         {
             std::cout << "Territory not found: " + v[0] << std::endl;
@@ -139,7 +136,7 @@ bool MapLoader::load(const std::string &filePath)
         int tc = 4;   // counter
         while (tc > 3 && (unsigned long)tc < v.size())
         {
-            Territory *t = map->getTerritory(v[tc]);
+            std::shared_ptr<Territory> t = map->getTerritory(v[tc]);
             if (t != nullptr)
             {
                 terr->addAdjacent(t);
@@ -152,22 +149,22 @@ bool MapLoader::load(const std::string &filePath)
         }
     }
     // To print out the map
-    std::map<std::string, Territory *> *terri = map->_getTerritories();
-    for (const auto &elem : *terri)
+    auto &terri = *(map->getTerritories());
+    for (const auto &elem : terri)
     {
         std::cout << "MAP:"
                   << " " << elem.first << " " << elem.second->getName() << "\n";
     }
-    std::map<std::string, Continent *> *cont = map->_getContinents();
-    if (cont)
+    auto &cont = *(map->getContinents());
+    if (!cont.empty())
     {
-        for (const auto &elem : *cont)
+        for (const auto &elem : cont)
         {
             if (elem.second)
             {
                 std::cout << "CONTINENT:"
                           << " " << elem.first << " " << elem.second->getName() << "\n";
-                std::vector<Territory *> cter = elem.second->getTerritories();
+                auto &cter = elem.second->getTerritories();
                 for (const auto &elem : cter)
                 {
                     std::cout << "CTER:"
@@ -182,21 +179,20 @@ bool MapLoader::load(const std::string &filePath)
     }
     else
     {
-        std::cout << "Error: continents map is nullptr." << '\n';
+        std::cout << "Error: continents map is empty." << '\n';
     }
 
     file.close();
     return true;
 }
 
-Map *MapLoader::getMap() const
+std::shared_ptr<Map> MapLoader::getMap() const
 {
     return map;
 }
 
-MapLoader &MapLoader::operator=(MapLoader &m)
+MapLoader &MapLoader::operator=(const MapLoader &m)
 {
     map = m.getMap();
-
     return *this;
 }

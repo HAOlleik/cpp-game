@@ -1,10 +1,13 @@
 #ifndef MAP_H
 #define MAP_H
+
 #include <iostream>
-using std::ostream;
 #include <map>
 #include <set>
 #include <deque>
+#include <vector>
+#include <memory>
+#include <algorithm>
 
 #include "Territory.h"
 #include "Continent.h"
@@ -23,40 +26,30 @@ enum scroll
 class Map
 {
 public:
-    // Default constr
     Map();
-    // Copy constr
     Map(const Map &map);
-    // Destruct
-    ~Map();
-    // Operator overlead
+    ~Map() = default;
+
     Map &operator=(const Map &m);
-    // Validate map method
+
     int validate();
-    // Add territory to map
-    void addTerritory(Territory *t);
-    // Getter terrtiroy
-    Territory *getTerritory(const std::string &name);
-    // Getter for all territories
-    std::map<std::string, Territory *> *_getTerritories();
-    // Add continent method
-    void
-    addContinent(Continent *c);
-    // Getter continents
-    Continent *getContinent(const std::string &name);
-    // Getter for all continents
-    std::map<std::string, Continent *> *_getContinents();
-    // Assignment Operator overload
-    Map &operator=(Map &m);
-    friend ostream &operator<<(ostream &os, const Map &m);
+    void addTerritory(std::shared_ptr<Territory> t);
+    std::shared_ptr<Territory> getTerritory(const std::string &name);
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> &getTerritories();
+
+    void addContinent(std::shared_ptr<Continent> c);
+    std::shared_ptr<Continent> getContinent(const std::string &name);
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Continent>>> &getContinents();
+
+    friend std::ostream &operator<<(std::ostream &os, const Map &m);
 
 private:
-    std::map<std::string, Territory *> *territories;
-    std::map<std::string, Continent *> *continents;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> territories;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Continent>>> continents;
 
-    std::string *_pAuthor;
-    std::string *_pImage;
-    bool *_wrap;
+    std::shared_ptr<std::string> _pAuthor;
+    std::shared_ptr<std::string> _pImage;
+    std::shared_ptr<bool> _wrap;
     scroll _scroll;
 
     int _connectedGraph();
@@ -64,5 +57,6 @@ private:
     int _territoryBelongsToOneContinent();
 };
 
-ostream &operator<<(ostream &os, const Map &m);
+std::ostream &operator<<(std::ostream &os, const Map &m);
+
 #endif

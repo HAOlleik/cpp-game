@@ -179,8 +179,8 @@ void OrdersList::addOrder(Order *order)
 void OrdersList::move(int initialPosition, int desiredPosition)
 {
 	// Check if the initial and desired positions are valid
-	if (initialPosition < 0 || initialPosition >= _orders.size() ||
-		desiredPosition < 0 || desiredPosition >= _orders.size())
+	if (initialPosition < 0 || initialPosition >= static_cast<int>(_orders.size()) ||
+		desiredPosition < 0 || desiredPosition >= static_cast<int>(_orders.size()))
 	{
 		std::cerr << "Invalid move positions." << std::endl;
 		return;
@@ -241,7 +241,7 @@ void OrdersList::printOrders() const
 void OrdersList::remove(int index)
 {
 	// Check if the index is valid
-	if (index < 0 || index >= _orders.size())
+	if (index < 0 || index >= static_cast<int>(_orders.size()))
 	{
 		std::cerr << "Invalid index for removal." << std::endl;
 		return;

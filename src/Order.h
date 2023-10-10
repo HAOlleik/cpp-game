@@ -105,5 +105,3 @@ public:
 // not sure if it should be defined for each of the order type. I thin not
 // ostream &
 // operator<<(ostream &os, Order &o);
-// free function
-void testOrdersLists();

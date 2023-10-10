@@ -1,35 +1,34 @@
 #ifndef TERRITORY_H
 #define TERRITORY_H
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <memory>
 using std::ostream;
 #include <string>
 
 // Forward declaration
-class Player;
+#include "Player.h"
 
 class Territory
 {
 public:
-    std::string *name;
+    std::unique_ptr<std::string> name;
     Player *owner;
-    int *armies;
-    std::vector<Territory *> *adjacentTerritories;
+    std::unique_ptr<int> armies;
+    std::unique_ptr<std::vector<std::shared_ptr<Territory>>> adjacentTerritories;
 
-    // Default consrt
     Territory();
-    // Parametrized constr
-    Territory(const std::string *n);
-    // Copy consrt
-    Territory(const Territory &t);
-    // Getter name
-    std::string getName();
-    // Add adjacent terrtiroy
-    void addAdjacent(Territory *territory);
-    // Getter adjacent territories
-    std::vector<Territory *> *getAdjacentTerritories();
-    Territory &operator=(Territory &t);
+    Territory(const std::string &n);
+    Territory(const Territory &t);            // Copy constructor
+    Territory &operator=(const Territory &t); // Copy assignment operator
+    ~Territory() = default;
+
+    std::string getName() const;
+    void addAdjacent(std::shared_ptr<Territory> territory);
+    const std::vector<std::shared_ptr<Territory>> &getAdjacentTerritories() const;
 };
 
-ostream &operator<<(ostream &os, Territory &t);
+ostream &operator<<(ostream &os, const Territory &t);
 
 #endif

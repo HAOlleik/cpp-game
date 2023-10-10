@@ -1,73 +1,32 @@
 #include "Map.h"
 
-// Default Constructor
-Map::Map()
+Map::Map() : territories(std::make_shared<std::map<std::string, std::shared_ptr<Territory>>>()),
+             continents(std::make_shared<std::map<std::string, std::shared_ptr<Continent>>>()),
+             _pAuthor(std::make_shared<std::string>()),
+             _pImage(std::make_shared<std::string>()),
+             _wrap(std::make_shared<bool>(false)),
+             _scroll(scroll::NONE)
 {
-    _pAuthor = new std::string();
-    _pImage = new std::string();
-    _wrap = new bool(false);
-    territories = new std::map<std::string, Territory *>();
-    continents = new std::map<std::string, Continent *>();
-    _scroll = scroll::NONE;
 }
 
-// Copy Constructor
-Map::Map(const Map &map)
+Map::Map(const Map &map) : territories(map.territories),
+                           continents(map.continents),
+                           _pAuthor(map._pAuthor),
+                           _pImage(map._pImage),
+                           _wrap(map._wrap),
+                           _scroll(map._scroll)
 {
-    _pAuthor = new std::string(*(map._pAuthor));
-    _pImage = new std::string(*(map._pImage));
-    _wrap = new bool(*(map._wrap));
-    territories = new std::map<std::string, Territory *>(*(map.territories));
-    continents = new std::map<std::string, Continent *>(*(map.continents));
-    _scroll = map._scroll;
 }
 
-// Destructor
-Map::~Map()
-{
-    delete _pAuthor;
-    delete _pImage;
-    delete _wrap;
-
-    for (auto &pair : *territories)
-    {
-        delete pair.second;
-    }
-    delete territories;
-
-    for (auto &pair : *continents)
-    {
-        delete pair.second;
-    }
-    delete continents;
-}
-
-// Overloaded assignment operator
 Map &Map::operator=(const Map &m)
 {
     if (this != &m)
     {
-        // Deep copy contents from 'm' to 'this' object
-        *_pAuthor = *(m._pAuthor);
-        *_pImage = *(m._pImage);
-        *_wrap = *(m._wrap);
-
-        // Cleanup current territories and continents before copying
-        for (auto &pair : *territories)
-        {
-            delete pair.second;
-        }
-        territories->clear();
-        for (auto &pair : *continents)
-        {
-            delete pair.second;
-        }
-        continents->clear();
-
-        // Deep copy territories and continents
-        *territories = *(m.territories);
-        *continents = *(m.continents);
-
+        _pAuthor = m._pAuthor;
+        _pImage = m._pImage;
+        _wrap = m._wrap;
+        territories = m.territories;
+        continents = m.continents;
         _scroll = m._scroll;
     }
     return *this;
@@ -76,16 +35,13 @@ Map &Map::operator=(const Map &m)
 // Check if the entire map forms a connected graph.
 int Map::_connectedGraph()
 {
-    // Use BFS to traverse the graph.
-    // If all territories are visited, it's connected.
-
     if (territories->empty())
         return 1; // Empty map is trivially connected.
 
     std::set<Territory *> visited;
     std::deque<Territory *> queue;
 
-    queue.push_back(territories->begin()->second); // start with a random territory
+    queue.push_back(territories->begin()->second.get()); // start with a random territory
 
     while (!queue.empty())
     {
@@ -95,11 +51,12 @@ int Map::_connectedGraph()
         if (visited.find(current) == visited.end())
         {
             visited.insert(current);
-            for (auto &adj : *(current->getAdjacentTerritories()))
+            const std::vector<std::shared_ptr<Territory>> &adjacentTerritories = current->getAdjacentTerritories();
+            for (auto &adj : adjacentTerritories)
             {
-                if (visited.find(adj) == visited.end())
+                if (visited.find(adj.get()) == visited.end())
                 {
-                    queue.push_back(adj);
+                    queue.push_back(adj.get());
                 }
             }
         }
@@ -113,8 +70,8 @@ int Map::_connectedSubgraphs()
 {
     for (const auto &contPair : *continents)
     {
-        Continent *continent = contPair.second;
-        const std::vector<Territory *> &continentTerritories = continent->getTerritories();
+        Continent *continent = contPair.second.get();
+        const std::vector<std::shared_ptr<Territory>> &continentTerritories = continent->getTerritories();
 
         // Ensure the continent has territories before proceeding.
         if (continentTerritories.empty())
@@ -126,7 +83,7 @@ int Map::_connectedSubgraphs()
         std::set<Territory *> visited;
         std::deque<Territory *> queue;
 
-        queue.push_back(continentTerritories[0]);
+        queue.push_back(continentTerritories[0].get());
 
         while (!queue.empty())
         {
@@ -136,15 +93,20 @@ int Map::_connectedSubgraphs()
             if (current && visited.find(current) == visited.end())
             {
                 visited.insert(current);
-                const std::vector<Territory *> &adjacentTerritories = *(current->getAdjacentTerritories());
+                const std::vector<std::shared_ptr<Territory>> &adjacentTerritories = current->getAdjacentTerritories();
 
-                for (Territory *adj : adjacentTerritories)
+                for (auto &adj : adjacentTerritories)
                 {
                     // Only process if territory is unvisited and belongs to the current continent.
-                    if (adj && visited.find(adj) == visited.end() &&
-                        std::find(continentTerritories.begin(), continentTerritories.end(), adj) != continentTerritories.end())
+                    auto it = std::find_if(continentTerritories.begin(), continentTerritories.end(),
+                                           [&adj](const std::shared_ptr<Territory> &territory)
+                                           {
+                                               return territory.get() == adj.get();
+                                           });
+                    if (adj && visited.find(adj.get()) == visited.end() &&
+                        it != continentTerritories.end())
                     {
-                        queue.push_back(adj);
+                        queue.push_back(adj.get());
                     }
                 }
             }
@@ -161,16 +123,22 @@ int Map::_territoryBelongsToOneContinent()
 {
     for (const auto &terrPair : *territories)
     {
-        Territory *territory = terrPair.second;
+        Territory *territory = terrPair.second.get();
         int count = 0;
 
         for (const auto &contPair : *continents)
         {
-            Continent *continent = contPair.second;
-            const std::vector<Territory *> &continentTerritories = continent->getTerritories();
+            Continent *continent = contPair.second.get();
+            const std::vector<std::shared_ptr<Territory>> &continentTerritories = continent->getTerritories();
 
             // Check if the territory is in the current continent's territories
-            if (std::find(continentTerritories.begin(), continentTerritories.end(), territory) != continentTerritories.end())
+            auto it = std::find_if(continentTerritories.begin(), continentTerritories.end(),
+                                   [territory](const std::shared_ptr<Territory> &t)
+                                   {
+                                       return t.get() == territory;
+                                   });
+
+            if (it != continentTerritories.end())
             {
                 count++;
             }
@@ -183,99 +151,52 @@ int Map::_territoryBelongsToOneContinent()
     return 1;
 }
 
-// Add territory to the map
-void Map::addTerritory(Territory *t)
-{
-    (*territories)[t->getName()] = t;
-}
-
-// Retrieve territory by name
-Territory *Map::getTerritory(const std::string &name)
-{
-    if (territories->find(name) != territories->end())
-    {
-        return (*territories)[name];
-    }
-    else
-    {
-        return nullptr;
-    }
-}
-
-// Add continent to the map
-void Map::addContinent(Continent *c)
-{
-    (*continents)[c->getName()] = c;
-}
-
-// Retrieve continent by name
-Continent *Map::getContinent(const std::string &name)
-{
-    if (continents->find(name) != continents->end())
-    {
-        return (*continents)[name];
-    }
-    else
-    {
-        throw std::runtime_error("Continent not found"); // Consider handling this exception in calling functions
-    }
-}
-
-std::map<std::string, Territory *> *Map::_getTerritories()
-{
-    return territories;
-}
-std::map<std::string, Continent *> *Map::_getContinents()
-{
-    return continents;
-}
-
-// Validate map by all parameters
 int Map::validate()
 {
     return _connectedGraph() && _connectedSubgraphs() && _territoryBelongsToOneContinent();
 }
 
-ostream &operator<<(ostream &os, Map &m)
+// Add territory to the map
+void Map::addTerritory(std::shared_ptr<Territory> t)
 {
-    // To print out the map
-    std::map<std::string, Territory *> *terri = m._getTerritories();
-    for (const auto &elem : *terri)
-    {
-        os << "MAP:"
-           << " " << elem.first << " " << elem.second->getName() << "\n";
-    }
-    std::map<std::string, Continent *> *cont = m._getContinents();
-    if (cont)
-    {
-        for (const auto &elem : *cont)
-        {
-            if (elem.second)
-            {
-                os << "CONTINENT:"
-                   << " " << elem.first << " " << elem.second->getName() << "\n";
-            }
-            else
-            {
-                os << "Error: Null Continent for key: " << elem.first << "\n";
-            }
-        }
-    }
-    else
-    {
-        os << "Error: continents map is nullptr." << '\n';
-    }
-    return os;
+    territories->emplace(t->getName(), t);
 }
 
-Map &Map::operator=(Map &m)
+std::shared_ptr<Territory> Map::getTerritory(const std::string &name)
 {
-    _pAuthor = m._pAuthor;
-    _pImage = m._pImage;
-    _wrap = m._wrap;
-    _scroll = m._scroll;
-    territories = m.territories;
-    continents = m.continents;
+    return territories->at(name);
+}
 
-    return *this;
+std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> &Map::getTerritories()
+{
+    return territories;
+}
+
+void Map::addContinent(std::shared_ptr<Continent> c)
+{
+    continents->emplace(c->getName(), c);
+}
+
+std::shared_ptr<Continent>
+Map::getContinent(const std::string &name)
+{
+    return continents->at(name);
+}
+
+std::shared_ptr<std::map<std::string, std::shared_ptr<Continent>>> &Map::getContinents()
+{
+    return continents;
+}
+
+std::ostream &operator<<(std::ostream &os, const Map &m)
+{
+    for (const auto &elem : *(m.territories))
+    {
+        os << "MAP: " << elem.first << " " << elem.second->getName() << "\n";
+    }
+    for (const auto &elem : *(m.continents))
+    {
+        os << "CONTINENT: " << elem.first << " " << elem.second->getName() << "\n";
+    }
+    return os;
 }

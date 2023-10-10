@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "GameEngine.h"
+#include "Drivers.h"
 
 using namespace std;
 
@@ -18,21 +19,20 @@ void testGameEngineStates()
         cin >> inputtedAction;
         inputToLower(inputtedAction);
 
-        nextState = mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]];
-
-        if (*(newGame.getState()) == win & (strcmp(inputtedAction, "end") == 0))
+        if ((*(newGame.getState()) == win) & (strcmp(inputtedAction, "end") == 0))
         {
             cout << "Thank you for playing, Good Bye\n";
-            exit(0);
+            break;
         }
 
-        if (nextState)
-        {
-            newGame.setState(&nextState);
+        if(actionToString[inputtedAction] != 0 && mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]] != 0) {
+            nextState = mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]];
+        } else {
+            cout << "Error! Please insert proper action\n\n";
+            continue;
         }
-        else
-        {
-            cout << "ERROR!\n";
-        }
+
+
+        newGame.setState(&nextState);
     }
 };

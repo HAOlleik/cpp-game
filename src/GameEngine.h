@@ -34,23 +34,23 @@ enum Action // available actions
 extern std::map<State, std::map<Action, State>> mapStateToActions;
 extern std::map<std::string, Action> actionToString;
 
-void inputToLower(char* input); // free function to change to inputted action to lower case
+void inputToLower(char *input); // free function to change to inputted action to lower case
 
 class GameEngine
 {
 private:
-    State* state;
+    State *state;
 
 public:
-    GameEngine(); //default
-    GameEngine(const GameEngine &g); //copy constr
-    GameEngine& operator = (const GameEngine &c); //assignment operator overload
-    ~GameEngine(); // destructor
-    State* getState() { return state; }; //getter for state
-    void setState(State* newState) { state = newState; }; // setter for state
+    GameEngine();                                         // default
+    GameEngine(const GameEngine &g);                      // copy constr
+    GameEngine &operator=(const GameEngine &c);           // assignment operator overload
+    ~GameEngine();                                        // destructor
+    State *getState() { return state; };                  // getter for state
+    void setState(State *newState) { state = newState; }; // setter for state
 };
 
 ostream &
 operator<<(ostream &os, GameEngine &g);
-
+void testGameEngineStates();
 #endif
