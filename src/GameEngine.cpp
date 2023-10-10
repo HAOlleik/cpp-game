@@ -22,7 +22,6 @@ GameEngine::GameEngine(const GameEngine &g) { // copy constructor
 
 GameEngine::~GameEngine() { // destructor
     std::cout << "Game engine destroyed\n";
-    delete state;
 }
 
 std::map<State, std::map<Action, State>> mapStateToActions{ // map of possible actions from a state, and the leading state of that action
@@ -57,7 +56,7 @@ GameEngine &GameEngine::operator = (const GameEngine &g)
 }
 
 ostream& operator<<(ostream& os, GameEngine& gameEngine) { //insert stream operator
-    const char* currentStateString = nullptr; // Initialize to nullptr
+    const char* currentStateString;
 
     switch (*(gameEngine.getState())) {
         case 1:
@@ -88,6 +87,6 @@ ostream& operator<<(ostream& os, GameEngine& gameEngine) { //insert stream opera
             break;
     }
 
-    os << "The current state is: " << currentStateString << "\n";
+    os << "The current state is: " << currentStateString << "\n\n";
     return os;
 }
