@@ -1,5 +1,5 @@
-#ifndef CARD_H
-#define CARD_H
+#ifndef GAMEENGINE_H
+#define GAMEENGINE_H
 #include <iostream>
 #include <map>
 using std::ostream;
