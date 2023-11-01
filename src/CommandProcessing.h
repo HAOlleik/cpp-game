@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fstream>
 #include <list>
+#include "GameEngine.h"
 using namespace std;
 
 class Command
@@ -13,11 +14,12 @@ private:
     string effect;
 
 public:
-    Command();                                         // default
+    Command();                                        // default
+    Command(string com, string eff);                                         // parametrized constr
     Command(const Command &c);                      // copy constr
     Command &operator=(const Command &c);           // assignment operator overload
     ~Command();                                        // destructor
-    void saveEffect();
+    void saveEffect(string eff);
 };
 
 class CommandProcessor
@@ -29,7 +31,7 @@ private:
     bool validate();
 
 public:
-    CommandProcessor();                                         // default
+    CommandProcessor(): savedCommands() {};                                         // default
     CommandProcessor(const CommandProcessor &cp);                      // copy constr
     CommandProcessor &operator=(const CommandProcessor &cp);           // assignment operator overload
     ~CommandProcessor();                                        // destructor
