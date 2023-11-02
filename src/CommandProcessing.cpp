@@ -1,4 +1,5 @@
 #include "CommandProcessing.h"
+#include "GameEngine.h"
 
 CommandProcessor::CommandProcessor(const CommandProcessor &cp) { // copy constructor
     for (const Command &cmd : cp.savedCommands) {
@@ -10,19 +11,35 @@ CommandProcessor::~CommandProcessor() { // destructor
     std::cout << "Command Processor destroyed\n";
 }
 
-void CommandProcessor::readCommand() {
-    
+void CommandProcessor::readCommand(char* command) {
+    cout << "Please insert next command\n";
+    cin >> command;
 }
 
-void CommandProcessor::saveCommand() {
-    
+void CommandProcessor::saveCommand(char* command) {
+    inputToLower(command);
+    Command commandObj(command, "");
+    savedCommands.push_back(commandObj);
 }
 
+bool CommandProcessor::validate(State currentState, Command checkedCommand) {
+    if(actionToString[checkedCommand.getCommand()] != 0 && mapStateToActions[currentState][actionToString[checkedCommand.getCommand()]] != 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void CommandProcessor::getCommand() {
+    char* command;
+    readCommand(command);
+    
+}
 
 
 Command::Command() { // default constructor
-    command = "\0";
-    effect = "\0";
+    command = "";
+    effect = "";
 }
 
 Command::Command(string com, string eff) { // parametrized constructor

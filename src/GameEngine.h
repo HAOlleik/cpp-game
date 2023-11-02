@@ -34,7 +34,7 @@ enum Action // available actions
 extern std::map<State, std::map<Action, State>> mapStateToActions;
 extern std::map<std::string, Action> actionToString;
 
-void inputToLower(char *input); // free function to change to inputted action to lower case
+void inputToLower(char* input); // free function to change to inputted action to lower case
 
 class GameEngine
 {
