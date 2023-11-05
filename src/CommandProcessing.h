@@ -20,7 +20,7 @@ public:
     Command &operator=(const Command &c); // assignment operator overload
     ~Command();                           // destructor
     void saveEffect(string eff);
-    string getCommand() { return command; };
+    string getCommand() { return this->command; };
     string getEffect() { return effect; };
     void setCommand(string newCommand) { command = newCommand; };
     void setEffect(string newEffect) { effect = newEffect; };
@@ -31,15 +31,15 @@ class CommandProcessor
 private:
     list<Command> savedCommands;
     virtual void readCommand(char *command);
-    void saveCommand(char *command);
-    bool validate(State currentState, Command checkedCommand);
+    Command saveCommand(char *command);
+    bool validate(State currentState, string checkedCommand);
 
 public:
     CommandProcessor() : savedCommands(){};                  // default
     CommandProcessor(const CommandProcessor &cp);            // copy constr
     CommandProcessor &operator=(const CommandProcessor &cp); // assignment operator overload
     ~CommandProcessor();                                     // destructor
-    void getCommand();
+    Command getCommand(State currentState);
 };
 
 class FileLineReader
@@ -49,8 +49,9 @@ private:
     ifstream fileStream;
 
 public:
-    FileLineReader();                                    // default
-    FileLineReader(const FileLineReader &cp);            // copy constr
+    FileLineReader() : filename(""), fileStream() {}
+    FileLineReader(const std::string& filename) : filename(filename), fileStream(filename) {}
+    FileLineReader(const FileLineReader &cp) : filename(cp.filename), fileStream(cp.filename){}
     FileLineReader &operator=(const FileLineReader &cp); // assignment operator overload
     ~FileLineReader();                                   // destructor
     string readLineFromFile();
