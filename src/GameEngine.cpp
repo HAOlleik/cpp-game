@@ -162,7 +162,7 @@ void GameEngine::randomOrder()
     }
 
     std::shared_ptr<Player> temp;
-    for (int i = 0; i < tempPlayers.size(); i++)
+    for (size_t i = 0; i < tempPlayers.size(); i++)
     {
         std::vector<uint16_t>::iterator position = std::find(order.begin(), order.end(), i);
         auto newPosition = position - order.begin();
