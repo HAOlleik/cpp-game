@@ -45,6 +45,7 @@ public:
     CommandProcessor &operator=(const CommandProcessor &cp); // assignment operator overload
     ~CommandProcessor();                                     // destructor
     Command getCommand(State currentState);
+    friend ostream &operator<<(ostream &os, CommandProcessor &cp);
 };
 
 class FileLineReader
@@ -75,5 +76,9 @@ public:
     ~FileCommandProcessorAdapter() {}
 };
 
+ostream &operator<<(ostream &os, Command &c);
+ostream &operator<<(ostream &os, CommandProcessor &cp);
+ostream &operator<<(ostream &os, FileLineReader &flr);
+ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa);
 void testCommandProcessor();
 #endif

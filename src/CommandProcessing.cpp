@@ -3,7 +3,8 @@
 #include "CommandProcessing.h"
 #include "GameEngine.h"
 
-bool isFileAvailable(const std::string& filePath) {
+bool isFileAvailable(const std::string &filePath)
+{
     std::ifstream file(filePath.c_str());
     return file.good();
 }
@@ -34,13 +35,14 @@ Command CommandProcessor::saveCommand(char *command, char *effect)
     return commandObj;
 }
 
-void CommandProcessor::validate(State currentState, string checkedCommand, char* effect)
+void CommandProcessor::validate(State currentState, string checkedCommand, char *effect)
 {
     size_t spacePos = checkedCommand.find(' ');
     string firstPart = "";
     string secondPart = "";
     effect = "";
-    if (spacePos != string::npos) {
+    if (spacePos != string::npos)
+    {
         firstPart = checkedCommand.substr(0, spacePos);
         secondPart = checkedCommand.substr(spacePos + 1);
     }
@@ -50,7 +52,9 @@ void CommandProcessor::validate(State currentState, string checkedCommand, char*
     if (actionToString[firstPart] == 0 && mapStateToActions[currentState][actionToString[firstPart]] == 0)
     {
         effect = "Error! Command is incompatible for current state";
-    } else if (!isFileAvailable(secondPart)) {
+    }
+    else if (!isFileAvailable(secondPart))
+    {
         effect = "File is not available!";
     }
 }
@@ -134,9 +138,24 @@ void FileCommandProcessorAdapter::readCommand(char *command)
 
 FileCommandProcessorAdapter &FileCommandProcessorAdapter::operator=(const FileCommandProcessorAdapter &cp)
 {
-        if (this != &cp)
-        {
-            fileLineReader = cp.fileLineReader;
-        }
-        return *this;
+    if (this != &cp)
+    {
+        fileLineReader = cp.fileLineReader;
     }
+    return *this;
+}
+
+ostream& operator<<(ostream& os, Command& c) {
+    os << "The command is " << c.getCommand() << " and the effect is " << c.getEffect() << "\n\n";
+    return os;
+}
+
+ostream& operator<<(ostream& os, CommandProcessor& cp) {
+    int counter = 1;
+    os << "The list of commands now are: \n";
+    for (const Command& command : cp.savedCommands) {
+        os << counter << "- " << &command << "\n\n";
+        counter++;
+    }
+    return os;
+}
