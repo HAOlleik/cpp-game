@@ -7,7 +7,12 @@
 #include "GameEngine.h"
 using namespace std;
 
-class Command
+void stringToLower(string str) {
+    for (char& c : str) {
+        c = std::tolower(c);
+    }
+}
+class Command 
 {
 private:
     string command;

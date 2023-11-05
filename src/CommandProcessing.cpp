@@ -1,5 +1,12 @@
+#include <fstream>
+
 #include "CommandProcessing.h"
 #include "GameEngine.h"
+
+bool isFileAvailable(const std::string& filePath) {
+    std::ifstream file(filePath.c_str());
+    return file.good();
+}
 
 CommandProcessor::CommandProcessor(const CommandProcessor &cp)
 { // copy constructor
@@ -22,7 +29,6 @@ void CommandProcessor::readCommand(char *command)
 
 Command CommandProcessor::saveCommand(char *command, char *effect)
 {
-    inputToLower(command);
     Command commandObj(command, effect);
     savedCommands.push_back(commandObj);
     return commandObj;
@@ -30,13 +36,22 @@ Command CommandProcessor::saveCommand(char *command, char *effect)
 
 void CommandProcessor::validate(State currentState, string checkedCommand, char* effect)
 {
-    if (actionToString[checkedCommand] != 0 && mapStateToActions[currentState][actionToString[checkedCommand.getCommand()]] != 0)
-    {
-        effect = "";
+    size_t spacePos = checkedCommand.find(' ');
+    string firstPart = "";
+    string secondPart = "";
+    effect = "";
+    if (spacePos != string::npos) {
+        firstPart = checkedCommand.substr(0, spacePos);
+        secondPart = checkedCommand.substr(spacePos + 1);
     }
-    else
+    stringToLower(firstPart);
+    checkedCommand = firstPart + " " + secondPart;
+
+    if (actionToString[firstPart] == 0 && mapStateToActions[currentState][actionToString[firstPart]] == 0)
     {
         effect = "Error! Command is incompatible for current state";
+    } else if (!isFileAvailable(secondPart)) {
+        effect = "File is not available!";
     }
 }
 
@@ -109,7 +124,7 @@ void FileCommandProcessorAdapter::readCommand(char *command)
     std::string line = fileLineReader.readLineFromFile();
     if (!line.empty())
     {
-        strncpy(command, line.c_str(), std::min(maxCommandLength - 1, line.length()));
+        strcpy(command, line.c_str());
     }
     else
     {
