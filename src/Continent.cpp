@@ -10,6 +10,13 @@ Continent::Continent(const std::string &n, int s) : name(std::make_unique<std::s
 
 Continent::Continent(const Continent &c) : name(std::make_unique<std::string>(*c.name)), score(std::make_unique<int>(*c.score)), territories(std::make_unique<std::vector<std::shared_ptr<Territory>>>(*c.territories)) {}
 
+Continent::~Continent()
+{
+    name = nullptr;
+    score = nullptr;
+    territories = nullptr;
+}
+
 Continent &Continent::operator=(const Continent &c)
 {
     if (this != &c)

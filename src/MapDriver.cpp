@@ -12,10 +12,11 @@ belongs to one and only one continent.
 void testLoadMaps()
 {
     MapLoader loader;
+    std::shared_ptr<Map> gameMap;
     if (loader.load("maps/ABC_Map/ABC_Map.map"))
     {
 
-        std::shared_ptr<Map> gameMap = loader.getMap();
+        gameMap = loader.getMap();
         // Further processing on gameMap...
         if (gameMap->validate())
         {

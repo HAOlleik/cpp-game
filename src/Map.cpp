@@ -18,6 +18,16 @@ Map::Map(const Map &map) : territories(map.territories),
 {
 }
 
+Map::~Map()
+{
+    territories = nullptr;
+    continents = nullptr;
+
+    _pAuthor = nullptr;
+    _pImage = nullptr;
+    _wrap = nullptr;
+}
+
 Map &Map::operator=(const Map &m)
 {
     if (this != &m)
