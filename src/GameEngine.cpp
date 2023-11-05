@@ -77,16 +77,11 @@ void GameEngine::startupPhase()
             // c) give 50 initial army units to the players, which are placed in their respective reinforcement pool
             // d) let each player draw 2 initial cards from the deck using the deck’s draw() method
             // e) switch the game to the play phase
+            randomOrder();
+            assignTerritories();
 
-            // get PRGN numbers
-            std::random_device dev;
-            std::mt19937 rng(dev());
-            std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6);
-
-            std::vector<std::shared_ptr<Player>> tempPlayers = _players;
-
-            *_state = STATE::start;
-            result = "STATE::start";
+            *_state = STATE::assign_reinforcement;
+            result = "STATE::assign_reinforcement";
             command.saveEffect(result);
             playPhase();
             break;
@@ -146,6 +141,80 @@ void GameEngine::startupPhase()
 ACTION GameEngine::playPhase()
 {
     return ACTION::replay;
+}
+
+void GameEngine::randomOrder()
+{
+    // get PRGN numbers
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::vector<std::shared_ptr<Player>> tempPlayers = _players;
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0, tempPlayers.size() - 1);
+    std::vector<uint16_t> order;
+    uint16_t prng = dist6(rng);
+    // while number is not already in the array
+    // and size of order is <= than players
+    while (
+        std::find(order.begin(), order.end(), prng) == order.end() && order.size() < tempPlayers.size())
+    {
+        order.push_back(prng);
+        prng = dist6(rng);
+    }
+
+    std::shared_ptr<Player> temp;
+    for (int i = 0; i < tempPlayers.size(); i++)
+    {
+        std::vector<uint16_t>::iterator position = std::find(order.begin(), order.end(), i);
+        auto newPosition = position - order.begin();
+        temp = tempPlayers[i];
+        tempPlayers[i] = tempPlayers[newPosition];
+        tempPlayers[newPosition] = temp;
+    }
+
+    _players = tempPlayers; // overwrite with random order
+}
+
+void GameEngine::assignTerritories()
+{
+    auto territoriesCount = _map->getTerritories()->size();
+    // get PRGN numbers
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, territoriesCount - 1);
+
+    std::vector<int> distributed;
+    uint16_t iter = 0;
+
+    uint16_t prng;
+    auto getRandomIndice = [&prng, &dist, &distributed, &rng]()
+    {
+        while (true)
+        {
+            prng = dist(rng);
+            // if found in already distribiuted indicies
+            if (std::find(distributed.begin(), distributed.end(), prng) != distributed.end())
+                continue;
+
+            // add indice to distribitued for the next time
+            distributed.push_back(prng);
+            break;
+        }
+    };
+
+    while (iter <= (territoriesCount / _players.size()))
+    {
+        uint16_t userIndex = 0;
+        while (userIndex < _players.size())
+        {
+            getRandomIndice();
+            auto it = _map->getTerritories()->begin();
+            std::advance(it, prng);
+            it->second->setOwner(_players[userIndex]);
+            userIndex++;
+        }
+        // every player should have by one territory by now
+        iter++;
+    }
 }
 
 ostream &operator<<(ostream &os, GameEngine &gameEngine)

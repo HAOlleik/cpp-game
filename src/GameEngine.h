@@ -5,6 +5,7 @@ using std::ostream;
 #include <bits/stdc++.h>
 #include <memory>
 #include <map>
+#include "algorithm"
 
 #include "Player.h"
 #include "Map.h"
@@ -104,6 +105,7 @@ public:
     {
         _state = std::make_shared<STATE>(*newState);
     };
+    friend ostream &operator<<(ostream &os, GameEngine &g);
 
 private:
     std::shared_ptr<STATE> _state = NULL;
@@ -112,9 +114,10 @@ private:
     std::unique_ptr<CommandProcessor> cli = NULL;
     void startupPhase();
     ACTION playPhase();
+    void randomOrder();
+    void assignTerritories();
 };
 
-ostream &operator<<(ostream &os, GameEngine &g);
 void testGameEngineStates();
 
 // switches passed arguments to lower case

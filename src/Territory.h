@@ -7,8 +7,8 @@
 using std::ostream;
 #include <string>
 
-// #include "Player.h"
-class Player;
+#include "Player.h"
+// class Player;
 
 class Territory
 {
@@ -20,15 +20,16 @@ public:
     ~Territory();
 
     std::string getName() const;
+    void setOwner(std::shared_ptr<Player> p);
     void addAdjacent(std::shared_ptr<Territory> territory);
     const std::vector<std::shared_ptr<Territory>> getAdjacentTerritories() const;
     friend ostream &operator<<(ostream &os, const Territory &t);
 
 private:
-    std::unique_ptr<std::string> name;
-    Player *owner;
-    std::unique_ptr<int> armies;
-    std::unique_ptr<std::vector<std::weak_ptr<Territory>>> adjacentTerritories;
+    std::unique_ptr<std::string> _name;
+    std::shared_ptr<Player> _owner; // fix other p refs
+    std::unique_ptr<int> _armies;
+    std::unique_ptr<std::vector<std::weak_ptr<Territory>>> _adjacentTerritories;
 };
 
 #endif
