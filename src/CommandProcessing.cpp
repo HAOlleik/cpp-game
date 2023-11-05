@@ -20,32 +20,33 @@ void CommandProcessor::readCommand(char *command)
     cin >> command;
 }
 
-Command CommandProcessor::saveCommand(char *command)
+Command CommandProcessor::saveCommand(char *command, char *effect)
 {
     inputToLower(command);
-    Command commandObj(command, "");
+    Command commandObj(command, effect);
     savedCommands.push_back(commandObj);
     return commandObj;
 }
 
-bool CommandProcessor::validate(State currentState, string checkedCommand)
+void CommandProcessor::validate(State currentState, string checkedCommand, char* effect)
 {
     if (actionToString[checkedCommand] != 0 && mapStateToActions[currentState][actionToString[checkedCommand.getCommand()]] != 0)
     {
-        return true;
+        effect = "";
     }
     else
     {
-        return false;
+        effect = "Error! Command is incompatible for current state";
     }
 }
 
 Command CommandProcessor::getCommand(State currentState)
 {
     char *command;
+    char *effect;
     readCommand(command);
-    validate(currentState, command);
-    return saveCommand(command);
+    validate(currentState, command, effect);
+    return saveCommand(command, effect);
 }
 
 // **************************************** Command ***************************/
@@ -103,17 +104,24 @@ std::string FileLineReader::readLineFromFile()
     return line;
 }
 
-void FileCommandProcessorAdapter::readCommand(char *command) override
+void FileCommandProcessorAdapter::readCommand(char *command)
 {
     std::string line = fileLineReader.readLineFromFile();
     if (!line.empty())
     {
-        strncpy(command, line.c_str());
-        command[CommandProcessor::MAX_COMMAND_LENGTH - 1] = '\0';
+        strncpy(command, line.c_str(), std::min(maxCommandLength - 1, line.length()));
     }
     else
     {
-        // Handle end of file or other error condition
         command[0] = '\0'; // Empty command
     }
 }
+
+FileCommandProcessorAdapter &FileCommandProcessorAdapter::operator=(const FileCommandProcessorAdapter &cp)
+{
+        if (this != &cp)
+        {
+            fileLineReader = cp.fileLineReader;
+        }
+        return *this;
+    }

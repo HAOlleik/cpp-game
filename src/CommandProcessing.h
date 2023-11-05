@@ -31,8 +31,8 @@ class CommandProcessor
 private:
     list<Command> savedCommands;
     virtual void readCommand(char *command);
-    Command saveCommand(char *command);
-    bool validate(State currentState, string checkedCommand);
+    Command saveCommand(char *command, char *effect);
+    void validate(State currentState, string checkedCommand, char *effect);
 
 public:
     CommandProcessor() : savedCommands(){};                  // default
@@ -64,10 +64,10 @@ private:
     void readCommand(char *command) override;
 
 public:
-    FileCommandProcessorAdapter();                                                 // default
-    FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp);            // copy constr
+    FileCommandProcessorAdapter() : fileLineReader() {}         // default
+    FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp): fileLineReader(cp.fileLineReader) {}            // copy constr
     FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp); // assignment operator overload
-    ~FileCommandProcessorAdapter();
+    ~FileCommandProcessorAdapter() {}
 };
 
 void testCommandProcessor();
