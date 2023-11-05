@@ -97,6 +97,7 @@ public:
     GameEngine(CommandProcessor cli);           // paratemtrized contructor
     GameEngine &operator=(const GameEngine &c); // assignment operator
     ~GameEngine();                              // destructor
+    void startupPhase();                        // startup phase of the game
 
     STATE *getState() const // getter for state
     {
@@ -114,13 +115,10 @@ private:
     std::unique_ptr<Map> _map = NULL;
     std::unique_ptr<CommandProcessor> _cli = NULL;
     std::unique_ptr<Deck> _deck;
-    void startupPhase();
     ACTION mainGameLoop();
     void randomOrder();
     void assignTerritories();
 };
-
-void testGameEngineStates();
 
 // switches passed arguments to lower case
 void inputToLower(char *input)
