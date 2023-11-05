@@ -115,7 +115,7 @@ private:
     std::unique_ptr<CommandProcessor> _cli = NULL;
     std::unique_ptr<Deck> _deck;
     void startupPhase();
-    ACTION playPhase();
+    ACTION mainGameLoop();
     void randomOrder();
     void assignTerritories();
 };
