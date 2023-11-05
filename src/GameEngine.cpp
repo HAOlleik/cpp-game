@@ -93,7 +93,7 @@ void GameEngine::startupPhase()
             *_state = STATE::assign_reinforcement;
             result = "STATE::assign_reinforcement";
             command.saveEffect(result);
-            playPhase();
+            mainGameLoop();
             break;
         }
         case ACTION::load_map:
@@ -148,7 +148,7 @@ void GameEngine::startupPhase()
 }
 
 // play loop
-ACTION GameEngine::playPhase()
+ACTION GameEngine::mainGameLoop()
 {
     return ACTION::replay;
 }
