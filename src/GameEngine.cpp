@@ -85,8 +85,9 @@ void GameEngine::startupPhase()
             for (auto &player : _players)
             {
                 player->addReinforcements(50);
-                player->getHand()->addCard(_deck->draw());
-                player->getHand()->addCard(_deck->draw());
+                // can and wil fail if passed null-ref
+                player->getHand()->addCard(*_deck->draw());
+                player->getHand()->addCard(*_deck->draw());
             }
 
             *_state = STATE::assign_reinforcement;
