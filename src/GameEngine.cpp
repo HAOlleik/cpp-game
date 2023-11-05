@@ -4,14 +4,14 @@
 GameEngine::GameEngine()
 {
     _state = std::make_shared<STATE>(STATE::start);
-    cli = std::make_unique<CommandProcessor>();
+    _cli = std::make_unique<CommandProcessor>();
 }
 
 // parametrized contructor
 GameEngine::GameEngine(CommandProcessor cli)
 {
     _state = std::make_shared<STATE>(STATE::start);
-    cli = cli;
+    _cli = std::make_unique<CommandProcessor>(cli);
 }
 
 // copy constructor
@@ -26,7 +26,7 @@ GameEngine::~GameEngine()
     _state = nullptr;
     _players.clear();
     _map = nullptr;
-    cli = nullptr;
+    _cli = nullptr;
     std::cout << "Game engine destroyed\n";
 }
 
@@ -46,7 +46,7 @@ void GameEngine::startupPhase()
     {
         std::string result;
         // getCommand(currentStaet:state) -> process
-        Command command = cli->getCommand(*(_state.get()));
+        Command command = _cli->getCommand(*(_state.get()));
 
         // need to discuss what to do with this
         // effect represent error from command at the initial stage
@@ -79,6 +79,15 @@ void GameEngine::startupPhase()
             // e) switch the game to the play phase
             randomOrder();
             assignTerritories();
+
+            _deck = std::make_unique<Deck>();
+            _deck->fillDeck();
+            for (auto &player : _players)
+            {
+                player->addReinforcements(50);
+                player->getHand()->addCard(_deck->draw());
+                player->getHand()->addCard(_deck->draw());
+            }
 
             *_state = STATE::assign_reinforcement;
             result = "STATE::assign_reinforcement";

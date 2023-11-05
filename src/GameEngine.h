@@ -1,5 +1,5 @@
-#ifndef CARD_H
-#define CARD_H
+#ifndef GAME_ENGINE_H
+#define GAME_ENGINE_H
 #include <iostream>
 using std::ostream;
 #include <bits/stdc++.h>
@@ -11,6 +11,7 @@ using std::ostream;
 #include "Map.h"
 #include "CommandProcessing.h"
 #include "MapLoader.h"
+#include "Cards.h"
 
 #define MAX_PLAYERS = 6
 
@@ -111,7 +112,8 @@ private:
     std::shared_ptr<STATE> _state = NULL;
     std::vector<shared_ptr<Player>> _players;
     std::unique_ptr<Map> _map = NULL;
-    std::unique_ptr<CommandProcessor> cli = NULL;
+    std::unique_ptr<CommandProcessor> _cli = NULL;
+    std::unique_ptr<Deck> _deck;
     void startupPhase();
     ACTION playPhase();
     void randomOrder();
