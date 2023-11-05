@@ -28,7 +28,7 @@ class Map
 public:
     Map();
     Map(const Map &map);
-    ~Map() = default;
+    ~Map();
 
     Map &operator=(const Map &m);
 
