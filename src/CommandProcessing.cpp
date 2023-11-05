@@ -9,6 +9,12 @@ bool isFileAvailable(const std::string &filePath)
     return file.good();
 }
 
+void strToLower(string str) {
+    for (char& c : str) {
+        c = std::tolower(c);
+    }
+}
+
 CommandProcessor::CommandProcessor(const CommandProcessor &cp)
 { // copy constructor
     for (const Command &cmd : cp.savedCommands)
@@ -46,7 +52,7 @@ void CommandProcessor::validate(State currentState, string checkedCommand, char 
         firstPart = checkedCommand.substr(0, spacePos);
         secondPart = checkedCommand.substr(spacePos + 1);
     }
-    stringToLower(firstPart);
+    strToLower(firstPart);
     checkedCommand = firstPart + " " + secondPart;
 
     if (actionToString[firstPart] == 0 && mapStateToActions[currentState][actionToString[firstPart]] == 0)
@@ -157,5 +163,15 @@ ostream& operator<<(ostream& os, CommandProcessor& cp) {
         os << counter << "- " << &command << "\n\n";
         counter++;
     }
+    return os;
+}
+
+ostream& operator<<(ostream& os, FileLineReader& flr) {
+    os << "Working on file " << flr.filename << "\n";
+    return os;
+}
+
+ostream& operator<<(ostream& os, FileCommandProcessorAdapter& fcpa) {
+    os << "My reader is " << fcpa.fileLineReader << "\n";
     return os;
 }

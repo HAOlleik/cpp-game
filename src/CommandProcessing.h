@@ -7,11 +7,7 @@
 #include "GameEngine.h"
 using namespace std;
 
-void stringToLower(string str) {
-    for (char& c : str) {
-        c = std::tolower(c);
-    }
-}
+void strToLower(string str);
 class Command 
 {
 private:
@@ -61,6 +57,7 @@ public:
     FileLineReader &operator=(const FileLineReader &cp); // assignment operator overload
     ~FileLineReader();                                   // destructor
     string readLineFromFile();
+    friend ostream &operator<<(ostream &os, FileLineReader &flr);
 };
 
 class FileCommandProcessorAdapter : public CommandProcessor
@@ -74,11 +71,13 @@ public:
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp): fileLineReader(cp.fileLineReader) {}            // copy constr
     FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp); // assignment operator overload
     ~FileCommandProcessorAdapter() {}
+    friend ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa);
+
 };
 
 ostream &operator<<(ostream &os, Command &c);
 ostream &operator<<(ostream &os, CommandProcessor &cp);
 ostream &operator<<(ostream &os, FileLineReader &flr);
 ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa);
-void testCommandProcessor();
+
 #endif

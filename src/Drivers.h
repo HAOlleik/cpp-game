@@ -9,5 +9,6 @@ void testGameEngineStates();
 void testOrdersLists();
 void testPlayers();
 void testCards();
+void testCommandProcessor();
 
 #endif
