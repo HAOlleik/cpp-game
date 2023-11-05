@@ -39,6 +39,7 @@ GameEngine &GameEngine::operator=(const GameEngine &g)
     return *this;
 }
 
+// startup loop
 void GameEngine::startupPhase()
 {
     while (*_state != STATE::win)
@@ -68,17 +69,28 @@ void GameEngine::startupPhase()
         // if effect is not empty then it is an error
         switch (actionMap[request[0]])
         {
-        case ACTION::play:
+        case ACTION::gamestart:
+        {
             // 4) use the gamestart command to
             // a) fairly distribute all the territories to the players
             // b) determine randomly the order of play of the players in the game
             // c) give 50 initial army units to the players, which are placed in their respective reinforcement pool
             // d) let each player draw 2 initial cards from the deck using the deck’s draw() method
             // e) switch the game to the play phase
+
+            // get PRGN numbers
+            std::random_device dev;
+            std::mt19937 rng(dev());
+            std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6);
+
+            std::vector<std::shared_ptr<Player>> tempPlayers = _players;
+
             *_state = STATE::start;
             result = "STATE::start";
+            command.saveEffect(result);
+            playPhase();
             break;
-
+        }
         case ACTION::load_map:
         {
             // 1) use the loadmap <filename> command to select a map from a list of map files as stored in a directory,
@@ -128,6 +140,12 @@ void GameEngine::startupPhase()
 
         command.saveEffect(result);
     }
+}
+
+// play loop
+ACTION GameEngine::playPhase()
+{
+    return ACTION::replay;
 }
 
 ostream &operator<<(ostream &os, GameEngine &gameEngine)
