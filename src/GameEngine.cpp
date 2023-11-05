@@ -17,7 +17,7 @@ GameEngine::GameEngine(CommandProcessor cli)
 // copy constructor
 GameEngine::GameEngine(const GameEngine &g)
 {
-    _state = std::make_shared<STATE>(g.getState());
+    _state = std::make_shared<STATE>(*g.getState());
 }
 
 // destructor
@@ -33,8 +33,8 @@ GameEngine::~GameEngine()
 // assignment operator overload
 GameEngine &GameEngine::operator=(const GameEngine &g)
 {
-    _state = std::make_shared<STATE>(g.getState());
-    _map = std::make_unique<Map>(g._map);
+    _state = std::make_shared<STATE>(*g.getState());
+    _map = std::make_unique<Map>(*g._map.get());
     // finish this because need deep copy of map and etc
     return *this;
 }

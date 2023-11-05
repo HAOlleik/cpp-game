@@ -7,8 +7,8 @@
 using std::ostream;
 #include <string>
 
-// Forward declaration
-#include "Player.h"
+// #include "Player.h"
+class Player;
 
 class Territory
 {

@@ -8,7 +8,7 @@ using namespace std;
 void testGameEngineStates()
 {
     GameEngine newGame;
-    State nextState;
+    STATE nextState;
 
     while (true)
     {
@@ -25,13 +25,15 @@ void testGameEngineStates()
             break;
         }
 
-        if(actionToString[inputtedAction] != 0 && mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]] != 0) {
+        if (actionToString[inputtedAction] != 0 && mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]] != 0)
+        {
             nextState = mapStateToActions[*(newGame.getState())][actionToString[inputtedAction]];
-        } else {
+        }
+        else
+        {
             cout << "Error! Please insert proper action\n\n";
             continue;
         }
-
 
         newGame.setState(&nextState);
     }

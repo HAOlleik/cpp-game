@@ -13,7 +13,8 @@ using std::ostream;
 
 #define MAX_PLAYERS = 6
 
-enum STATE // available states
+// available states
+enum STATE
 {
     start = 1,
     map_loaded = 2,
@@ -37,7 +38,8 @@ static std::map<std::string, STATE> stateMap = {
     {"win", STATE::win},
 };
 
-enum ACTION // available actions
+// available actions
+enum ACTION
 {
     load_map = 1,
     validate_map = 2,
@@ -98,12 +100,12 @@ void inputToLower(char *input);
 class GameEngine
 {
 public:
-    GameEngine();                                 // default
-    GameEngine(const GameEngine &g);              // copy constr
-    GameEngine::GameEngine(CommandProcessor cli); // paratemtrized contructor
-    GameEngine &operator=(const GameEngine &c);   // assignment operator
-    ~GameEngine();                                // destructor
-    void startupPhase();                          // TBD
+    GameEngine();                               // default
+    GameEngine(const GameEngine &g);            // copy constr
+    GameEngine(CommandProcessor cli);           // paratemtrized contructor
+    GameEngine &operator=(const GameEngine &c); // assignment operator
+    ~GameEngine();                              // destructor
+    void startupPhase();                        // TBD
 
     STATE *getState() const // getter for state
     {
@@ -111,7 +113,7 @@ public:
     };
     void setState(STATE *newState) // setter for state
     {
-        _state = std::make_shared<STATE>(newState);
+        _state = std::make_shared<STATE>(*newState);
     };
 
 private:
