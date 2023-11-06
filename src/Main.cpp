@@ -12,8 +12,10 @@ int main(int argc, char* argv[])
     // testLoadMaps();
 
     vector<string> arguments(argv, argv + argc);
+    bool optionProvided = false;
 
     for (size_t i = 1; i < arguments.size(); ++i) {
+        optionProvided = true;
         if (arguments[i] == "-console" || arguments[i] == "--c") {
             testCommandProcessor();
         } else if (arguments[i] == "-file" || arguments[i] == "--f") {
@@ -24,11 +26,17 @@ int main(int argc, char* argv[])
             }
             testCommandProcessor(filename);
         } else {
-            testCommandProcessor();
+            cout << "Please provide a proper input" <<endl;
+            return 1;
         }
     }
 
-    testGameEngineStates();
-    
+    if (!optionProvided) {
+        cout << "Using default option: Console (-console, --c)\n";
+        testCommandProcessor();
+    }
+
+    // testGameEngineStates();
+
     return 0;
 }
