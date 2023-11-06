@@ -5,8 +5,9 @@ using namespace std;
 Player::Player()
 {
 	*name = "Player";
-	vector<string *> territories;
-	vector<string *> cards;
+	*reinforcementPool = 0;
+	vector<Territory *> territories;
+	vector<Card *> cards;
 	vector<Order *> orders;
 }
 
@@ -17,8 +18,9 @@ Player::Player(string *name)
 }
 
 // Parameter constructor
-Player::Player(string *name, vector<string *> territories, vector<string *> cards, vector<Order *> orders)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards, vector<Order *> orders)
 {
+	this->reinforcementPool = reinforcementPool;
 	this->name = name;
 	this->territories = territories;
 	this->cards = cards;
@@ -28,6 +30,7 @@ Player::Player(string *name, vector<string *> territories, vector<string *> card
 // Copy constructor
 Player::Player(const Player &plr)
 {
+	this->reinforcementPool = plr.reinforcementPool;
 	this->name = plr.name;
 	this->territories = plr.territories;
 	this->cards = plr.cards;
@@ -37,6 +40,7 @@ Player::Player(const Player &plr)
 // Operator assignment
 Player &Player::operator=(const Player &p)
 {
+	this->reinforcementPool = p.reinforcementPool;
 	this->name = p.name;
 	this->territories = p.territories;
 	this->cards = p.cards;
@@ -46,7 +50,8 @@ Player &Player::operator=(const Player &p)
 
 ostream &operator<<(ostream &os, const Player &player) // insertion stream operator
 {
-	os << "Name of the player: " << player.name << endl;
+	os << "Name of the player: " << player.name << endl
+	   << "ReinforcementPool: " << endl;
 	return os;
 }
 
@@ -56,16 +61,18 @@ Player::~Player()
 	*name = "";
 	name = nullptr;
 	delete name;
+	*reinforcementPool = 0;
+	delete reinforcementPool;
 	territories.clear();
 	cards.clear();
 
-	// for (auto ord : orders)
-	//{
-	//	delete ord;
-	// }
+	for (auto ord : orders)
+	{
+		delete ord;
+	}
 	orders.clear();
-	// vector<Territory*>().swap(territories);
-	// vector<string*>().swap(cards);
+	vector<Territory *>().swap(territories);
+	vector<Card *>().swap(cards);
 	vector<Order *>().swap(orders);
 }
 
@@ -103,7 +110,8 @@ void Player::toDefend()
 bool Player::validate(string *s)
 {
 	string temps = *s;
-	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate") {
+	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate")
+	{
 		return true;
 	}
 	return false;
