@@ -19,10 +19,10 @@ class Player
 public:
 	Player(); // default constructor
 	Player(string *name);
-	Player(int *reinforcementPool, string *name, vector<string *> territories, vector<string *> cards, vector<Order *> orders); // Parameter constructor
-	Player(const Player &plr);																									// copy constructor
-	Player &operator=(const Player &p);																							// Operator assignment
-	friend ostream &operator<<(ostream &os, const Player &player);																// insertion stream operator
+	Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards, vector<Order *> orders); // Parameter constructor
+	Player(const Player &plr);																									 // copy constructor
+	Player &operator=(const Player &p);																							 // Operator assignment
+	friend ostream &operator<<(ostream &os, const Player &player);																 // insertion stream operator
 	~Player();
 
 	string getName();												 // Get name of the palyer
