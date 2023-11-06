@@ -1,7 +1,4 @@
-#include <fstream>
-
 #include "CommandProcessing.h"
-#include "GameEngine.h"
 
 bool isFileAvailable(const std::string &filePath)
 {
@@ -42,7 +39,7 @@ Command CommandProcessor::saveCommand(string command, string effect)
     return commandObj;
 }
 
-void CommandProcessor::validate(State currentState, string checkedCommand, string &effect)
+void CommandProcessor::validate(STATE currentState, string checkedCommand, string &effect)
 {
     size_t spacePos = checkedCommand.find(' ');
     string firstPart = "";
@@ -58,7 +55,7 @@ void CommandProcessor::validate(State currentState, string checkedCommand, strin
 
     firstPart = strToLower(firstPart);
     checkedCommand = firstPart + " " + secondPart;
-    if (actionToString[firstPart] == 0 || mapStateToActions[currentState][actionToString[firstPart]] == 0)
+    if (actionMap[firstPart] == 0 || mapStateToActions[currentState][actionMap[firstPart]] == 0)
     {
         effect = "error because command is incompatible for current state.";
     }
@@ -68,7 +65,7 @@ void CommandProcessor::validate(State currentState, string checkedCommand, strin
     }
 }
 
-Command CommandProcessor::getCommand(State currentState)
+Command CommandProcessor::getCommand(STATE currentState)
 {
     string command;
     string effect;

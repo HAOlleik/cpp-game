@@ -5,7 +5,7 @@
 #include <fstream>
 #include <list>
 #include "Command.h"
-#include "GameEngine.h"
+#include "GameEngineState.h"
 using namespace std;
 
 string strToLower(string str);
@@ -16,7 +16,7 @@ private:
     list<Command> savedCommands;
     virtual void readCommand(string &command);
     Command saveCommand(string command, string effect);
-    void validate(State currentState, string checkedCommand, string &effect);
+    void validate(STATE currentState, string checkedCommand, string &effect);
 
 protected:
     list<Command> getSavedCommands() const {
@@ -28,7 +28,7 @@ public:
     CommandProcessor(const CommandProcessor &cp);            // copy constr
     CommandProcessor &operator=(const CommandProcessor &cp); // assignment operator overload
     ~CommandProcessor();                                     // destructor
-    Command getCommand(State currentState);
+    Command getCommand(STATE currentState);
     friend ostream &operator<<(ostream &os, CommandProcessor &cp);
 };
 

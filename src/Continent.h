@@ -19,7 +19,7 @@ public:
     Continent(const std::string &n, int s);
     Continent(const Continent &c);
     Continent &operator=(const Continent &c);
-    ~Continent() = default;
+    ~Continent();
 
     std::string getName() const;
     int getScore() const;
