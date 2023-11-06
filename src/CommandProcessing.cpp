@@ -81,6 +81,7 @@ FileLineReader::FileLineReader(const string &filename) {
     fileStream = new ifstream(*this->filename);
     if (!fileStream->is_open()) {
         cerr << "Error: Could not open file " << *this->filename << endl;
+        exit(1);
     }
 }
 
