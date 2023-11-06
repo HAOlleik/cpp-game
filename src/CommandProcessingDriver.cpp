@@ -14,8 +14,5 @@ void testCommandProcessor() {
     fileCommandProcessor.getCommand(STATE::map_validated);
     cout << fileCommandProcessor;
 
-    // for saveEffect it should be called on execution
-    // executing here manually to show it works
-
-    // mapStateToActions[State::win][actionToString[inputtedAction]];
+    // for saveEffect it should be called on execution and gameEngine is handling it.
 }
