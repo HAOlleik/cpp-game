@@ -1,0 +1,4 @@
+loadmap abc.txt
+loaDmap maps/Alberta/Alberta.map
+validatemap
+loadmap

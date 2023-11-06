@@ -9,10 +9,12 @@ bool isFileAvailable(const std::string &filePath)
     return file.good();
 }
 
-void strToLower(string str) {
-    for (char& c : str) {
+string strToLower(string str) {
+    string upperStr = str;
+    for (char& c : upperStr) {
         c = std::tolower(c);
     }
+    return upperStr;
 }
 
 CommandProcessor::CommandProcessor(const CommandProcessor &cp)
@@ -25,23 +27,22 @@ CommandProcessor::CommandProcessor(const CommandProcessor &cp)
 
 CommandProcessor::~CommandProcessor()
 { // destructor
-    std::cout << "Command Processor destroyed\n";
 }
 
-void CommandProcessor::readCommand(char *command)
+void CommandProcessor::readCommand(string& command)
 {
     cout << "Please insert next command\n";
-    cin >> command;
+    getline(cin, command);
 }
 
-Command CommandProcessor::saveCommand(char *command, char *effect)
+Command CommandProcessor::saveCommand(string command, string effect)
 {
     Command commandObj(command, effect);
     savedCommands.push_back(commandObj);
     return commandObj;
 }
 
-void CommandProcessor::validate(State currentState, string checkedCommand, char *effect)
+void CommandProcessor::validate(State currentState, string checkedCommand, string &effect)
 {
     size_t spacePos = checkedCommand.find(' ');
     string firstPart = "";
@@ -51,24 +52,26 @@ void CommandProcessor::validate(State currentState, string checkedCommand, char 
     {
         firstPart = checkedCommand.substr(0, spacePos);
         secondPart = checkedCommand.substr(spacePos + 1);
+    } else {
+        firstPart = checkedCommand;
     }
-    strToLower(firstPart);
-    checkedCommand = firstPart + " " + secondPart;
 
-    if (actionToString[firstPart] == 0 && mapStateToActions[currentState][actionToString[firstPart]] == 0)
+    firstPart = strToLower(firstPart);
+    checkedCommand = firstPart + " " + secondPart;
+    if (actionToString[firstPart] == 0 || mapStateToActions[currentState][actionToString[firstPart]] == 0)
     {
-        effect = "Error! Command is incompatible for current state";
+        effect = "error because command is incompatible for current state.";
     }
-    else if (!isFileAvailable(secondPart))
+    else if (!isFileAvailable(secondPart) && secondPart != "")
     {
-        effect = "File is not available!";
+        effect = "error because file is not available!";
     }
 }
 
 Command CommandProcessor::getCommand(State currentState)
 {
-    char *command;
-    char *effect;
+    string command;
+    string effect;
     readCommand(command);
     validate(currentState, command, effect);
     return saveCommand(command, effect);
@@ -95,12 +98,21 @@ Command::Command(const Command &c)
 
 Command::~Command()
 { // destructor
-    std::cout << "Command destroyed\n";
 }
 
 void Command::saveEffect(string eff)
 {
-    effect = eff;
+    this->effect = eff;
+}
+
+
+FileLineReader::FileLineReader(const string &filename) {
+    this->filename = filename;
+    cout << this->filename << std::endl;
+    fileStream.open(filename);
+    if (!fileStream.is_open()) {
+        cerr << "Error: Could not open file " << filename << endl;
+    }
 }
 
 FileLineReader &FileLineReader::operator=(const FileLineReader &cp)
@@ -129,16 +141,22 @@ std::string FileLineReader::readLineFromFile()
     return line;
 }
 
-void FileCommandProcessorAdapter::readCommand(char *command)
+
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(string fileName)
+{ // parametrized constructor
+    fileLineReader = FileLineReader(fileName);
+}
+
+void FileCommandProcessorAdapter::readCommand(string& command)
 {
     std::string line = fileLineReader.readLineFromFile();
     if (!line.empty())
     {
-        strcpy(command, line.c_str());
+        command = line;
     }
     else
     {
-        command[0] = '\0'; // Empty command
+        command.clear();  // Empty command
     }
 }
 
@@ -152,26 +170,32 @@ FileCommandProcessorAdapter &FileCommandProcessorAdapter::operator=(const FileCo
 }
 
 ostream& operator<<(ostream& os, Command& c) {
-    os << "The command is " << c.getCommand() << " and the effect is " << c.getEffect() << "\n\n";
+    os << "The command is " << c.getCommand() << " and the effect is " << c.getEffect() << "\n";
     return os;
 }
 
 ostream& operator<<(ostream& os, CommandProcessor& cp) {
     int counter = 1;
     os << "The list of commands now are: \n";
-    for (const Command& command : cp.savedCommands) {
-        os << counter << "- " << &command << "\n\n";
+    for (Command& command : cp.savedCommands) {
+        os << counter << "- " << command;
         counter++;
     }
     return os;
 }
 
 ostream& operator<<(ostream& os, FileLineReader& flr) {
-    os << "Working on file " << flr.filename << "\n";
+    os << "working on file " << flr.filename << "\n";
     return os;
 }
 
 ostream& operator<<(ostream& os, FileCommandProcessorAdapter& fcpa) {
+    int counter = 1;
     os << "My reader is " << fcpa.fileLineReader << "\n";
+    os << "The list of commands now are: \n";
+    for (Command& command : fcpa.getSavedCommands()) {
+        os << counter << "- " << command;
+        counter++;
+    }
     return os;
 }
