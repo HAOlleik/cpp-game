@@ -24,7 +24,7 @@ protected:
     }
 
 public:
-    CommandProcessor() : savedCommands(){};                  // default
+    CommandProcessor() : savedCommands(new list<Command>()){};                  // default
     CommandProcessor(const CommandProcessor &cp);            // copy constr
     CommandProcessor &operator=(const CommandProcessor &cp); // assignment operator overload
     ~CommandProcessor();                                     // destructor
@@ -55,7 +55,7 @@ private:
     void readCommand(string &command) override;
 
 public:
-    FileCommandProcessorAdapter() : fileLineReader() {}                                                       // default
+    FileCommandProcessorAdapter() : fileLineReader(nullptr) {}                                                       // default
     FileCommandProcessorAdapter(string fileName);                                                      // default
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp) : CommandProcessor(cp), fileLineReader(cp.fileLineReader) {} // copy constr
     FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp);                            // assignment operator overload

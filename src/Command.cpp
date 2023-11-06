@@ -14,8 +14,8 @@ Command::Command(string& com, string& eff)
 
 Command::Command(const Command &c)
 { // copy constructor
-    this->command = c.command;
-    this->effect = c.effect;
+    this->command = new string(*(c.command));
+    this->effect = new string(*(c.effect));
 }
 
 Command::~Command()
@@ -26,6 +26,10 @@ Command::~Command()
 
 void Command::saveEffect(string eff)
 {
-    this->effect = new string(eff);
+    if (effect) {
+        *effect = eff; // Update the existing string
+    } else {
+        effect = new string(eff); // If effect is nullptr, create a new string
+    }
 }
 

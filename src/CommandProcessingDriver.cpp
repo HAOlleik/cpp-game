@@ -5,7 +5,7 @@ void testCommandProcessor() {
     CommandProcessor *commandProcessor = new CommandProcessor();
     commandProcessor->getCommand(STATE::win);
     commandProcessor->getCommand(STATE::win);
-    cout << commandProcessor;
+    cout << *commandProcessor;
 
     FileCommandProcessorAdapter fileCommandProcessor("src/testFiles/commandProcessor.txt");
     fileCommandProcessor.getCommand(STATE::start);

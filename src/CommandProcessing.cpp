@@ -78,8 +78,7 @@ Command CommandProcessor::getCommand(STATE currentState)
 
 FileLineReader::FileLineReader(const string &filename) {
     this->filename = new string(filename);;
-    cout << *this->filename << std::endl;
-    fileStream->open(*this->filename);
+    fileStream = new ifstream(*this->filename);
     if (!fileStream->is_open()) {
         cerr << "Error: Could not open file " << *this->filename << endl;
     }
@@ -88,16 +87,27 @@ FileLineReader::FileLineReader(const string &filename) {
 FileLineReader::FileLineReader(const FileLineReader &cp)
 {
     this->filename = new std::string(*cp.filename);
-    this->fileStream = new std::ifstream(*cp.filename);
+    this->fileStream = new std::ifstream(*filename);
+    if (!fileStream->is_open()) {
+        cerr << "Error: Could not open file " << *filename << endl;
+    }
 }
 
 FileLineReader &FileLineReader::operator=(const FileLineReader &cp)
 {
-    if (this != &cp) // Check for self-assignment
-    {
-        filename = cp.filename;
-        fileStream->close();
-        fileStream->open(*filename);
+    if (this != &cp) {
+        // Release existing resources
+        delete filename;
+        if (fileStream->is_open()) {
+            fileStream->close();
+        }
+        
+        // Allocate new memory
+        this->filename = new string(*(cp.filename));
+        fileStream = new ifstream(*this->filename);
+        if (!fileStream->is_open()) {
+            cerr << "Error: Could not open file " << *this->filename << endl;
+        }
     }
     return *this;
 }
@@ -141,6 +151,7 @@ FileCommandProcessorAdapter &FileCommandProcessorAdapter::operator=(const FileCo
 {
     if (this != &cp)
     {
+        delete fileLineReader;
         fileLineReader = cp.fileLineReader;
     }
     return *this;
@@ -162,13 +173,13 @@ ostream& operator<<(ostream& os, CommandProcessor& cp) {
 }
 
 ostream& operator<<(ostream& os, FileLineReader& flr) {
-    os << "working on file " << flr.filename << "\n";
+    os << "working on file " << *flr.filename << "\n";
     return os;
 }
 
 ostream& operator<<(ostream& os, FileCommandProcessorAdapter& fcpa) {
     int counter = 1;
-    os << "My reader is " << fcpa.fileLineReader << "\n";
+    os << "My reader is " << *fcpa.fileLineReader << "\n";
     os << "The list of commands now are: \n";
     for (Command& command : fcpa.getSavedCommands()) {
         os << counter << "- " << command;
