@@ -1,92 +1,252 @@
 #include "GameEngine.h"
 
-void inputToLower(char* input) // switches passed arguments to lower case
+// default constructor
+GameEngine::GameEngine()
 {
-    int inputCharCounter = 0;
-    char inputChar;
-    while (input[inputCharCounter])
-    {
-        inputChar = input[inputCharCounter];
-        input[inputCharCounter] = tolower(inputChar);
-        inputCharCounter++;
-    }
+    _state = std::make_shared<STATE>(STATE::start);
+    _cli = std::make_unique<CommandProcessor>();
 }
 
-GameEngine::GameEngine() { // default constructor
-    state = new State(start);
+// parametrized contructor
+GameEngine::GameEngine(CommandProcessor cli)
+{
+    _state = std::make_shared<STATE>(STATE::start);
+    _cli = std::make_unique<CommandProcessor>(cli);
 }
 
-GameEngine::GameEngine(const GameEngine &g) { // copy constructor
-    (*this).state = g.state;
+// copy constructor
+GameEngine::GameEngine(const GameEngine &g)
+{
+    _state = std::make_shared<STATE>(*g.getState());
 }
 
-GameEngine::~GameEngine() { // destructor
+// destructor
+GameEngine::~GameEngine()
+{
+    _state = nullptr;
+    _players.clear();
+    _map = nullptr;
+    _cli = nullptr;
     std::cout << "Game engine destroyed\n";
 }
 
-std::map<State, std::map<Action, State>> mapStateToActions{ // map of possible actions from a state, and the leading state of that action
-    {start, {{load_map, map_loaded}}},
-    {map_loaded, {{load_map, map_loaded}, {validate_map, map_validated}}},
-    {map_validated, {{add_player, players_added}}},
-    {players_added, {{add_player, players_added}, {assign_countries, assign_reinforcement}}},
-    {assign_reinforcement, {{issue_order, issue_orders}}},
-    {issue_orders, {{issue_order, issue_orders}, {end_issue_orders, execute_orders}}},
-    {execute_orders, {{exec_order, execute_orders}, {end_exec_orders, assign_reinforcement}, {win_game, win}}},
-    {win, {{play, start}}}};
-
-std::map<std::string, Action> actionToString{ // map between string and action to be able to compare values
-    {"loadmap", load_map},
-    {"validatemap", validate_map},
-    {"addplayer", add_player},
-    {"assigncountries", assign_countries},
-    {"issueorder", issue_order},
-    {"endissueorders", end_issue_orders},
-    {"execorder", exec_order},
-    {"endexecorders", end_exec_orders},
-    {"win", win_game},
-    {"play", play},
-    {"end", end_game}};
-
-
-//assignment operator overload
-GameEngine &GameEngine::operator = (const GameEngine &g)
+// assignment operator overload
+GameEngine &GameEngine::operator=(const GameEngine &g)
 {
-    (*this).state = g.state;
+    _state = std::make_shared<STATE>(*g.getState());
+    _map = std::make_unique<Map>(*g._map.get());
+    // finish this because need deep copy of map and etc
     return *this;
 }
 
-ostream& operator<<(ostream& os, GameEngine& gameEngine) { //insert stream operator
-    const char* currentStateString;
+// startup loop
+void GameEngine::startupPhase()
+{
+    while (*_state != STATE::win)
+    {
+        std::string result;
+        // getCommand(currentStaet:state) -> process
+        Command command = _cli->getCommand(*(_state.get()));
 
-    switch (*(gameEngine.getState())) {
-        case 1:
-            currentStateString = "Start";
+        // need to discuss what to do with this
+        // effect represent error from command at the initial stage
+        if ((result = command.getEffect()) != "")
+        {
+            std::cout << result << std::endl;
+            continue;
+        }
+
+        // split command argument
+        // 0 command 1 argument
+        std::stringstream ss(command.getCommand());
+        std::vector<std::string> request;
+        std::string buffer;
+        while (std::getline(ss, buffer, ' '))
+        {
+            request.push_back(buffer);
+        }
+
+        // if effect is not empty then it is an error
+        switch (actionMap[request[0]])
+        {
+        case ACTION::gamestart:
+        {
+            // 4) use the gamestart command to
+            // a) fairly distribute all the territories to the players
+            // b) determine randomly the order of play of the players in the game
+            // c) give 50 initial army units to the players, which are placed in their respective reinforcement pool
+            // d) let each player draw 2 initial cards from the deck using the deck’s draw() method
+            // e) switch the game to the play phase
+            randomOrder();
+            assignTerritories();
+
+            _deck = std::make_unique<Deck>();
+            _deck->fillDeck();
+            for (auto &player : _players)
+            {
+                player->addReinforcements(50);
+                // can and wil fail if passed null-ref
+                player->getHand()->addCard(*_deck->draw());
+                player->getHand()->addCard(*_deck->draw());
+            }
+
+            *_state = STATE::assign_reinforcement;
+            result = "STATE::assign_reinforcement";
+            command.saveEffect(result);
+            mainGameLoop();
             break;
-        case 2:
-            currentStateString = "Map Loaded";
+        }
+        case ACTION::load_map:
+        {
+            // 1) use the loadmap <filename> command to select a map from a list of map files as stored in a directory,
+            // which results in the map being loaded in the game.
+            MapLoader loader;
+            if (!loader.load(request[1]))
+            {
+                result = "Map was not loaded.";
+                std::cout << result << std::endl;
+                continue;
+            }
+            _map = std::make_unique<Map>(*loader.getMap().get());
+            *_state = STATE::map_loaded;
+            result = "STATE::map_loaded";
             break;
-        case 3:
-            currentStateString = "Map Validated";
+        }
+
+        case ACTION::validate_map:
+            // 2) use the validatemap command to validate the map (i.e. it is a connected graph, etc – see assignment 1).
+            if (!_map->validate())
+            {
+                result = "Map is not valid";
+                std::cout << result << std::endl;
+                continue;
+            }
+
+            *_state = STATE::map_validated;
+            result = "STATE::map_validated";
             break;
-        case 4:
-            currentStateString = "Players Added";
+
+        case ACTION::add_player:
+            // 3) use the addplayer <playername> command to enter players in the game (2-6 players)
+            *_state = STATE::players_added;
+            if (_players.size() == 6)
+            {
+                result = "Max players count 6 already reach.";
+                std::cout << result << std::endl;
+                continue;
+            }
+            _players.push_back(std::make_shared<Player>(new std::string(request[1])));
+            result = "STATE::players_added";
             break;
-        case 5:
-            currentStateString = "Assign Reinforcement";
-            break;
-        case 6:
-            currentStateString = "Issue Orders";
-            break;
-        case 7:
-            currentStateString = "Execute Orders";
-            break;
-        case 8:
-            currentStateString = "Win";
-            break;
+
         default:
             break;
+        }
+
+        command.saveEffect(result);
+    }
+}
+
+// play loop
+ACTION GameEngine::mainGameLoop()
+{
+    return ACTION::replay;
+}
+
+void GameEngine::randomOrder()
+{
+    // get PRGN numbers
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::vector<std::shared_ptr<Player>> tempPlayers = _players;
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0, tempPlayers.size() - 1);
+    std::vector<uint16_t> order;
+    uint16_t prng = dist6(rng);
+    // while number is not already in the array
+    // and size of order is <= than players
+    while (
+        std::find(order.begin(), order.end(), prng) == order.end() && order.size() < tempPlayers.size())
+    {
+        order.push_back(prng);
+        prng = dist6(rng);
     }
 
-    os << "The current state is: " << currentStateString << "\n\n";
-    return os;
+    std::shared_ptr<Player> temp;
+    for (size_t i = 0; i < tempPlayers.size(); i++)
+    {
+        std::vector<uint16_t>::iterator position = std::find(order.begin(), order.end(), i);
+        auto newPosition = position - order.begin();
+        temp = tempPlayers[i];
+        tempPlayers[i] = tempPlayers[newPosition];
+        tempPlayers[newPosition] = temp;
+    }
+
+    _players = tempPlayers; // overwrite with random order
+}
+
+void GameEngine::assignTerritories()
+{
+    auto territoriesCount = _map->getTerritories()->size();
+    // get PRGN numbers
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(0, territoriesCount - 1);
+
+    std::vector<int> distributed;
+    uint16_t iter = 0;
+
+    uint16_t prng;
+    auto getRandomIndice = [&prng, &dist, &distributed, &rng]()
+    {
+        while (true)
+        {
+            prng = dist(rng);
+            // if found in already distribiuted indicies
+            if (std::find(distributed.begin(), distributed.end(), prng) != distributed.end())
+                continue;
+
+            // add indice to distribitued for the next time
+            distributed.push_back(prng);
+            break;
+        }
+    };
+
+    while (iter <= (territoriesCount / _players.size()))
+    {
+        uint16_t userIndex = 0;
+        while (userIndex < _players.size())
+        {
+            getRandomIndice();
+            auto it = _map->getTerritories()->begin();
+            std::advance(it, prng);
+            it->second->setOwner(_players[userIndex]);
+            userIndex++;
+        }
+        // every player should have by one territory by now
+        iter++;
+    }
+}
+
+ostream &operator<<(ostream &os, GameEngine &gameEngine)
+{ // insert stream operator
+    const char *currentStateString;
+    switch (*gameEngine.getState())
+    {
+    case 5:
+        currentStateString = "Assign Reinforcement";
+        break;
+    case 6:
+        currentStateString = "Issue Orders";
+        break;
+    case 7:
+        currentStateString = "Execute Orders";
+        break;
+    case 8:
+        currentStateString = "Win";
+        break;
+    default:
+        break;
+    }
+
+    return os << "The current state is: " << currentStateString << "\n\n";
 }

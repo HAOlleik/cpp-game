@@ -1,56 +1,135 @@
-#ifndef CARD_H
-#define CARD_H
+#ifndef GAME_ENGINE_H
+#define GAME_ENGINE_H
 #include <iostream>
-#include <map>
 using std::ostream;
+#include <bits/stdc++.h>
+#include <memory>
+#include <map>
+#include "algorithm"
 
-enum State // available states
+#include "Player.h"
+#include "Map.h"
+#include "CommandProcessing.h"
+#include "MapLoader.h"
+#include "Cards.h"
+
+#define MAX_PLAYERS = 6
+
+// available states
+enum STATE
 {
     start = 1,
-    map_loaded = 2,
-    map_validated = 3,
-    players_added = 4,
-    assign_reinforcement = 5,
-    issue_orders = 6,
-    execute_orders = 7,
-    win = 8
+    map_loaded,
+    map_validated,
+    players_added,
+    assign_reinforcement,
+    issue_orders,
+    execute_orders,
+    win,
+    game_ended
 };
 
-enum Action // available actions
+// transform string to state enum, kind hack
+static std::map<std::string, STATE> stateMap = {
+    {"start", STATE::start},
+    {"map_loaded", STATE::map_loaded},
+    {"map_validated", STATE::map_validated},
+    {"players_added", STATE::players_added},
+    {"assign_reinforcement", STATE::assign_reinforcement},
+    {"issue_orders", STATE::issue_orders},
+    {"execute_orders", STATE::execute_orders},
+    {"win", STATE::win},
+    {"game_ended", STATE::game_ended},
+};
+
+// available actions
+enum ACTION
 {
     load_map = 1,
-    validate_map = 2,
-    add_player = 3,
-    assign_countries = 4,
-    issue_order = 5,
-    end_issue_orders = 6,
-    exec_order = 7,
-    end_exec_orders = 8,
-    win_game = 9,
-    play = 10,
-    end_game = 11
+    validate_map,
+    add_player,
+    gamestart,
+    assign_countries,
+    issue_order,
+    end_issue_orders,
+    exec_order,
+    end_exec_orders,
+    win_game,
+    end_game,
+    replay
 };
 
-extern std::map<State, std::map<Action, State>> mapStateToActions;
-extern std::map<std::string, Action> actionToString;
+// transform string to action enum, kind hack
+std::map<std::string, ACTION> actionMap = {
+    {"load_map", ACTION::load_map},
+    {"validate_map", ACTION::validate_map},
+    {"add_player", ACTION::add_player},
+    {"gamestart", ACTION::gamestart},
+    {"assign_countries", ACTION::assign_countries},
+    {"issue_order", ACTION::issue_order},
+    {"end_issue_orders", ACTION::end_issue_orders},
+    {"exec_order", ACTION::exec_order},
+    {"end_exec_orders", ACTION::end_exec_orders},
+    {"win_game", ACTION::win_game},
+    {"end_game", ACTION::end_game},
+    {"replay", ACTION::replay},
+};
 
-void inputToLower(char *input); // free function to change to inputted action to lower case
+// map of possible actions from a state, and the leading state of that action
+std::map<STATE, std::map<ACTION, STATE>> mapStateToActions{
+    {STATE::start, {{ACTION::load_map, STATE::map_loaded}}},
+    {STATE::map_loaded, {{ACTION::load_map, STATE::map_loaded}, {ACTION::validate_map, STATE::map_validated}}},
+    {STATE::map_validated, {{ACTION::add_player, STATE::players_added}}},
+    {STATE::players_added, {{ACTION::add_player, STATE::players_added}, {ACTION::gamestart, STATE::assign_reinforcement}}},
+    {STATE::assign_reinforcement, {{ACTION::issue_order, STATE::issue_orders}}},
+    {STATE::issue_orders, {{ACTION::issue_order, STATE::issue_orders}, {ACTION::end_issue_orders, STATE::execute_orders}}},
+    {STATE::execute_orders, {{ACTION::exec_order, STATE::execute_orders}, {ACTION::end_exec_orders, STATE::assign_reinforcement}, {ACTION::win_game, STATE::win}}},
+    {STATE::win, {{ACTION::end_game, STATE::game_ended}, {ACTION::replay, STATE::start}}}};
+
+// free function to change to inputted action to lower case
+void inputToLower(char *input);
 
 class GameEngine
 {
-private:
-    State *state;
-
 public:
-    GameEngine();                                         // default
-    GameEngine(const GameEngine &g);                      // copy constr
-    GameEngine &operator=(const GameEngine &c);           // assignment operator overload
-    ~GameEngine();                                        // destructor
-    State *getState() { return state; };                  // getter for state
-    void setState(State *newState) { state = newState; }; // setter for state
+    GameEngine();                               // default
+    GameEngine(const GameEngine &g);            // copy constr
+    GameEngine(CommandProcessor cli);           // paratemtrized contructor
+    GameEngine &operator=(const GameEngine &c); // assignment operator
+    ~GameEngine();                              // destructor
+    void startupPhase();                        // startup phase of the game
+
+    STATE *getState() const // getter for state
+    {
+        return _state.get();
+    };
+    void setState(STATE *newState) // setter for state
+    {
+        _state = std::make_shared<STATE>(*newState);
+    };
+    friend ostream &operator<<(ostream &os, GameEngine &g);
+
+private:
+    std::shared_ptr<STATE> _state = NULL;
+    std::vector<shared_ptr<Player>> _players;
+    std::unique_ptr<Map> _map = NULL;
+    std::unique_ptr<CommandProcessor> _cli = NULL;
+    std::unique_ptr<Deck> _deck;
+    ACTION mainGameLoop();
+    void randomOrder();
+    void assignTerritories();
 };
 
-ostream &
-operator<<(ostream &os, GameEngine &g);
-void testGameEngineStates();
+// switches passed arguments to lower case
+void inputToLower(char *input)
+{
+    int inputCharCounter = 0;
+    char inputChar;
+    while (input[inputCharCounter])
+    {
+        inputChar = input[inputCharCounter];
+        input[inputCharCounter] = tolower(inputChar);
+        inputCharCounter++;
+    }
+}
 #endif
