@@ -2,9 +2,9 @@
 #include "Drivers.h"
 
 void testCommandProcessor() {
-    CommandProcessor commandProcessor;
-    commandProcessor.getCommand(STATE::win);
-    commandProcessor.getCommand(STATE::win);
+    CommandProcessor *commandProcessor = new CommandProcessor();
+    commandProcessor->getCommand(STATE::win);
+    commandProcessor->getCommand(STATE::win);
     cout << commandProcessor;
 
     FileCommandProcessorAdapter fileCommandProcessor("src/testFiles/commandProcessor.txt");

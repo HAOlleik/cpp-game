@@ -16,14 +16,15 @@ string strToLower(string str) {
 
 CommandProcessor::CommandProcessor(const CommandProcessor &cp)
 { // copy constructor
-    for (const Command &cmd : cp.savedCommands)
+    for (const Command &cmd : *(cp.savedCommands))
     {
-        savedCommands.push_back(cmd);
+        savedCommands->push_back(cmd);
     }
 }
 
 CommandProcessor::~CommandProcessor()
-{ // destructor
+{
+    delete savedCommands;
 }
 
 void CommandProcessor::readCommand(string& command)
@@ -35,7 +36,7 @@ void CommandProcessor::readCommand(string& command)
 Command CommandProcessor::saveCommand(string command, string effect)
 {
     Command commandObj(command, effect);
-    savedCommands.push_back(commandObj);
+    savedCommands->push_back(commandObj);
     return commandObj;
 }
 
@@ -76,12 +77,18 @@ Command CommandProcessor::getCommand(STATE currentState)
 
 
 FileLineReader::FileLineReader(const string &filename) {
-    this->filename = filename;
-    cout << this->filename << std::endl;
-    fileStream.open(filename);
-    if (!fileStream.is_open()) {
-        cerr << "Error: Could not open file " << filename << endl;
+    this->filename = new string(filename);;
+    cout << *this->filename << std::endl;
+    fileStream->open(*this->filename);
+    if (!fileStream->is_open()) {
+        cerr << "Error: Could not open file " << *this->filename << endl;
     }
+}
+
+FileLineReader::FileLineReader(const FileLineReader &cp)
+{
+    this->filename = new std::string(*cp.filename);
+    this->fileStream = new std::ifstream(*cp.filename);
 }
 
 FileLineReader &FileLineReader::operator=(const FileLineReader &cp)
@@ -89,36 +96,37 @@ FileLineReader &FileLineReader::operator=(const FileLineReader &cp)
     if (this != &cp) // Check for self-assignment
     {
         filename = cp.filename;
-        fileStream.close();
-        fileStream.open(filename);
+        fileStream->close();
+        fileStream->open(*filename);
     }
     return *this;
 }
 
 FileLineReader::~FileLineReader()
-{ // destructor
-    if (fileStream.is_open())
+{
+    delete filename;
+    if (fileStream->is_open())
     {
-        fileStream.close();
+        fileStream->close();
     }
 }
 
 std::string FileLineReader::readLineFromFile()
 {
     std::string line;
-    getline(fileStream, line);
+    getline(*fileStream, line);
     return line;
 }
 
 
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(string fileName)
 { // parametrized constructor
-    fileLineReader = FileLineReader(fileName);
+    fileLineReader = new FileLineReader(fileName);
 }
 
 void FileCommandProcessorAdapter::readCommand(string& command)
 {
-    std::string line = fileLineReader.readLineFromFile();
+    std::string line = fileLineReader->readLineFromFile();
     if (!line.empty())
     {
         command = line;
@@ -146,7 +154,7 @@ ostream& operator<<(ostream& os, Command& c) {
 ostream& operator<<(ostream& os, CommandProcessor& cp) {
     int counter = 1;
     os << "The list of commands now are: \n";
-    for (Command& command : cp.savedCommands) {
+    for (Command& command : *(cp.savedCommands)) {
         os << counter << "- " << command;
         counter++;
     }

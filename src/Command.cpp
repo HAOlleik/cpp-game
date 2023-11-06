@@ -2,14 +2,14 @@
 
 Command::Command()
 { // default constructor
-    this->command = "";
-    this->effect = "";
+    this->command = nullptr;
+    this->effect = nullptr;
 }
 
-Command::Command(string com, string eff)
+Command::Command(string& com, string& eff)
 { // parametrized constructor
-    this->command = com;
-    this->effect = eff;
+    this->command = new string(com);
+    this->effect = new string(eff);
 }
 
 Command::Command(const Command &c)
@@ -19,11 +19,13 @@ Command::Command(const Command &c)
 }
 
 Command::~Command()
-{ // destructor
+{
+    delete command;
+    delete effect;
 }
 
 void Command::saveEffect(string eff)
 {
-    this->effect = eff;
+    this->effect = new string(eff);
 }
 

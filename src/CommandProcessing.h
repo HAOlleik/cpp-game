@@ -13,14 +13,14 @@ string strToLower(string str);
 class CommandProcessor
 {
 private:
-    list<Command> savedCommands;
+    list<Command> *savedCommands;
     virtual void readCommand(string &command);
     Command saveCommand(string command, string effect);
     void validate(STATE currentState, string checkedCommand, string &effect);
 
 protected:
-    list<Command> getSavedCommands() const {
-        return savedCommands;
+    list<Command>& getSavedCommands() const {
+        return *savedCommands;
     }
 
 public:
@@ -35,13 +35,13 @@ public:
 class FileLineReader
 {
 private:
-    string filename;
-    ifstream fileStream;
+    string *filename;
+    ifstream *fileStream;
 
 public:
-    FileLineReader() : filename(""), fileStream() {}
+    FileLineReader() : filename(nullptr), fileStream(nullptr) {}
     FileLineReader(const string &filename);
-    FileLineReader(const FileLineReader &cp) : filename(cp.filename), fileStream(cp.filename) {}
+    FileLineReader(const FileLineReader &cp);
     FileLineReader &operator=(const FileLineReader &cp); // assignment operator overload
     ~FileLineReader();                                   // destructor
     string readLineFromFile();
@@ -51,7 +51,7 @@ public:
 class FileCommandProcessorAdapter : public CommandProcessor
 {
 private:
-    FileLineReader fileLineReader;
+    FileLineReader *fileLineReader;
     void readCommand(string &command) override;
 
 public:
@@ -59,7 +59,7 @@ public:
     FileCommandProcessorAdapter(string fileName);                                                      // default
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp) : CommandProcessor(cp), fileLineReader(cp.fileLineReader) {} // copy constr
     FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp);                            // assignment operator overload
-    ~FileCommandProcessorAdapter() {}
+    ~FileCommandProcessorAdapter() {delete fileLineReader;}
     friend ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa);
 };
 
