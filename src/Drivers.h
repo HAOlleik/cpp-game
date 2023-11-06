@@ -10,5 +10,6 @@ void testOrdersLists();
 void testPlayers();
 void testCards();
 void testCommandProcessor();
+void testCommandProcessor(string fileName);
 
 #endif

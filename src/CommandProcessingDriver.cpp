@@ -6,13 +6,16 @@ void testCommandProcessor() {
     commandProcessor->getCommand(STATE::win);
     commandProcessor->getCommand(STATE::win);
     cout << *commandProcessor;
+}
 
-    FileCommandProcessorAdapter fileCommandProcessor("src/testFiles/commandProcessor.txt");
+void testCommandProcessor(string fileName) {
+    FileCommandProcessorAdapter fileCommandProcessor(fileName);
     fileCommandProcessor.getCommand(STATE::start);
     fileCommandProcessor.getCommand(STATE::start);
     fileCommandProcessor.getCommand(STATE::map_loaded);
     fileCommandProcessor.getCommand(STATE::map_validated);
     cout << fileCommandProcessor;
+}
+
 
     // for saveEffect it should be called on execution and gameEngine is handling it.
-}
