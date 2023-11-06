@@ -25,7 +25,7 @@ public:
 	friend ostream &operator<<(ostream &os, const Player &player);																 // insertion stream operator
 	~Player();
 
-	string getName();												 // Get name of the palyer
+	string getNamePlayer();											 // Get name of the palyer
 	vector<Territory *> toAttack(vector<Territory *>);				 // Territories to be attacked
 	vector<Territory *> toDefend();									 // Territories to be defended
 	vector<Territory *> getTerritories();							 // get Territory
@@ -34,8 +34,8 @@ public:
 	int getReinforcementPool();										 // get army units
 	bool continentBonusValue();										 // the player is given a number of army units corresponding to the continent’s control bonus value
 	void setReinforcementPool(int *pool);							 // set army units
-	void setTerritories(Territory *);								 // set Territory
-	void setName(string *str);										 // Set name of the player
+	void setTerritories(Territory &terr);							 // set Territory
+	void setNamePlayer(string *str);								 // Set name of the player
 	void issueOrder(vector<Territory *>);							 // Players issue orders and place them in their order list through a call to the Player::issueOrder() method
 	void printOrder();												 // print orders from orderList
 	void printHandCard();											 // prind hand card

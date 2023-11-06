@@ -77,17 +77,39 @@ Player::~Player()
 }
 
 // Get name of the palyer
-string Player::getName()
+string Player::getNamePlayer()
 {
 	return *name;
 }
 
 // Set name of the player
-void Player::setName(string *str)
+void Player::setNamePlayer(string *str)
 {
 	this->name = str;
 }
 
+// get Territories that are neighblors
+int Player::getReinforcementPool()
+{
+	return *reinforcementPool;
+}
+
+// set army units
+void Player::setReinforcementPool(int *pool)
+{
+	this->reinforcementPool = pool;
+}
+
+// get Territory
+vector<Territory *> Player::getTerritories()
+{
+	return territories;
+}
+
+void Player::setTerritories(Territory &terr)
+{
+	this->territories.push_back(&terr);
+}
 // Get list of territories that are to be attacked
 void Player::toAttack()
 {
