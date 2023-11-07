@@ -8,7 +8,6 @@ using namespace std;
 void testGameEngineStates()
 {
     GameEngine game;
-    STATE nextState;
 
     game.startupPhase();
 };

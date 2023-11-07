@@ -82,13 +82,13 @@ void GameEngine::startupPhase()
 
             _deck = std::make_unique<Deck>();
             _deck->fillDeck();
-            for (auto &player : _players)
-            {
-                player->addReinforcements(50);
-                // can and wil fail if passed null-ref
-                player->getHand()->addCard(*_deck->draw());
-                player->getHand()->addCard(*_deck->draw());
-            }
+            // for (auto &player : _players)
+            // {
+            //     player->addReinforcements(50);
+            //     // can and wil fail if passed null-ref
+            //     player->getHand()->addCard(*_deck->draw());
+            //     player->getHand()->addCard(*_deck->draw());
+            // }
 
             *_state = STATE::assign_reinforcement;
             result = "STATE::assign_reinforcement";
