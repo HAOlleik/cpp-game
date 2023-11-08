@@ -6,6 +6,7 @@ using std::ostream;
 #include <memory>
 #include <map>
 #include "algorithm"
+#include <random>
 
 #include "Player.h"
 #include "Map.h"
