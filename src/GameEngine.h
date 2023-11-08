@@ -27,6 +27,10 @@ public:
     ~GameEngine();                              // destructor
     void startupPhase();                        // startup phase of the game
 
+    void reinforcmentPhase(vector<Player *>);                     // Part 3
+    void issueOrdersPhase(vector<Player *>, vector<Territory *>); // Part 3
+    void executeOrdersPhase();                                    // Part 3
+
     STATE *getState() const // getter for state
     {
         return _state.get();

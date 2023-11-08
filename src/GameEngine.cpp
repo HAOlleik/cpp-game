@@ -250,3 +250,52 @@ ostream &operator<<(ostream &os, GameEngine &gameEngine)
 
     return os << "The current state is: " << currentStateString << "\n\n";
 }
+
+// Reinforcement phase
+void GameEngine::reinforcmentPhase(vector<Player *> listPlayer)
+{
+    bool check = false;
+    int temp = 0;
+    double count = 0;
+
+    for (int i = 0; i < listPlayer.size(); i++)
+    { // check the player's terriotries
+        temp = listPlayer[i]->getReinforcementPool();
+
+        for (int j = 0; j < listPlayer[i]->territories.size(); i++)
+        { // count the terriorties number
+            count++;
+        }
+        // calculating bonus of continents
+        check = (*listPlayer[i]).continentBonusValue();
+
+        if (check == true)
+        {
+            temp += 2 * (int)round(count / 3);
+        }
+        else
+        {
+            temp += (int)round(count / 3);
+        }
+
+        temp += 3;
+        int *tempPoint = &temp;
+
+        listPlayer[i]->setReinforcementPool(tempPoint);
+        check = false;
+        temp = 0;
+        count = 0;
+    }
+}
+
+// Issue orders phase
+void GameEngine::issueOrdersPhase(vector<Player *> listPlayer, vector<Territory *> Map)
+{
+
+    listPlayer[1]->issueOrder(Map);
+}
+
+// Execute orders phase
+void GameEngine::executeOrdersPhase()
+{
+}
