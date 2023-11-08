@@ -12,6 +12,17 @@ Territory::Territory(const std::string &nm) : _name(std::make_unique<std::string
                                               _armies(std::make_unique<int>(0)),
                                               _adjacentTerritories(std::make_unique<std::vector<std::weak_ptr<Territory>>>()) {}
 
+// Constructor with Name
+Territory::Territory(
+    const std::string &nm, std::shared_ptr<Continent> c) : _name(std::make_unique<std::string>(nm)),
+                                                           _continent(c),
+                                                           _owner(nullptr),
+                                                           _armies(std::make_unique<int>(0)),
+
+                                                           _adjacentTerritories(std::make_unique<std::vector<std::weak_ptr<Territory>>>())
+{
+}
+
 // Copy Constructor
 Territory::Territory(const Territory &t)
 {
@@ -54,6 +65,26 @@ Territory &Territory::operator=(const Territory &t)
 std::string Territory::getName() const
 {
     return *_name;
+}
+
+std::shared_ptr<Continent> Territory::getContinent() const
+{
+    return _continent;
+}
+
+std::shared_ptr<Player> Territory::getOwner() const
+{
+    return _owner;
+}
+
+int Territory::getArmies() const
+{
+    return *_armies;
+}
+
+void Territory::setArmies(int value)
+{
+    *_armies = value;
 }
 
 void Territory::setOwner(std::shared_ptr<Player> p)

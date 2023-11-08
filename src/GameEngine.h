@@ -2,7 +2,7 @@
 #define GAME_ENGINE_H
 #include <iostream>
 using std::ostream;
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 #include <memory>
 #include <map>
 #include "algorithm"
@@ -47,6 +47,5 @@ private:
     void randomOrder();
     void assignTerritories();
 };
-
 
 #endif

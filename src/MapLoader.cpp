@@ -86,9 +86,9 @@ bool MapLoader::load(const std::string &filePath)
                 v.push_back(s);
             };
             // Create Territory
-            auto terr = std::make_shared<Territory>(v[0]);
-            map->addTerritory(terr);
             auto c = map->getContinent(v[3]);
+            auto terr = std::make_shared<Territory>(v[0], c);
+            map->addTerritory(terr);
             c->addTerritory(terr);
         }
     }
