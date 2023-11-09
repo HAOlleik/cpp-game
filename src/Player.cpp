@@ -12,7 +12,7 @@ Player::Player()
 	*reinforcementPool = 0;
 	vector<Territory *> territories;
 	vector<Card *> cards;
-	// vector<Order *> orders;
+	vector<Order *> orders;
 }
 
 // Parameter constructor
@@ -22,13 +22,13 @@ Player::Player(string *name)
 }
 
 // Parameter constructor
-Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards, vector<Order *> orders)
 {
 	this->reinforcementPool = reinforcementPool;
 	this->name = name;
 	this->territories = territories;
 	this->cards = cards;
-	// this->orders = orders;
+	this->orders = orders;
 }
 
 // Copy constructor
@@ -38,7 +38,7 @@ Player::Player(const Player &plr)
 	this->name = plr.name;
 	this->territories = plr.territories;
 	this->cards = plr.cards;
-	// this->orders = plr.orders;
+	this->orders = plr.orders;
 }
 
 // Operator assignment
@@ -48,7 +48,7 @@ Player &Player::operator=(const Player &p)
 	this->name = p.name;
 	this->territories = p.territories;
 	this->cards = p.cards;
-	// this->orders = p.orders;
+	this->orders = p.orders;
 	return *this;
 }
 
@@ -70,14 +70,14 @@ Player::~Player()
 	territories.clear();
 	cards.clear();
 
-	// for (auto ord : orders)
-	// {
-	// 	delete ord;
-	// }
-	// orders.clear();
+	for (auto ord : orders)
+	{
+		delete ord;
+	}
+	orders.clear();
 	vector<Territory *>().swap(territories);
 	vector<Card *>().swap(cards);
-	// vector<Order *>().swap(orders);
+	vector<Order *>().swap(orders);
 }
 
 // Get name of the palyer
@@ -124,7 +124,7 @@ vector<Territory *> Player::getNeigbourTerritories(vector<Territory *> Map)
 		// for all territories that player owns, get adjecent and
 		// add to the set
 		for (auto &tt : t->getAdjacentTerritories())
-			neighbTerrritories.push_back(tt.get()); // you need to use get if you want raw pointer because I return smart pointers
+			neighbTerrritories.push_back(tt.get()); // using get to get raw pointer from smart pointers
 	}
 
 	return neighbTerrritories;
