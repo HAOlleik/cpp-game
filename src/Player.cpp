@@ -7,19 +7,12 @@ using namespace std;
 
 // Default constructor
 Player::Player()
-{
-	*name = "Player";
-	*reinforcementPool = 0;
-	vector<Territory *> territories;
-	vector<Card *> cards;
-	vector<Order *> orders;
-}
+	: name(new string("Player")), reinforcementPool(new int(0)),
+	  territories(vector<Territory *>()), cards(vector<Card *>()), orders(vector<Order *>()) {}
 
 // Parameter constructor
-Player::Player(string *name)
-{
-	this->name = name;
-}
+Player::Player(string *name) : name(name), reinforcementPool(new int(0)),
+							   territories(vector<Territory *>()), cards(vector<Card *>()), orders(vector<Order *>()) {}
 
 // Parameter constructor
 Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards, vector<Order *> orders)
@@ -44,11 +37,16 @@ Player::Player(const Player &plr)
 // Operator assignment
 Player &Player::operator=(const Player &p)
 {
-	this->reinforcementPool = p.reinforcementPool;
-	this->name = p.name;
-	this->territories = p.territories;
-	this->cards = p.cards;
-	this->orders = p.orders;
+	if (this != &p)
+	{ // self-assignment check
+		delete name;
+		delete reinforcementPool;
+		name = new string(*p.name);
+		reinforcementPool = new int(*p.reinforcementPool);
+		territories = p.territories;
+		cards = p.cards;
+		orders = p.orders;
+	}
 	return *this;
 }
 
@@ -160,74 +158,108 @@ vector<Territory *> Player::toDefend()
 }
 
 // the player is given a number of army units corresponding to the continent’s control bonus value
+// bool Player::continentBonusValue()
+// {
+// 	string a = "NA";
+// 	//Continent *conA = new Continent(a);
+// 	string b = "AS";
+// 	//Continent *conB = new Continent(b);
+// 	string c = "SA";
+// 	//Continent *conC = new Continent(c);
+// 	string d = "AU";
+// 	//Continent *conD = new Continent(d);
+// 	string e = "EU";
+// 	//Continent *conE = new Continent(e);
+// 	string f = "AF";
+// 	//Continent *conF = new Continent(f);
+// 	int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0;
+// 	for (int i = 0; i < territories.size(); i++)
+// 	{
+// 		if ((*territories[i]).getContinent().get()->getName().compare(a))
+// 		{
+// 			c1++;
+// 		}
+// 		if ((*territories[i]).getContinent().get()->getName().compare(b))
+// 		{
+// 			c2++;
+// 		}
+// 		if ((*territories[i]).getContinent().get()->getName().compare(c))
+// 		{
+// 			c3++;
+// 		}
+// 		if ((*territories[i]).getContinent().get()->getName().compare(d))
+// 		{
+// 			c4++;
+// 		}
+// 		if ((*territories[i]).getContinent().get()->getName().compare(e))
+// 		{
+// 			c5++;
+// 		}
+// 		if ((*territories[i]).getContinent().get()->getName().compare(f))
+// 		{
+// 			c6++;
+// 		}
+// 	}
+// 	if (c1 == 3)
+// 	{
+// 		return true;
+// 	} // NA
+// 	if (c2 == 3)
+// 	{
+// 		return true;
+// 	} // AS
+// 	if (c3 == 1)
+// 	{
+// 		return true;
+// 	} // SA
+// 	if (c4 == 1)
+// 	{
+// 		return true;
+// 	} // AU
+// 	if (c5 == 1)
+// 	{
+// 		return true;
+// 	} // EU
+// 	if (c6 == 1)
+// 	{
+// 		return true;
+// 	} // EU
+
+// 	return false;
+// }
+
 bool Player::continentBonusValue()
 {
-	string a = "NA";
-	Continent *conA = new Continent(a);
-	string b = "AS";
-	Continent *conB = new Continent(b);
-	string c = "SA";
-	Continent *conC = new Continent(c);
-	string d = "AU";
-	Continent *conD = new Continent(d);
-	string e = "EU";
-	Continent *conE = new Continent(e);
-	string f = "AF";
-	Continent *conF = new Continent(f);
-	int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0;
-	for (int i = 0; i < territories.size(); i++)
+	// get first continent to check
+	std::vector<Territory *> notMatched;
+	for (auto &t : territories)
 	{
-		if ((*territories[i]).getContinent().get()->getName().compare(conA->getName()))
+		// if found in notMatched, means already checked, skip
+		if (std::find(notMatched.begin(), notMatched.end(), t) != notMatched.end())
 		{
-			c1++;
+			continue;
 		}
-		if ((*territories[i]).getContinent().get()->getName().compare(conB->getName()))
+
+		// get current continent
+		std::shared_ptr<Continent> current = t->getContinent();
+		std::vector<Territory *> matches;
+		// copy into matches all terr if their continent is == to current
+		std::copy_if(territories.begin(), territories.end(), std::back_inserter(matches), [&](Territory *v)
+					 { return v->getContinent() == current; });
+
+		// if the size of matches == to current continent terr size good
+		if (matches.size() == current->getTerritories().size())
 		{
-			c2++;
+			reinforcementPool += current->getScore();
+			return true;
 		}
-		if ((*territories[i]).getContinent().get()->getName().compare(conC->getName()))
+		else
 		{
-			c3++;
-		}
-		if ((*territories[i]).getContinent().get()->getName().compare(conD->getName()))
-		{
-			c4++;
-		}
-		if ((*territories[i]).getContinent().get()->getName().compare(conE->getName()))
-		{
-			c5++;
-		}
-		if ((*territories[i]).getContinent().get()->getName().compare(conF->getName()))
-		{
-			c6++;
+			// if not add all terr from current iter to notMatched
+			notMatched.insert(notMatched.end(), matches.begin(), matches.end());
+			return false;
 		}
 	}
-	if (c1 == 3)
-	{
-		return true;
-	} // NA
-	if (c2 == 3)
-	{
-		return true;
-	} // AS
-	if (c3 == 1)
-	{
-		return true;
-	} // SA
-	if (c4 == 1)
-	{
-		return true;
-	} // AU
-	if (c5 == 1)
-	{
-		return true;
-	} // EU
-	if (c6 == 1)
-	{
-		return true;
-	} // EU
-
-	return false;
 }
 
 // Only for Assignment 1
@@ -263,7 +295,7 @@ void Player::issueOrder(vector<Territory *> Map)
 			army = temp - army;
 			int *armPoint = &army;
 			setReinforcementPool(armPoint);
-			if (army = 1)
+			if (army == 1)
 			{
 				temp = 1;
 				temp += listToDefend[i]->getArmies();
