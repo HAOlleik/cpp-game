@@ -1,4 +1,5 @@
 #include "Continent.h"
+#include "Territory.h"
 
 Continent::Continent() : name(std::make_unique<std::string>()),
                          score(std::make_unique<int>(0)),
