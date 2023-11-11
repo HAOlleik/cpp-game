@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Territory.h"
 
 // default constructor
 GameEngine::GameEngine()

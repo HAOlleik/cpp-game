@@ -5,7 +5,7 @@ using std::ostream;
 // #include <bits/stdc++.h>
 #include <memory>
 #include <map>
-#include "algorithm"
+#include <algorithm>
 #include <random>
 
 #include "Player.h"
@@ -15,6 +15,8 @@ using std::ostream;
 #include "MapLoader.h"
 #include "Cards.h"
 #include "GameEngineState.h"
+
+class Territory;
 
 #define MAX_PLAYERS = 6
 

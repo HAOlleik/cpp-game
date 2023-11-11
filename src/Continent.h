@@ -4,7 +4,8 @@
 #include <vector>
 #include <memory>
 
-#include "Territory.h"
+class Territory;  // Forward declaration
+
 
 class Continent
 {
