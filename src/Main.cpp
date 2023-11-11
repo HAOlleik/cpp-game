@@ -4,7 +4,7 @@
 #include "Drivers.h"
 // #include "GameEngine.h"
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     vector<string> arguments(argv, argv + argc);
     // testOrdersLists();
@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
     // testLoadMaps();
     testCommandProcessor(arguments, arguments.size());
     // testGameEngineStates();
+    testMainGameLoop();
 
     return 0;
 }

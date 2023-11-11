@@ -14,7 +14,10 @@ enum STATE
     issue_orders,
     execute_orders,
     win,
-    game_ended
+    game_ended,
+    reinforcement_phase, // Part 3 2023-11-11
+    issue_orders_phase,  // Part 3 2023-11-11
+    execute_orders_phase // Part 3 2023-11-11
 };
 
 // transform string to state enum, kind hack

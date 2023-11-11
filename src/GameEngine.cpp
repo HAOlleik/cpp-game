@@ -148,10 +148,73 @@ void GameEngine::startupPhase()
     }
 }
 
-// play loop
+// This method checks if the player is winner or eliminated
+bool GameEngine::conditionToCheckForWinner()
+{
+    // Check if a single player controls all territories
+    int territoriesCount = _map->getTerritories()->size();
+    for (const auto &player : _players)
+    {
+        if (player->getTerritories().size() == territoriesCount)
+        {
+            // Player controls all territories, declare winner
+            std::cout << "Player " << player->getName() << " wins by controlling all territories!" << std::endl;
+            return true;
+        }
+    }
+
+    // Check if any player doesn't control any territory
+    for (const auto &player : _players)
+    {
+        if (player->getTerritories().empty())
+        {
+            // Player doesn't control any territory, remove from the game
+            std::cout << "Player " << player->getName() << " has no territories and is eliminated from the game." << std::endl;
+            // Remove the player from the list
+            _players.erase(std::remove(_players.begin(), _players.end(), player), _players.end());
+            return false; // The game continues after removing the player
+        }
+    }
+
+    return false; // No winner yet
+}
+
+// // play loop
+// ACTION GameEngine::mainGameLoop()
+// {
+//     return ACTION::replay;
+// }
+
 ACTION GameEngine::mainGameLoop()
 {
-    return ACTION::replay;
+    // Continue the game loop until a winner is determined
+    while (*_state != STATE::win)
+    {
+        switch (*_state)
+        {
+        case STATE::reinforcement_phase:
+            reinforcmentPhase(_players);
+            break;
+        case STATE::issue_orders_phase:
+            issueOrdersPhase(_players, _map->getTerritories());
+            break;
+        case STATE::execute_orders_phase:
+            executeOrdersPhase();
+            break;
+        }
+
+        // Check if a player has won
+        if (conditionToCheckForWinner())
+        {
+            *_state = STATE::win;
+            break;
+        }
+
+        // Move to the next game state
+        // *_state = nextState();  // Implement a function to determine the next game state
+    }
+
+    return ACTION::end_game; // Or another appropriate action
 }
 
 void GameEngine::randomOrder()
@@ -253,7 +316,7 @@ ostream &operator<<(ostream &os, GameEngine &gameEngine)
 }
 
 // Reinforcement phase
-void GameEngine::reinforcmentPhase(vector<Player *> listPlayer)
+void GameEngine::reinforcmentPhase(vector<shared_ptr<Player>> listPlayer)
 {
     bool check = false;
     int temp = 0;
@@ -290,13 +353,98 @@ void GameEngine::reinforcmentPhase(vector<Player *> listPlayer)
 }
 
 // Issue orders phase
-void GameEngine::issueOrdersPhase(vector<Player *> listPlayer, vector<Territory *> Map)
+void GameEngine::issueOrdersPhase(std::vector<shared_ptr<Player>> listPlayer, std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> map)
 {
+    if (_map == nullptr)
+    {
+        std::cerr << "Error: Map is nullptr in issueOrdersPhase." << std::endl;
+        return;
+    }
 
-    listPlayer[1]->issueOrder(Map);
+    // Ensure Map is valid
+    if (!map)
+    {
+        std::cerr << "Error: Null Map in issueOrdersPhase." << std::endl;
+        return;
+    }
+
+    // Convert territories in Map to std::vector<Territory *>
+    std::vector<Territory *> mapVector;
+    for (const auto &entry : *map)
+    {
+        mapVector.push_back(entry.second.get());
+    }
+
+    // Call issueOrder with the converted vector
+    listPlayer[1]->issueOrder(mapVector);
 }
 
 // Execute orders phase
 void GameEngine::executeOrdersPhase()
 {
+}
+
+// Adding players
+void GameEngine::addPlayer(const std::string &playerName)
+{
+    // Ensure the maximum number of players is not exceeded
+    if (_players.size() >= 6)
+    {
+        std::cerr << "Error: Maximum number of players reached (6 players)." << std::endl;
+        return;
+    }
+
+    // Check if the player with the same name already exists
+    auto existingPlayer = std::find_if(_players.begin(), _players.end(),
+                                       [&playerName](const auto &player)
+                                       {
+                                           return player->getName() == playerName;
+                                       });
+
+    if (existingPlayer != _players.end())
+    {
+        std::cerr << "Error: Player with the same name already exists." << std::endl;
+        return;
+    }
+
+    // Create a new player and add it to the players vector
+    auto newPlayer = std::make_shared<Player>(new std::string(playerName));
+    _players.push_back(newPlayer);
+
+    std::cout << "Player " << playerName << " added to the game." << std::endl;
+}
+
+// set map
+void GameEngine::setMap(std::shared_ptr<Map> map)
+{
+    _map = std::make_unique<Map>(*map);
+}
+
+void testMainGameLoop()
+{
+    // Initialize your game engine, map, players, etc.
+
+    // Create a game engine instance
+    GameEngine game;
+
+    // Load a map (replace "map_filename.map" with your actual map file)
+    MapLoader mapLoader;
+    if (mapLoader.load("map_filename.map"))
+    {
+        game.setMap(std::make_shared<Map>(*mapLoader.getMap()));
+        std::cout << "Map loaded successfully." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error: Map could not be loaded." << std::endl;
+        return;
+    }
+
+    // Add players to the game
+    game.addPlayer("Hussein");
+    game.addPlayer("Alex");
+    // Add more players as needed
+
+    // Start the main game loop
+    game.startupPhase(); // Assuming you want to start with the startup phase
 }
