@@ -61,6 +61,17 @@ DeployOrder::DeployOrder()
 
 Order *DeployOrder::clone() const { return new DeployOrder(*this); }
 
+DeployOrder::DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies)
+{
+	string string_1 = "Deploy";
+	this->setDescription(string_1);
+	string string_2 = "Deploys your troops";
+	this->setEffect(string_2);
+
+	this->currentPlayer = new Player(*player);
+	this->target = new Territory(*targetTerritory);
+	this->nbOfArmies = nbOfArmies;
+}
 bool DeployOrder::validate()
 {
 	if (target->getOwner()->getName() != currentPlayer->getName())
@@ -111,18 +122,18 @@ AdvanceOrder::AdvanceOrder()
 	this->isValid = true;
 }
 
-// AdvanceOrder::AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies)
-// {
-// 	string string_1 = "Advance";
-// 	this->setDescription(string_1);
-// 	string string_2 = "Advance";
-// 	this->setEffect(string_2);
+AdvanceOrder::AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies)
+{
+	string string_1 = "Advance";
+	this->setDescription(string_1);
+	string string_2 = "Advance";
+	this->setEffect(string_2);
 
-// 	this->currentPlayer = player;
-// 	this->target = targetTerritory;
-// 	this->source = sourceTerritory;
-// 	this->nbOfArmies = nbOfArmies;
-// }
+	this->currentPlayer = player;
+	this->target = targetTerritory;
+	this->source = sourceTerritory;
+	this->nbOfArmies = nbOfArmies;
+}
 
 // bool AdvanceOrder::validate()
 // {
