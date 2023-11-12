@@ -163,7 +163,7 @@ public:
 
     private:
         Player *currentPlayer;
-        Player *target;
+        Player *targetPlayer;
         Order *clone() const override;
 };
 
