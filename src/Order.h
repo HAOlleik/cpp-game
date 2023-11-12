@@ -85,45 +85,86 @@ class AdvanceOrder : public Order
 {
 public:
     AdvanceOrder();
-    void execute();
-    bool validate();
+    AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies);
+    virtual bool validate() override;
+    virtual void execute() override;
+    
     bool isValid;
+
+    private:
+    private:
+        Player *currentPlayer;
+        Territory *source;
+        Territory *target;
+        int nbOfArmies;
+        void simulateAttack(Territory *source, Territory *target, int nbOfArmies);
+        Order *clone() const override;
 };
 
 class BombOrder : public Order
 {
 public:
     BombOrder();
-    void execute();
-    bool validate();
+    BombOrder(Player *currentPlayer, Territory *target);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+    private:
+        Player *currentPlayer;
+        Territory *target;
+        Order *clone() const override;
 };
 
 class BlockadeOrder : public Order
 {
 public:
     BlockadeOrder();
-    void execute();
-    bool validate();
+    BlockadeOrder(Player *player, Territory *target);
+    virtual bool validate() override;
+    virtual void execute() override;
+    
     bool isValid;
+
+    private:
+        Player *currentPlayer;
+        Territory *target;
+        Order *clone() const override;
 };
 
 class AirliftOrder : public Order
 {
 public:
     AirliftOrder();
-    void execute();
-    bool validate();
+    AirliftOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+    private:
+        Player *currentPlayer;
+        Territory *source;
+        Territory *target;
+        int nbOfArmies;
+        Order *clone() const override;
 };
 
 class NegotiateOrder : public Order
 {
 public:
     NegotiateOrder();
-    void execute();
-    bool validate();
+    NegotiateOrder(Player *currentPlayer, Player *targetPlayer);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+    private:
+        Player *currentPlayer;
+        Player *target;
+        Order *clone() const override;
 };
 
 class OrdersList
