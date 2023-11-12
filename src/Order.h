@@ -4,8 +4,11 @@ using std::ostream;
 #include <queue>
 using std::queue;
 
-// #include "Player.h"
+#include "Player.h"
 using namespace std;
+
+class Territory;
+class Player;
 
 // Not sure yet if it is usefull, can be removed
 enum OrderType
@@ -22,13 +25,37 @@ class Order
 {
 public:
     Order();
-    // ~Order();
     Order(string *str);
     Order(const Order &o);            // copy contructor
     Order &operator=(const Order &c); // assignment operrator
-    // void execute(Player &player);
-    bool validate();
-    string *orderName;
+
+    // Destructor
+    virtual ~Order() = default;
+
+    string *orderName; //not sure if needed
+
+    /* Pure virtual execute method */
+    virtual bool validate() = 0;
+    virtual void execute() = 0;
+
+    virtual Order *clone() const = 0;
+
+    // Stream insertion
+    friend ostream &operator<<(ostream &os, const Order &order);
+
+    // Access modifiers
+    const string &getDescription() const;
+    void setDescription(string &desc);
+
+    const string &getEffect() const;
+    void setEffect(string &effect);
+
+    void setPlayer(Player *player);
+
+protected:
+    string *orderDescription;
+    string *orderEffect;
+    Player *player;
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -36,9 +63,22 @@ class DeployOrder : public Order
 {
 public:
     DeployOrder();
-    void execute();
-    bool validate();
-    bool isValid;
+    DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies); // parameterized
+    DeployOrder(const DeployOrder &d);               // copy
+
+    /* Destructor */
+    ~DeployOrder();
+
+    
+    void execute() override;
+    bool validate() override;
+    // bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *target;
+    int nbOfArmies;
+    Order *clone() const override;
 };
 
 class AdvanceOrder : public Order
