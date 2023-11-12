@@ -1,9 +1,4 @@
 #include "Player.h"
-#include <set>
-#include <time.h>
-#include <algorithm>
-#include <assert.h>
-using namespace std;
 
 // Default constructor
 Player::Player()
@@ -24,6 +19,17 @@ Player::Player(int *reinforcementPool, string *name, vector<Territory *> territo
 	this->orders = orders;
 }
 
+// Parameter constructor
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders, bool passTurn)
+{
+	this->reinforcementPool = reinforcementPool;
+	this->name = name;
+	this->territories = territories;
+	this->playerHand = playerHand;
+	this->orders = orders;
+	this->passTurn = std::make_shared<bool>(passTurn);
+}
+
 // Copy constructor
 Player::Player(const Player &plr)
 {
@@ -32,6 +38,7 @@ Player::Player(const Player &plr)
 	this->territories = plr.territories;
 	this->playerHand = new Hand(*(plr.playerHand));
 	this->orders = plr.orders;
+	this->passTurn = std::make_shared<bool>(plr.passTurn);
 }
 
 // Operator assignment
@@ -47,6 +54,7 @@ Player &Player::operator=(const Player &p)
 		territories = p.territories;
 		playerHand = new Hand(*(p.playerHand));
 		orders = p.orders;
+		passTurn = std::make_shared<bool>(p.passTurn);
 	}
 	return *this;
 }
@@ -90,6 +98,16 @@ string Player::getName()
 void Player::setNamePlayer(string *str)
 {
 	this->name = str;
+}
+
+bool Player::getPassTurn()
+{
+	return *passTurn;
+}
+
+void Player::setPassTurn(bool change)
+{
+	*passTurn = change;
 }
 
 // get Territories that are neighblors
@@ -159,81 +177,11 @@ vector<Territory *> Player::toDefend()
 	return listToDefend;
 }
 
-// the player is given a number of army units corresponding to the continent’s control bonus value
-// bool Player::continentBonusValue()
-// {
-// 	string a = "NA";
-// 	//Continent *conA = new Continent(a);
-// 	string b = "AS";
-// 	//Continent *conB = new Continent(b);
-// 	string c = "SA";
-// 	//Continent *conC = new Continent(c);
-// 	string d = "AU";
-// 	//Continent *conD = new Continent(d);
-// 	string e = "EU";
-// 	//Continent *conE = new Continent(e);
-// 	string f = "AF";
-// 	//Continent *conF = new Continent(f);
-// 	int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0;
-// 	for (int i = 0; i < territories.size(); i++)
-// 	{
-// 		if ((*territories[i]).getContinent().get()->getName().compare(a))
-// 		{
-// 			c1++;
-// 		}
-// 		if ((*territories[i]).getContinent().get()->getName().compare(b))
-// 		{
-// 			c2++;
-// 		}
-// 		if ((*territories[i]).getContinent().get()->getName().compare(c))
-// 		{
-// 			c3++;
-// 		}
-// 		if ((*territories[i]).getContinent().get()->getName().compare(d))
-// 		{
-// 			c4++;
-// 		}
-// 		if ((*territories[i]).getContinent().get()->getName().compare(e))
-// 		{
-// 			c5++;
-// 		}
-// 		if ((*territories[i]).getContinent().get()->getName().compare(f))
-// 		{
-// 			c6++;
-// 		}
-// 	}
-// 	if (c1 == 3)
-// 	{
-// 		return true;
-// 	} // NA
-// 	if (c2 == 3)
-// 	{
-// 		return true;
-// 	} // AS
-// 	if (c3 == 1)
-// 	{
-// 		return true;
-// 	} // SA
-// 	if (c4 == 1)
-// 	{
-// 		return true;
-// 	} // AU
-// 	if (c5 == 1)
-// 	{
-// 		return true;
-// 	} // EU
-// 	if (c6 == 1)
-// 	{
-// 		return true;
-// 	} // EU
-
-// 	return false;
-// }
-
-bool Player::continentBonusValue()
+int Player::continentBonusValue()
 {
 	// get first continent to check
 	std::vector<Territory *> notMatched;
+	int bonusPool = 0;
 	for (auto &t : territories)
 	{
 		// if found in notMatched, means already checked, skip
@@ -252,29 +200,17 @@ bool Player::continentBonusValue()
 		// if the size of matches == to current continent terr size good
 		if (matches.size() == current->getTerritories().size())
 		{
-			reinforcementPool += current->getScore();
-			return true;
+			bonusPool += current->getScore();
 		}
 		else
 		{
 			// if not add all terr from current iter to notMatched
 			notMatched.insert(notMatched.end(), matches.begin(), matches.end());
-			return false;
 		}
 	}
-}
 
-// Only for Assignment 1
-// Validates if the irder is correct
-// bool Player::validate(string *s)
-// {
-// 	string temps = *s;
-// 	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate")
-// 	{
-// 		return true;
-// 	}
-// 	return false;
-// }
+	return bonusPool;
+}
 
 // get hand of cards for player
 Hand Player::getHand()

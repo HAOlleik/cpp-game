@@ -8,6 +8,7 @@ belongs to one and only one continent.
 */
 #include "Drivers.h"
 #include "MapLoader.h"
+#include "Map.h"
 
 void testLoadMaps()
 {

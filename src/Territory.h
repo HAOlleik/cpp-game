@@ -7,8 +7,8 @@
 using std::ostream;
 #include <string>
 
-#include "Player.h"
 class Continent;
+class Player;
 
 class Territory
 {

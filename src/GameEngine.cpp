@@ -78,8 +78,8 @@ void GameEngine::startupPhase()
             // c) give 50 initial army units to the players, which are placed in their respective reinforcement pool
             // d) let each player draw 2 initial cards from the deck using the deck’s draw() method
             // e) switch the game to the play phase
-            randomOrder();
-            assignTerritories();
+            assignPlayersRandomOrder();
+            assignTerritoriesPlayers();
 
             _deck = std::make_unique<Deck>();
             _deck->fillDeck();
@@ -152,7 +152,7 @@ void GameEngine::startupPhase()
 bool GameEngine::conditionToCheckForWinner()
 {
     // Check if a single player controls all territories
-    int territoriesCount = _map->getTerritories()->size();
+    uint64_t territoriesCount = _map->getTerritories()->size();
     for (const auto &player : _players)
     {
         if (player->getTerritories().size() == territoriesCount)
@@ -179,28 +179,32 @@ bool GameEngine::conditionToCheckForWinner()
     return false; // No winner yet
 }
 
-// // play loop
-// ACTION GameEngine::mainGameLoop()
-// {
-//     return ACTION::replay;
-// }
-
 ACTION GameEngine::mainGameLoop()
 {
+    // This loop shall continue until only one of the players owns all the territories in the map, at which point a winner is
+    // announced and the game ends. The main game loop also checks for any player that does not control at least one
+    // territory;
+    // if so, the player is removed from the game.
+
     // Continue the game loop until a winner is determined
+    // when we come first state
+    *_state = STATE::assign_reinforcement;
     while (*_state != STATE::win)
     {
         switch (*_state)
         {
-        case STATE::reinforcement_phase:
-            reinforcmentPhase(_players);
+        case STATE::assign_reinforcement:
+            reinforcmentPhase();
             break;
-        case STATE::issue_orders_phase:
-            issueOrdersPhase(_players, _map->getTerritories());
+        case STATE::issue_orders:
+            issueOrdersPhase();
             break;
-        case STATE::execute_orders_phase:
+        case STATE::execute_orders:
             executeOrdersPhase();
             break;
+            // to catch all other cases so we have no warning
+        default:
+            continue;
         }
 
         // Check if a player has won
@@ -210,6 +214,8 @@ ACTION GameEngine::mainGameLoop()
             break;
         }
 
+        checkLoosers();
+
         // Move to the next game state
         // *_state = nextState();  // Implement a function to determine the next game state
     }
@@ -217,7 +223,17 @@ ACTION GameEngine::mainGameLoop()
     return ACTION::end_game; // Or another appropriate action
 }
 
-void GameEngine::randomOrder()
+void GameEngine::checkLoosers()
+{
+    for (auto &player : _players)
+    {
+        // if a player has 0 terr, remove looser
+        if (player->getTerritories().size() == 0)
+            _players.erase(std::remove(_players.begin(), _players.end(), player), _players.end());
+    }
+}
+
+void GameEngine::assignPlayersRandomOrder()
 {
     // get PRGN numbers
     std::random_device dev;
@@ -248,7 +264,7 @@ void GameEngine::randomOrder()
     _players = tempPlayers; // overwrite with random order
 }
 
-void GameEngine::assignTerritories()
+void GameEngine::assignTerritoriesPlayers()
 {
     auto territoriesCount = _map->getTerritories()->size();
     // get PRGN numbers
@@ -316,45 +332,51 @@ ostream &operator<<(ostream &os, GameEngine &gameEngine)
 }
 
 // Reinforcement phase
-void GameEngine::reinforcmentPhase(vector<shared_ptr<Player>> listPlayer)
+void GameEngine::reinforcmentPhase()
 {
-    bool check = false;
-    int temp = 0;
-    double count = 0;
+    // Reinforcement Phase—Players are given a number of army units that depends on the number of
+    // territories they own, (# of territories owned divided by 3, rounded down). If the player owns all the
+    // territories of an entire continent, the player is given a number of army units corresponding to the
+    // continent’s control bonus value. In any case, the minimal number of reinforcement army units per turn for
+    // any player is 3. These army units are placed in the player’s reinforcement pool. This must be
+    // implemented in a function/method named reinforcementPhase() in the game engine.
+    for (auto &player : _players)
+    {
+        int *currentRPool = new int(0);
+        uint32_t count = 0;
 
-    for (int i = 0; i < listPlayer.size(); i++)
-    { // check the player's terriotries
-        temp = listPlayer[i]->getReinforcementPool();
+        // check the player's terriotries
+        *currentRPool = player->getReinforcementPool();
 
-        for (int j = 0; j < listPlayer[i]->territories.size(); i++)
-        { // count the terriorties number
-            count++;
-        }
-        // calculating bonus of continents
-        check = (*listPlayer[i]).continentBonusValue();
+        // count the terriorties number
+        count = player->territories.size();
 
-        if (check == true)
-        {
-            temp += 2 * (int)round(count / 3);
-        }
-        else
-        {
-            temp += (int)round(count / 3);
-        }
+        // adding bonus of continents
+        *currentRPool += player->continentBonusValue();
 
-        temp += 3;
-        int *tempPoint = &temp;
+        // # terr / 3
+        *currentRPool += floor(count / 3);
 
-        listPlayer[i]->setReinforcementPool(tempPoint);
-        check = false;
-        temp = 0;
-        count = 0;
+        // minimum reinforcement
+        *currentRPool += 3;
+
+        player->setReinforcementPool(currentRPool);
     }
+
+    // move to the next phase
+    *_state = STATE::issue_orders;
 }
 
-// Issue orders phase
-void GameEngine::issueOrdersPhase(std::vector<shared_ptr<Player>> listPlayer, std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> map)
+// Issue orders phase, should be round-robin
+void GameEngine::issueOrdersPhase()
 {
+    // Issuing Orders Phase—Players issue orders and place them in their order list through a call to the
+    // Player::issueOrder() method. This method is called in round-robin fashion across all players by the
+    // game engine. This phase ends when all players have signified that they don’t have any more orders to
+    // issue for this turn. This must be implemented in a function/method named issueOrdersPhase() in the
+    // game engine.
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Territory>>> map = _map->getTerritories();
+
     if (_map == nullptr)
     {
         std::cerr << "Error: Map is nullptr in issueOrdersPhase." << std::endl;
@@ -376,19 +398,24 @@ void GameEngine::issueOrdersPhase(std::vector<shared_ptr<Player>> listPlayer, st
     }
 
     // Call issueOrder with the converted vector
-    listPlayer[1]->issueOrder(mapVector);
+    _players[1]->issueOrder(mapVector);
+
+    // move to the next phase
+    *_state = STATE::execute_orders;
 }
 
 // Execute orders phase
 void GameEngine::executeOrdersPhase()
 {
+    // Orders Execution Phase—Once all the players have signified in the same turn that they are not issuing
+    // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round - robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
 }
 
 // Adding players
 void GameEngine::addPlayer(const std::string &playerName)
 {
     // Ensure the maximum number of players is not exceeded
-    if (_players.size() >= 6)
+    if (_players.size() >= MAX_PLAYERS)
     {
         std::cerr << "Error: Maximum number of players reached (6 players)." << std::endl;
         return;

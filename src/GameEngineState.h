@@ -15,6 +15,8 @@ enum STATE
     execute_orders,
     win,
     game_ended,
+
+    // this should be remove, cause names are incorrect per part A, look carefully
     reinforcement_phase, // Part 3 2023-11-11
     issue_orders_phase,  // Part 3 2023-11-11
     execute_orders_phase // Part 3 2023-11-11

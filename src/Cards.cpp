@@ -1,12 +1,4 @@
 #include "Cards.h"
-#include "Player.h"
-#include "Order.h"
-#include <iostream>
-#include <string>
-
-using std::cout;
-using std::endl;
-
 
 /*
     ----------------------------
@@ -14,21 +6,21 @@ using std::endl;
     ----------------------------
 */
 
-//default constructor
+// default constructor
 Card::Card()
 {
     cardID = 0;
-    cardType ="";
+    cardType = "";
 }
 
-//copy constructor
+// copy constructor
 Card::Card(const Card &c)
 {
     (*this).cardID = c.cardID;
     (*this).cardType = c.cardType;
 }
 
-//constructor to create new card and assign its cardType
+// constructor to create new card and assign its cardType
 Card::Card(int cardNum)
 {
     cardID = cardNum;
@@ -36,51 +28,50 @@ Card::Card(int cardNum)
 
     switch (cardID)
     {
-        case 1:
-            cardType = "bomb";
-            break;
-        case 2:
-            cardType = "reinforcement";
-            break;
-        case 3:
-            cardType = "blockade";
-            break;
-        case 4:
-            cardType = "airlift";
-            break;
-        case 5:
-            cardType = "diplomacy";
-            break;
-    }       
+    case 1:
+        cardType = "bomb";
+        break;
+    case 2:
+        cardType = "reinforcement";
+        break;
+    case 3:
+        cardType = "blockade";
+        break;
+    case 4:
+        cardType = "airlift";
+        break;
+    case 5:
+        cardType = "diplomacy";
+        break;
+    }
 }
 
-//assignment operator overload
-Card &Card::operator = (const Card &c)
+// assignment operator overload
+Card &Card::operator=(const Card &c)
 {
     (*this).cardID = c.cardID;
     (*this).cardType = c.cardType;
     return *this;
 }
 
-//insertion stream operator
-ostream& operator<<(ostream& os, const Card& card) 
+// insertion stream operator
+ostream &operator<<(ostream &os, const Card &card)
 {
     os << "Card ID: " << card.cardID << ", Card Type: " << card.cardType << endl;
     return os;
 }
 
-//cardID getter
+// cardID getter
 int Card::getCardID()
 {
     return cardID;
 }
 
-//cardType getter
+// cardType getter
 string Card::getCardType()
 {
     return cardType;
 }
-
 
 /*
     ----------------------------
@@ -88,37 +79,37 @@ string Card::getCardType()
     ----------------------------
 */
 
-//default constructor
+// default constructor
 Deck::Deck()
 {
-    deckVector = vector<Card *>(); //deck is empty vector of pointers to objects of type Card
+    deckVector = vector<Card *>(); // deck is empty vector of pointers to objects of type Card
 }
 
-//copy constructor
+// copy constructor
 Deck::Deck(const Deck &d)
 {
-    //pointer to cards in original deck to populate the copy deck with the original deck's cards
+    // pointer to cards in original deck to populate the copy deck with the original deck's cards
     for (size_t i = 0; i < d.deckVector.size(); i++)
     {
-       (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
+        (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
     }
 }
 
-//constructor with number of cards
+// constructor with number of cards
 Deck::Deck(int numOfCards)
 {
     sizeOfDeck = numOfCards;
-    deckVector = vector<Card*>();
+    deckVector = vector<Card *>();
 }
 
-//assignment operator overload
-Deck &Deck::operator = (const Deck &d)
+// assignment operator overload
+Deck &Deck::operator=(const Deck &d)
 {
     (*this).sizeOfDeck = int(d.sizeOfDeck);
 
     for (size_t i = 0; i < d.deckVector.size(); i++)
     {
-       (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
+        (*this).deckVector.push_back(new Card(*(d.deckVector[i])));
     }
 
     return *this;
@@ -129,69 +120,72 @@ int Deck::getDeckSize()
     return sizeOfDeck;
 }
 
-//return current deck (vector of pointers to card objects)
-vector<Card*> Deck::getDeck() const{
+// return current deck (vector of pointers to card objects)
+vector<Card *> Deck::getDeck() const
+{
     return deckVector;
 }
 
-//method to set deck 
-void Deck::setDeck(vector<Card*>newDeck)
+// method to set deck
+void Deck::setDeck(vector<Card *> newDeck)
 {
     this->deckVector = newDeck;
 }
 
-//generates new random Card and returns pointer to it
-Card* Deck::draw()
+// generates new random Card and returns pointer to it
+Card *Deck::draw()
 {
     if (deckVector.size() >= 1)
     {
-        int index = rand() % deckVector.size(); //random card in the deck, return value ranges from 0 to (deck size -1)
-        Card* cardDrawn = *(deckVector.begin() + index);
+        int index = rand() % deckVector.size(); // random card in the deck, return value ranges from 0 to (deck size -1)
+        Card *cardDrawn = *(deckVector.begin() + index);
         deckVector.erase(deckVector.begin() + index);
         sizeOfDeck -= 1;
         return cardDrawn;
     }
     else
     {
-        cout <<"The deck is empty." << endl;
+        cout << "The deck is empty." << endl;
         return nullptr;
     }
 }
 
-//insertion stream operator
-ostream& operator<<(ostream& os, const Deck& deck) 
+// insertion stream operator
+ostream &operator<<(ostream &os, const Deck &deck)
 {
     os << "Deck Size: " << deck.deckVector.size() << "\n";
 
     os << "Cards in the Deck:\n";
-    for (const Card* card : deck.deckVector) {
+    for (const Card *card : deck.deckVector)
+    {
         os << *card << "\n"; // This will use the Card's custom operator<<
     }
 
     return os;
 }
 
-//method to fill deck with cards randomly
+// method to fill deck with cards randomly
 void Deck::fillDeck()
 {
     for (int i = 0; i < sizeOfDeck; i++)
     {
-        int randomCardNum = rand() % 5 + 1; //random number between 1 and 5
+        int randomCardNum = rand() % 5 + 1; // random number between 1 and 5
         deckVector.push_back(new Card(randomCardNum));
     }
 }
 
-//method to return the played card back to the deck
+// method to return the played card back to the deck
 void Deck::addCardBackToDeck(int cardID)
 {
-    Card* returnCard = new Card(cardID);
+    Card *returnCard = new Card(cardID);
     vector<Card *> deckInstance = this->getDeck();
     deckInstance.push_back(returnCard);
     this->setDeck(deckInstance);
-    cout << "The card of type " << returnCard->getCardType() << " has been returned to the deck.\n" << endl;
+    cout << "The card of type " << returnCard->getCardType() << " has been returned to the deck.\n"
+         << endl;
 }
 
-//deck destructor
+// deck destructor
 Deck::~Deck()
 {
     for (size_t i = 0; i < deckVector.size(); i++)
@@ -201,20 +195,19 @@ Deck::~Deck()
     }
 }
 
-
 /*
     ----------------------------
     Hand Class
     ----------------------------
 */
 
-//default constructor
+// default constructor
 Hand::Hand()
 {
-    playHand = vector<Card*>();
+    playHand = vector<Card *>();
 }
 
-//copy constructor
+// copy constructor
 Hand::Hand(const Hand &h)
 {
     for (size_t i = 0; i < h.playHand.size(); i++)
@@ -223,7 +216,7 @@ Hand::Hand(const Hand &h)
     }
 }
 
-//assignment operator overload
+// assignment operator overload
 Hand &Hand::operator=(const Hand &h)
 {
     for (size_t i = 0; i < (h.playHand.size()); i++)
@@ -233,7 +226,7 @@ Hand &Hand::operator=(const Hand &h)
     return *this;
 }
 
-//destructor
+// destructor
 Hand::~Hand()
 {
     for (size_t i = 0; i < playHand.size(); i++)
@@ -243,19 +236,20 @@ Hand::~Hand()
     }
 }
 
-ostream& operator<<(ostream& os, const Hand& hand) //insertion stream operator
+ostream &operator<<(ostream &os, const Hand &hand) // insertion stream operator
 {
     os << "Hand Size: " << hand.playHand.size() << "\n\n";
 
     os << "Cards in the Hand:\n";
-    for (const Card* card : hand.playHand) {
+    for (const Card *card : hand.playHand)
+    {
         os << *card << "\n"; // This will use the Card's custom operator<<
     }
 
     return os;
 }
 
-vector<Card*> Hand::getPlayHand() const
+vector<Card *> Hand::getPlayHand() const
 {
     return playHand;
 }
@@ -265,7 +259,7 @@ int Hand::getHandSize()
     return playHand.size();
 }
 
-void Hand::addCard(Card& myCard)
+void Hand::addCard(Card &myCard)
 {
     playHand.push_back(&myCard);
 }
@@ -282,42 +276,42 @@ void Hand::removeCard(int index)
     }
 }
 
-void Hand::play(int index, Deck &deck, OrdersList &ordersList)
-{
-    index -= 1;
-    int orderCard = (playHand[index]->getCardID());
+// void Hand::play(int index, Deck &deck, OrdersList &ordersList)
+// {
+//     index -= 1;
+//     int orderCard = (playHand[index]->getCardID());
 
-    BombOrder b;
-    BlockadeOrder bd;
-    AirliftOrder al;
-    NegotiateOrder n;
+//     BombOrder b;
+//     BlockadeOrder bd;
+//     AirliftOrder al;
+//     NegotiateOrder n;
 
-    switch (orderCard)
-    {
-        case 1:
-            cout <<"A bomb order was added to the player's order list." << endl;
-            ordersList.addOrder(&b);
-            break;
-        case 2:
-            cout <<"A reinforcement order was added to the player's order list." << endl;
-            break;
-        case 3:
-            cout <<"A blockade order was added to the player's order list." << endl;
-            ordersList.addOrder(&bd);
-            break;
-        case 4:
-            cout <<"An airlift order was added to the player's order list." << endl;
-            ordersList.addOrder(&al);
-            break;
-        case 5:
-            cout <<"A negotiate (diplomacy) order was added to the player's order list." << endl;
-            ordersList.addOrder(&n);
-            break;
-    }
+//     switch (orderCard)
+//     {
+//     case 1:
+//         cout << "A bomb order was added to the player's order list." << endl;
+//         ordersList.addOrder(&b);
+//         break;
+//     case 2:
+//         cout << "A reinforcement order was added to the player's order list." << endl;
+//         break;
+//     case 3:
+//         cout << "A blockade order was added to the player's order list." << endl;
+//         ordersList.addOrder(&bd);
+//         break;
+//     case 4:
+//         cout << "An airlift order was added to the player's order list." << endl;
+//         ordersList.addOrder(&al);
+//         break;
+//     case 5:
+//         cout << "A negotiate (diplomacy) order was added to the player's order list." << endl;
+//         ordersList.addOrder(&n);
+//         break;
+//     }
 
-    deck.addCardBackToDeck(orderCard);
-    playHand.erase(playHand.begin()+index);
-    cout << "Current OrderList: "<< endl;
-    ordersList.printOrders();
-    cout << "\n------------------" << endl;
-}
+//     deck.addCardBackToDeck(orderCard);
+//     playHand.erase(playHand.begin() + index);
+//     cout << "Current OrderList: " << endl;
+//     ordersList.printOrders();
+//     cout << "\n------------------" << endl;
+// }
