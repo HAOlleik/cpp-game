@@ -57,17 +57,43 @@ DeployOrder::DeployOrder()
 {
 	cout << "Deploy Order Created" << endl;
 	this->orderName = &deploy1;
-	this->isValid = true;
+	// this->isValid = true;
 }
+
+Order *DeployOrder::clone() const { return new DeployOrder(*this); }
+
 bool DeployOrder::validate()
 {
-	return true;
+	if (target->getOwner()->getName() != currentPlayer->getName())
+	{
+		cout << "Invalid Order, target does not belong to current player" << endl;
+		return false;
+	}
+	else if (nbOfArmies > currentPlayer->getReinforcementPool())
+	{
+		cout << currentPlayer->getReinforcementPool() << endl;
+		cout << "Not enough armies in the reinforcement pool" << endl;
+		return false;
+	}
+	else if (nbOfArmies < 1)
+	{
+		cout << "Please enter at least 1 army to deploy" << endl;
+		return false;
+	}
+	else
+	{
+		cout << "Validated Deploy" << endl;
+		return true;
+	}
 }
+
 void DeployOrder::execute()
 {
-	if (this->isValid)
+	if (this->validate())
 	{
-		cout << "Deploy order executing" << endl;
+		target->setArmies(target->getArmies() + nbOfArmies);
+		currentPlayer->setReinforcementPool(currentPlayer->getReinforcementPool() - nbOfArmies);
+		cout << "Deploy has been executed" << endl;
 	}
 }
 
