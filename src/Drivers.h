@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "CommandProcessing.h"
+
 void testLoadMaps();
 void testGameEngineStates();
 void testOrdersLists();

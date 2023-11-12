@@ -141,7 +141,7 @@ void GameEngine::startupPhase()
             break;
 
         default:
-            break;
+            continue;
         }
 
         command.saveEffect(result);
@@ -300,6 +300,8 @@ void GameEngine::assignTerritoriesPlayers()
             auto it = _map->getTerritories()->begin();
             std::advance(it, prng);
             it->second->setOwner(_players[userIndex]);
+            // add terr pointer to player
+            _players[userIndex]->setTerritories(it->second.get());
             userIndex++;
         }
         // every player should have by one territory by now

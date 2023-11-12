@@ -14,6 +14,7 @@ using std::vector;
 
 // forward declarations
 class Player;
+class OrdersList;
 
 class Card
 {

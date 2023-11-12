@@ -1,4 +1,5 @@
 #include "Territory.h"
+#include "Player.h"
 
 // Default Constructor
 Territory::Territory() : _name(std::make_unique<std::string>("")),

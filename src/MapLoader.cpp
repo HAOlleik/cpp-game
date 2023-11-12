@@ -1,4 +1,5 @@
 #include "MapLoader.h"
+#include "Map.h"
 
 std::string MapLoader::trim(const std::string &s)
 {

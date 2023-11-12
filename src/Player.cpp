@@ -128,9 +128,9 @@ vector<Territory *> Player::getTerritories()
 	return territories;
 }
 
-void Player::setTerritories(Territory &terr)
+void Player::setTerritories(Territory *terr)
 {
-	this->territories.push_back(&terr);
+	this->territories.push_back(terr);
 }
 
 // get Territories that are neighblors

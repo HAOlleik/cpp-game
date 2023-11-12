@@ -92,7 +92,11 @@ void DeployOrder::execute()
 	if (this->validate())
 	{
 		target->setArmies(target->getArmies() + nbOfArmies);
-		currentPlayer->setReinforcementPool(currentPlayer->getReinforcementPool() - nbOfArmies);
+
+		// Pass the address of the int value
+		int newReinforcementPool = currentPlayer->getReinforcementPool() - nbOfArmies;
+		currentPlayer->setReinforcementPool(&newReinforcementPool);
+
 		cout << "Deploy has been executed" << endl;
 	}
 }
