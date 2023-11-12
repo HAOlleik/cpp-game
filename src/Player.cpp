@@ -8,19 +8,19 @@ using namespace std;
 // Default constructor
 Player::Player()
 	: name(new string("Player")), reinforcementPool(new int(0)),
-	  territories(vector<Territory *>()), cards(vector<Card *>()), orders(vector<Order *>()) {}
+	  territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
 
 // Parameter constructor
 Player::Player(string *name) : name(name), reinforcementPool(new int(0)),
-							   territories(vector<Territory *>()), cards(vector<Card *>()), orders(vector<Order *>()) {}
+							   territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
 
 // Parameter constructor
-Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, vector<Card *> cards, vector<Order *> orders)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders)
 {
 	this->reinforcementPool = reinforcementPool;
 	this->name = name;
 	this->territories = territories;
-	this->cards = cards;
+	this->playerHand = playerHand;
 	this->orders = orders;
 }
 
@@ -30,7 +30,7 @@ Player::Player(const Player &plr)
 	this->reinforcementPool = plr.reinforcementPool;
 	this->name = plr.name;
 	this->territories = plr.territories;
-	this->cards = plr.cards;
+	this->playerHand = new Hand(*(plr.playerHand));
 	this->orders = plr.orders;
 }
 
@@ -41,10 +41,11 @@ Player &Player::operator=(const Player &p)
 	{ // self-assignment check
 		delete name;
 		delete reinforcementPool;
+		delete playerHand;
 		name = new string(*p.name);
 		reinforcementPool = new int(*p.reinforcementPool);
 		territories = p.territories;
-		cards = p.cards;
+		playerHand = new Hand(*(p.playerHand));
 		orders = p.orders;
 	}
 	return *this;
@@ -53,7 +54,8 @@ Player &Player::operator=(const Player &p)
 ostream &operator<<(ostream &os, const Player &player) // insertion stream operator
 {
 	os << "Name of the player: " << player.name << endl
-	   << "ReinforcementPool: " << endl;
+	   << "ReinforcementPool: " << endl
+	   << "Player's Hand: " << *(player.playerHand) << endl;
 	return os;
 }
 
@@ -273,6 +275,12 @@ bool Player::continentBonusValue()
 // 	}
 // 	return false;
 // }
+
+// get hand of cards for player
+Hand Player::getHand()
+{
+	return *playerHand;
+}
 
 void Player::issueOrder(vector<Territory *> Map)
 {
