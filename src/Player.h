@@ -42,6 +42,7 @@ public:
 										  // void printHandCard(); // prind hand card
 
 	// bool validate(string *s);									// Only for Assignment 1
+	void removeTerritory(Territory &territory);
 
 private:
 	string *name;

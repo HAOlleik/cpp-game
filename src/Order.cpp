@@ -281,7 +281,7 @@ bool BombOrder::validate()
 
 	else
 	{
-		cout << "Validated bomb" << endl;
+		cout << "Bomb has been validated" << endl;
 		return true;
 	}
 }
@@ -296,7 +296,7 @@ void BombOrder::execute()
 		{
 			if (target->getOwner())
 			{
-				target->getOwner()->removeTerritory(target);
+				target->getOwner()->removeTerritory(*target);
 			}
 			target->setOwner(nullptr);
 		}
@@ -346,11 +346,10 @@ void BlockadeOrder::execute()
 		target->setArmies(target->getArmies() * 2);
 		if (target->getOwner())
 		{
-			target->getOwner()->removeTerritory(target);
+			target->getOwner()->removeTerritory(*target);
 		}
-		target->setOwner(GameEngine::neutralPlayer);
-		cout << "The territory is transferred to " << target->getOwner()->getName() << endl;
-		cout << "Blockade has been executed\n"
+		target->setOwner(nullptr); // Transfer to neutral
+		cout << "Blockade has finished executing!\n"
 			 << endl;
 	}
 }
@@ -438,8 +437,8 @@ void NegotiateOrder::execute()
 {
 	if (this->validate())
 	{
-		currentPlayer->addFriend(targetPlayer);
-		targetPlayer->addFriend(currentPlayer);
+		// currentPlayer->addFriend(targetPlayer);
+		// targetPlayer->addFriend(currentPlayer);
 	}
 	cout << "Negotiation has been executed" << endl;
 }

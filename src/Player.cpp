@@ -279,3 +279,18 @@ void Player::issueOrder(vector<Territory *> Map)
 
 	int enemy = listToAttack[actionNumber]->getArmies();
 }
+
+void Player::removeTerritory(Territory &territory)
+{
+	territory.setOwner(nullptr);
+	auto end = territories.end();
+	for (auto it = territories.begin(); it != end; it++)
+	{
+		if (territory.getName() == (*it)->getName())
+		{
+			territories.erase(it);
+			return;
+		}
+	}
+	throw std::runtime_error("Territory wasn't in the player's list.");
+}
