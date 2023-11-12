@@ -254,4 +254,62 @@ void Player::issueOrder(vector<Territory *> Map)
 	int actionNumber = rand() % listToAttack.size();
 
 	int enemy = listToAttack[actionNumber]->getArmies();
+
+	// Using one of the cards in the hand to issue an order
+	if (!playerHand->getPlayHand().empty())
+	{
+		// Assuming you want to use the first card in the hand for simplicity
+		Card *selectedCard = playerHand->getPlayHand().front();
+
+		// Check the type of the card and issue a corresponding order
+		if (selectedCard->getCardType() == "deploy")
+		{
+			// Create a deploy order and add it to the player's orders
+			Order *deployOrder = new DeployOrder();
+			orders.push_back(deployOrder);
+
+			// Output order information (for demonstration purposes)
+			std::cout << "Player " << getName() << " issued DEPLOY order." << std::endl;
+		}
+		else if (selectedCard->getCardType() == "advance")
+		{
+			// Create an advance order and add it to the player's orders
+			Order *advanceOrder = new AdvanceOrder();
+			orders.push_back(advanceOrder);
+
+			// Output order information (for demonstration purposes)
+			std::cout << "Player " << getName() << " issued ADVANCE order." << std::endl;
+		}
+		else if (selectedCard->getCardType() == "bomb")
+		{
+			// Create a bomb order and add it to the player's orders
+			Order *bombOrder = new BombOrder();
+			orders.push_back(bombOrder);
+
+			// Output order information (for demonstration purposes)
+			std::cout << "Player " << getName() << " issued BOMB order." << std::endl;
+		}
+		// Add more cases for other card types as needed
+
+		// Remove the used card from the hand
+		playerHand->getPlayHand().erase(playerHand->getPlayHand().begin());
+	}
+
+	// Continue with the rest of the order issuance logic
+	// ...
+}
+
+void Player::removeTerritory(Territory &territory)
+{
+	territory.setOwner(nullptr);
+	auto end = territories.end();
+	for (auto it = territories.begin(); it != end; it++)
+	{
+		if (territory.getName() == (*it)->getName())
+		{
+			territories.erase(it);
+			return;
+		}
+	}
+	throw std::runtime_error("Territory wasn't in the player's list.");
 }

@@ -65,7 +65,8 @@ public:
 	// check if any of the users should be removed
 
 	// Only for Assignment 1
-	// bool validate(string *s);
+	// bool validate(string *s);									// Only for Assignment 1
+	void removeTerritory(Territory &territory);
 
 private:
 	string *name;
