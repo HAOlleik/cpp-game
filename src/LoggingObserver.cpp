@@ -76,7 +76,7 @@ void Subject::notify(ILoggable* iloggable){
 }
 
 //TO IMPLEMENT
-void testLoggingObserver(){
-    GameEngine* myGameEngine = new GameEngine();
+// void testLoggingObserver(){
+//     GameEngine* myGameEngine = new GameEngine();
     
-}
+// }
