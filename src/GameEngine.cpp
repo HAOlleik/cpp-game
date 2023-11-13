@@ -220,7 +220,6 @@ ACTION GameEngine::mainGameLoop()
         // Move to the next game state
         // *_state = nextState();  // Implement a function to determine the next game state
     }
-    notify(this);
     return ACTION::end_game; // Or another appropriate action
 }
 

@@ -39,6 +39,7 @@ public:
     void setState(STATE newState) // setter for state
     {
         _state = std::make_shared<STATE>(newState);
+        notify(this);
     };
     std::string getStateAsString(STATE state);
     string stringToLog();

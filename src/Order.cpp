@@ -82,6 +82,11 @@ string Order::stringToLog()
 	string returnString = "Order " + *orderName + " was executed.";
 	return returnString;
 }
+string DeployOrder::stringToLog()
+{
+	string returnString = "Order " + *orderName + " was executed.";
+	return returnString;
+}
 
 DeployOrder::DeployOrder()
 {
@@ -140,6 +145,7 @@ void DeployOrder::execute()
 
 		cout << "Deploy has been executed" << endl;
 	}
+	notify(this);
 }
 
 // Advance

@@ -130,6 +130,7 @@ void testLoggingObserver()
     myCommand->attachObserver(myLogObserver);
     myCommandProcessor->attachObserver(myLogObserver);
     myOrder->attachObserver(myLogObserver);
+    myOrdersList->attachObserver(myLogObserver);
 
     myGameEngine->setState(map_loaded);
     myCommand->saveEffect("testeffect");
