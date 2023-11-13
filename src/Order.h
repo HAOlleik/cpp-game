@@ -68,9 +68,7 @@ public:
     DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies); // parameterized
     DeployOrder(const DeployOrder &d);                                       // copy
 
-    /* Destructor */
-    ~DeployOrder();
-
+    
     void execute() override;
     bool validate() override;
     // bool isValid;

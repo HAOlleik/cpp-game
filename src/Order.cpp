@@ -52,6 +52,31 @@ Order &Order::operator=(const Order &other)
 	return *this;
 }
 
+const string &Order::getDescription() const
+{
+	return *orderDescription;
+}
+
+const string &Order::getEffect() const
+{
+	return *orderEffect;
+}
+
+void Order::setPlayer(Player *player)
+{
+	Order::player = player;
+}
+
+void Order::setDescription(string &desc)
+{
+	*orderDescription = desc;
+}
+
+void Order::setEffect(string &effect)
+{
+	*orderEffect = effect;
+}
+
 string Order::stringToLog()
 {
 	string returnString = "Order " + *orderName + " was executed.";
