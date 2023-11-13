@@ -37,6 +37,7 @@ Command CommandProcessor::saveCommand(string command, string effect)
 {
     Command commandObj(command, effect);
     savedCommands->push_back(commandObj);
+    notify(this);
     return commandObj;
 }
 
@@ -74,6 +75,20 @@ Command CommandProcessor::getCommand(STATE currentState)
     validate(currentState, command, effect);
     return saveCommand(command, effect);
 }
+
+string CommandProcessor::stringToLog() {
+    string returnString = "The command has been saved with an effect of: ";
+
+    if (savedCommands != nullptr && !savedCommands->empty()) {
+        Command lastCommand = savedCommands->back();  // Get the last command in the list
+        string commandEffect = lastCommand.getEffect();  // Get the effect of the last command
+
+        return returnString + commandEffect;
+    }
+
+    return returnString + "Unknown";
+}
+
 
 
 FileLineReader::FileLineReader(const string &filename) {

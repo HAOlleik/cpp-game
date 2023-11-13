@@ -18,7 +18,7 @@ Order::Order(const Order &o)
 	// Perform a deep copy of the orderName
 	if (o.orderName != nullptr)
 	{
-		orderName = new string(*(o.orderName));
+		orderName = new string(*(o.orderName)); 
 	}
 	else
 	{
@@ -50,6 +50,11 @@ Order &Order::operator=(const Order &other)
 
 	// Return a reference to the current object
 	return *this;
+}
+
+string Order::stringToLog(){
+	string returnString = "Order " + *orderName + " was executed.";
+	return returnString;
 }
 
 DeployOrder::DeployOrder()
@@ -456,6 +461,7 @@ OrdersList::OrdersList() {}
 void OrdersList::addOrder(Order *order)
 {
 	this->_orders.push(order);
+	notify(this);
 }
 void OrdersList::move(int initialPosition, int desiredPosition)
 {
@@ -549,4 +555,14 @@ void OrdersList::remove(int index)
 		_orders.push(tempQueue.front());
 		tempQueue.pop();
 	}
+}
+
+string OrdersList::stringToLog() {
+    if (!_orders.empty()) {
+        Order* lastOrder = _orders.back();  // Fetching the last order in the queue
+        if (lastOrder != nullptr) {
+            return "Order Issued: A " + *lastOrder->orderName + " order has been issued by Player.";
+        }
+    }
+    return "No orders available."; // Or any default message for no orders in the queue
 }

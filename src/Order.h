@@ -3,6 +3,7 @@
 using std::ostream;
 #include <queue>
 using std::queue;
+#include "LoggingObserver.h"
 
 #include "Player.h"
 using namespace std;
@@ -31,6 +32,7 @@ public:
 
     // Destructor
     virtual ~Order() = default;
+    string stringToLog();
 
     string *orderName; // not sure if needed
 
@@ -166,7 +168,7 @@ private:
     Order *clone() const override;
 };
 
-class OrdersList
+class OrdersList: public ILoggable, public Subject
 {
 private:
     // FIFO queue
@@ -179,6 +181,7 @@ public:
     void remove(int index);
     void execute();
     void addOrder(Order *order);
+    string stringToLog();
     void printOrders() const;
 };
 
