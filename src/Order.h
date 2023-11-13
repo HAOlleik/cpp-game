@@ -66,7 +66,7 @@ class DeployOrder : public Order
 public:
     DeployOrder();
     DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies); // parameterized
-    DeployOrder(const DeployOrder &d);                                       // copy
+    //DeployOrder(const DeployOrder &d);                                       // copy
 
     
     void execute() override;
