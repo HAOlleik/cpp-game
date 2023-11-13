@@ -31,5 +31,10 @@ void Command::saveEffect(string eff)
     } else {
         effect = new string(eff); // If effect is nullptr, create a new string
     }
+    notify(this);
 }
 
+string Command::stringToLog(){
+    string returnString = "The command's effect is: " + getEffect();
+    return returnString;
+}

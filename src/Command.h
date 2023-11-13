@@ -3,10 +3,11 @@
 
 #include <string.h>
 #include <iostream>
+#include "LoggingObserver.h"
 
 using namespace std;
 
-class Command
+class Command: public ILoggable, public Subject
 {
 private:
     string *command;
@@ -19,6 +20,7 @@ public:
     Command &operator=(const Command &c); // assignment operator overload
     ~Command();                           // destructor
     void saveEffect(string eff);
+    string stringToLog();
     string getCommand() { return *command; };
     string getEffect() { return *effect; };
     void setCommand(string& newCommand) { *command = newCommand; };

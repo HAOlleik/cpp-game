@@ -3,6 +3,7 @@
 using std::ostream;
 #include <queue>
 using std::queue;
+#include "LoggingObserver.h"
 
 // #include "Player.h"
 using namespace std;
@@ -29,6 +30,7 @@ public:
     // void execute(Player &player);
     bool validate();
     string *orderName;
+    string stringToLog();
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -86,7 +88,7 @@ public:
     bool isValid;
 };
 
-class OrdersList
+class OrdersList: public ILoggable, public Subject
 {
 private:
     // FIFO queue
@@ -99,6 +101,7 @@ public:
     void remove(int index);
     void execute();
     void addOrder(Order *order);
+    string stringToLog();
     void printOrders() const;
 };
 

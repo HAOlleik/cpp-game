@@ -6,11 +6,12 @@
 #include <list>
 #include "Command.h"
 #include "GameEngineState.h"
+#include "LoggingObserver.h"
 using namespace std;
 
 string strToLower(string str);
 
-class CommandProcessor
+class CommandProcessor: public ILoggable, public Subject
 {
 private:
     list<Command> *savedCommands;
@@ -30,6 +31,7 @@ public:
     ~CommandProcessor();                                     // destructor
     Command getCommand(STATE currentState);
     friend ostream &operator<<(ostream &os, CommandProcessor &cp);
+    string stringToLog();
 };
 
 class FileLineReader
