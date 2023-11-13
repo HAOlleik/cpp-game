@@ -486,20 +486,31 @@ void GameEngine::setMap(std::shared_ptr<Map> map)
     _map = std::make_unique<Map>(*map);
 }
 
-string GameEngine::getStateAsString(STATE state) {
-    // Assuming stateMap is a map that maps STATE enum values to string representations
-    std::map<STATE, std::string> stateMap = {
-        {STATE::start, "Start"},
-        {STATE::map_loaded, "Map Loaded"},
-        {STATE::map_validated, "Map Validated"},
-        // ... Add the remaining states here
-    };
+#include "GameEngineState.h"
 
-    auto it = stateMap.find(state);
-    if (it != stateMap.end()) {
-        return it->second;
-    } else {
-        return "Unknown State";
+std::string getStateAsString(STATE state) {
+    switch (state) {
+        case STATE::start:
+            return "Start";
+        case STATE::map_loaded:
+            return "Map Loaded";
+        case STATE::map_validated:
+            return "Map Validated";
+        case STATE::players_added:
+            return "Players added";
+        case STATE::assign_reinforcement:
+            return "Assign reinforcement";
+        case STATE::issue_orders:
+            return "Issue orders";
+        case STATE::execute_orders:
+            return "Execute orders";
+        case STATE::win:
+            return "Win";
+        case STATE::game_ended:
+            return "Game ended";
+        // Add cases for other states
+        default:
+            return "Unknown State";
     }
 }
 

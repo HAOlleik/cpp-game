@@ -40,7 +40,7 @@ public:
     {
         _state = std::make_shared<STATE>(newState);
     };
-    string GameEngine::getStateAsString(STATE state);
+    std::string getStateAsString(STATE state);
     string stringToLog();
     friend ostream &operator<<(ostream &os, GameEngine &g);
 

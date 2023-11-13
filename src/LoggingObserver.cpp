@@ -76,7 +76,50 @@ void Subject::notify(ILoggable* iloggable){
 }
 
 //TO IMPLEMENT
-// void testLoggingObserver(){
-//     GameEngine* myGameEngine = new GameEngine();
+void testLoggingObserver(){
+    GameEngine* myGameEngine = new GameEngine();
+    Subject* engineSubject = new GameEngine();
+    ILoggable* engineLoggable = new GameEngine();
+
+    CommandProcessor* myCommandProcessor = new CommandProcessor();
+    Subject* commandProccessorSubject = new CommandProcessor();
+    ILoggable* commandProccessorLoggable = new CommandProcessor();
+
+    OrdersList* myOrdersList = new OrdersList();
+    Subject* ordersListSubject = new OrdersList();
+    ILoggable* ordersListLoggable = new OrdersList();
+
+    Order* myOrder = new DeployOrder();
+    Subject* orderSubject = new DeployOrder();
+    ILoggable* orderLoggable = new DeployOrder();
     
+    cout <<"**************************************************************************" << endl;
+    cout << "PART 5 TESTING" << endl;
+
+    cout << "Demonstrating that The Command, CommandProcessor, Order, OrderList, and GameEngine "
+    << "classes are all a subclass of the Subject and ILoggable classes" << endl;
+    cout << "engineSubject type: " << typeid(engineSubject).name() << endl;
+    cout << "engineLoggable type " << typeid(engineLoggable).name() << endl;
+
+    cout << "commandProccessorSubject type: " << typeid(commandProccessorSubject).name() << endl;
+    cout << "commandProccessorLoggable type " << typeid(commandProccessorLoggable).name() << endl;
+
+    cout << "ordersListSubject type: " << typeid(ordersListSubject).name() << endl;
+    cout << "ordersListLoggable type " << typeid(ordersListLoggable).name() << endl;
+
+    cout << "orderSubject type: " << typeid(orderSubject).name() << endl;
+    cout << "orderLoggable type " << typeid(orderLoggable).name() << endl;
+
+}
+
+// #include <string>
+// #include <vector>
+
+// #include "GameEngine.h"
+// #include "Drivers.h"
+
+// int main(int argc, char *argv[])
+// {
+//     testLoggingObserver();
+//     return 0;
 // }
