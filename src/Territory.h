@@ -27,6 +27,7 @@ public:
     void setArmies(int);
     void setOwner(std::shared_ptr<Player> p);
     void addAdjacent(std::shared_ptr<Territory> territory);
+    const Territory *findAdjacentTerritory(Territory *) const;
     const std::vector<std::shared_ptr<Territory>> getAdjacentTerritories() const;
     friend ostream &operator<<(ostream &os, const Territory &t);
 

@@ -149,19 +149,15 @@ bool AdvanceOrder::validate()
 		return false;
 	}
 
-	auto it = std::find(source->getAdjacentTerritories().begin(), source->getAdjacentTerritories().end(), target);
-	if (it == source->getAdjacentTerritories().end())
+	auto t = source->findAdjacentTerritory(target);
+	if (t == nullptr)
 	{
 		cout << "The target territory is not adjacent to the source territory!\n"
 			 << endl;
 		return false;
 	}
-
-	else
-	{
-		cout << "Validated Advance" << endl;
-		return true;
-	}
+	cout << "Validated Advance" << endl;
+	return true;
 }
 
 void AdvanceOrder::attackSimilate(Territory *source, Territory *target, int numArmiesToMove)
@@ -270,8 +266,10 @@ bool BombOrder::validate()
 	// check if the target is not adjacent to any of the current players territories
 	for (Territory *territoryPtr : currentPlayer->getTerritories())
 	{
-		auto it = std::find(territoryPtr->getAdjacentTerritories().begin(), territoryPtr->getAdjacentTerritories().end(), target);
-		if (!(it == territoryPtr->getAdjacentTerritories().end()))
+		// auto it = std::find(territoryPtr->getAdjacentTerritories().begin(), territoryPtr->getAdjacentTerritories().end(), target);
+		// if (!(it == territoryPtr->getAdjacentTerritories().end()))
+		auto t = territoryPtr->findAdjacentTerritory(target);
+		if (t != nullptr)
 		{
 			isAdjacent = 1;
 		}

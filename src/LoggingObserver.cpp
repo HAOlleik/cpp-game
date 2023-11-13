@@ -1,17 +1,17 @@
 #include <iostream>
-    using std::endl;
-    using std::cout;
+using std::cout;
+using std::endl;
 #include <string>
-    using std::string;
+using std::string;
 #include <vector>
-    using std::vector;
+using std::vector;
 #include <tuple>
-    using std::tuple;
-    using std::get;
+using std::get;
+using std::tuple;
 #include <fstream>
-    using std::ofstream;
+using std::ofstream;
 #include <list>
-    using std::list;
+using std::list;
 
 #include "Cards.h"
 #include "CommandProcessing.h"
@@ -21,83 +21,94 @@
 #include "Player.h"
 #include "LoggingObserver.h"
 
-Observer::~Observer(){
-
+Observer::~Observer()
+{
 }
 
-Observer::Observer(){
-    
+Observer::Observer()
+{
 }
 
-//destructor closes the io and deletes the file variable
-LogObserver::~LogObserver(){
+// destructor closes the io and deletes the file variable
+LogObserver::~LogObserver()
+{
     getFile()->close();
     delete this->file;
 }
 
-LogObserver::LogObserver(){
+LogObserver::LogObserver()
+{
     file = new std::ofstream("Logfile.txt");
 }
 
-//value from stringToLog() being written to output file when update is called
-void LogObserver::update(ILoggable* iloggable){
-    *file<<iloggable->stringToLog() <<endl;
+// value from stringToLog() being written to output file when update is called
+void LogObserver::update(ILoggable *iloggable)
+{
+    *file << iloggable->stringToLog() << endl;
 }
 
-ofstream* LogObserver::getFile(){
+ofstream *LogObserver::getFile()
+{
     return file;
 }
 
-//destructor deletes the observer list
-Subject::~Subject(){
+// destructor deletes the observer list
+Subject::~Subject()
+{
     delete _observerList;
 }
 
-Subject::Subject(){
-    _observerList = new list<Observer*>;
+Subject::Subject()
+{
+    _observerList = new list<Observer *>;
 }
 
-void Subject::attachObserver(Observer* observer){
+void Subject::attachObserver(Observer *observer)
+{
     _observerList->push_back(observer);
 }
 
-void Subject::detachObserver(Observer* observer){
+void Subject::detachObserver(Observer *observer)
+{
     _observerList->remove(observer);
 }
 
-//all observers who are attached to the subject are updated
-void Subject::notify(ILoggable* iloggable){
+// all observers who are attached to the subject are updated
+void Subject::notify(ILoggable *iloggable)
+{
     list<Observer *>::iterator iterator = _observerList->begin();
-    Subject* subject = this;
+    Subject *subject = this;
     string subjectType = typeid(*subject).name();
-    for(; iterator != _observerList->end(); ++iterator){
+    for (; iterator != _observerList->end(); ++iterator)
+    {
         (*iterator)->update(iloggable);
     }
 }
 
-//TO IMPLEMENT
-void testLoggingObserver(){
-    GameEngine* myGameEngine = new GameEngine();
-    Subject* engineSubject = new GameEngine();
-    ILoggable* engineLoggable = new GameEngine();
+// TO IMPLEMENT
+void testLoggingObserver()
+{
+    // GameEngine* myGameEngine = new GameEngine();
+    Subject *engineSubject = new GameEngine();
+    ILoggable *engineLoggable = new GameEngine();
 
-    CommandProcessor* myCommandProcessor = new CommandProcessor();
-    Subject* commandProccessorSubject = new CommandProcessor();
-    ILoggable* commandProccessorLoggable = new CommandProcessor();
+    // CommandProcessor *myCommandProcessor = new CommandProcessor();
+    Subject *commandProccessorSubject = new CommandProcessor();
+    ILoggable *commandProccessorLoggable = new CommandProcessor();
 
-    OrdersList* myOrdersList = new OrdersList();
-    Subject* ordersListSubject = new OrdersList();
-    ILoggable* ordersListLoggable = new OrdersList();
+    // OrdersList *myOrdersList = new OrdersList();
+    Subject *ordersListSubject = new OrdersList();
+    ILoggable *ordersListLoggable = new OrdersList();
 
-    Order* myOrder = new DeployOrder();
-    Subject* orderSubject = new DeployOrder();
-    ILoggable* orderLoggable = new DeployOrder();
-    
-    cout <<"**************************************************************************" << endl;
+    // Order *myOrder = new DeployOrder();
+    Subject *orderSubject = new DeployOrder();
+    ILoggable *orderLoggable = new DeployOrder();
+
+    cout << "**************************************************************************" << endl;
     cout << "PART 5 TESTING" << endl;
 
     cout << "Demonstrating that The Command, CommandProcessor, Order, OrderList, and GameEngine "
-    << "classes are all a subclass of the Subject and ILoggable classes" << endl;
+         << "classes are all a subclass of the Subject and ILoggable classes" << endl;
     cout << "engineSubject type: " << typeid(engineSubject).name() << endl;
     cout << "engineLoggable type " << typeid(engineLoggable).name() << endl;
 
@@ -109,7 +120,6 @@ void testLoggingObserver(){
 
     cout << "orderSubject type: " << typeid(orderSubject).name() << endl;
     cout << "orderLoggable type " << typeid(orderLoggable).name() << endl;
-
 }
 
 // #include <string>

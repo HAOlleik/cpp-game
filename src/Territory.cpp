@@ -122,6 +122,20 @@ const std::vector<std::shared_ptr<Territory>> Territory::getAdjacentTerritories(
     return sharedVector;
 }
 
+const Territory *Territory::findAdjacentTerritory(Territory *t) const
+{
+    auto t = std::make_shared<Territory>(*t);
+    auto found = std::find(_adjacentTerritories->begin(), _adjacentTerritories->end(), t);
+
+    if (found != _adjacentTerritories->end())
+    {
+        // return raw locked poitner;
+        return found->lock().get();
+    }
+
+    return nullptr;
+}
+
 // Overloaded stream insertion operator for Territory
 ostream &operator<<(ostream &os, const Territory &t)
 {

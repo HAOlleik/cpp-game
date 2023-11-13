@@ -3,8 +3,8 @@
 using std::ostream;
 #include <queue>
 using std::queue;
-#include "LoggingObserver.h"
 
+#include "LoggingObserver.h"
 #include "Player.h"
 using namespace std;
 
@@ -22,7 +22,7 @@ enum OrderType
     negotiate
 };
 
-class Order: public ILoggable, public Subject
+class Order : public ILoggable, public Subject
 {
 public:
     Order();
@@ -92,14 +92,13 @@ public:
 
     bool isValid;
 
-   
-    private:
-        Player *currentPlayer;
-        Territory *source;
-        Territory *target;
-        int nbOfArmies;
-        void attackSimilate(Territory *source, Territory *target, int nbOfArmies);
-        Order *clone() const override;
+private:
+    Player *currentPlayer;
+    Territory *source;
+    Territory *target;
+    int nbOfArmies;
+    void attackSimilate(Territory *source, Territory *target, int nbOfArmies);
+    Order *clone() const override;
 };
 
 class BombOrder : public Order
@@ -168,7 +167,7 @@ private:
     Order *clone() const override;
 };
 
-class OrdersList: public ILoggable, public Subject
+class OrdersList : public ILoggable, public Subject
 {
 private:
     // FIFO queue
