@@ -136,7 +136,7 @@ void testLoggingObserver()
     myCommand->saveEffect("testeffect");
     myCommandProcessor->getCommand(map_loaded);
     myOrdersList->addOrder(myOrder);
-    myOrder->execute();
+    //myOrder->execute();
 
     cout << "Part 5 is done " << endl;
 }

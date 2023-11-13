@@ -6,12 +6,13 @@
 #include <vector>
 
 #include "CommandProcessing.h"
-
+#include "LoggingObserver.h"
 void testLoadMaps();
 void testGameEngineStates();
 void testOrdersLists();
 // void testPlayers();
 void testCards();
 void testCommandProcessor(vector<string> arguments, size_t size);
+void testLoggingObserver();
 
 #endif
