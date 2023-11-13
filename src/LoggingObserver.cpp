@@ -88,19 +88,23 @@ void Subject::notify(ILoggable *iloggable)
 // TO IMPLEMENT
 void testLoggingObserver()
 {
-    // GameEngine* myGameEngine = new GameEngine();
+    GameEngine* myGameEngine = new GameEngine();
     Subject *engineSubject = new GameEngine();
     ILoggable *engineLoggable = new GameEngine();
 
-    // CommandProcessor *myCommandProcessor = new CommandProcessor();
+    Command* myCommand = new Command();
+    Subject* commandSubject = new Command();
+    ILoggable* commandLoggable = new Command();
+
+    CommandProcessor *myCommandProcessor = new CommandProcessor();
     Subject *commandProccessorSubject = new CommandProcessor();
     ILoggable *commandProccessorLoggable = new CommandProcessor();
 
-    // OrdersList *myOrdersList = new OrdersList();
+    OrdersList *myOrdersList = new OrdersList();
     Subject *ordersListSubject = new OrdersList();
     ILoggable *ordersListLoggable = new OrdersList();
 
-    // Order *myOrder = new DeployOrder();
+    Order *myOrder = new DeployOrder();
     Subject *orderSubject = new DeployOrder();
     ILoggable *orderLoggable = new DeployOrder();
 
@@ -120,16 +124,18 @@ void testLoggingObserver()
 
     cout << "orderSubject type: " << typeid(orderSubject).name() << endl;
     cout << "orderLoggable type " << typeid(orderLoggable).name() << endl;
+
+    LogObserver* myLogObserver = new LogObserver();
+    myGameEngine->attachObserver(myLogObserver);
+    myCommand->attachObserver(myLogObserver);
+    myCommandProcessor->attachObserver(myLogObserver);
+    myOrder->attachObserver(myLogObserver);
+
+    myGameEngine->setState(map_loaded);
+    myCommand->saveEffect("testeffect");
+    myCommandProcessor->getCommand(map_loaded);
+    myOrdersList->addOrder(myOrder);
+    myOrder->execute();
+
+    cout << "Part 5 is done " << endl;
 }
-
-// #include <string>
-// #include <vector>
-
-// #include "GameEngine.h"
-// #include "Drivers.h"
-
-// int main(int argc, char *argv[])
-// {
-//     testLoggingObserver();
-//     return 0;
-// }
