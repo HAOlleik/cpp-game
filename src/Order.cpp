@@ -18,7 +18,7 @@ Order::Order(const Order &o)
 	// Perform a deep copy of the orderName
 	if (o.orderName != nullptr)
 	{
-		orderName = new string(*(o.orderName)); 
+		orderName = new string(*(o.orderName));
 	}
 	else
 	{
@@ -46,13 +46,14 @@ Order &Order::operator=(const Order &other)
 	else
 	{
 		orderName = nullptr;
-	}fadva
+	}
 
 	// Return a reference to the current object
 	return *this;
 }
 
-string Order::stringToLog(){
+string Order::stringToLog()
+{
 	string returnString = "Order " + *orderName + " was executed.";
 	return returnString;
 }
@@ -193,8 +194,8 @@ void AdvanceOrder::attackSimilate(Territory *source, Territory *target, int numA
 			 << " from " << target->getOwner()->getName() << endl;
 
 		target->getOwner()->removeTerritory(*target);
-		//capture the territory
-		
+		// capture the territory
+
 		target->setArmies(numArmiesToMove);
 		source->setArmies(std::max(0, source->getArmies() - numArmiesToMove));
 	}
@@ -230,8 +231,6 @@ void AdvanceOrder::execute()
 
 			attackSimilate(source, target, nbOfArmies);
 			cout << "Advance has been executed" << endl;
-
-			
 		}
 	}
 }
@@ -283,8 +282,6 @@ bool BombOrder::validate()
 		cout << "target is not adjacent to any of the current player's territories" << endl;
 		return false;
 	}
-
-	
 
 	else
 	{
@@ -557,12 +554,15 @@ void OrdersList::remove(int index)
 	}
 }
 
-string OrdersList::stringToLog() {
-    if (!_orders.empty()) {
-        Order* lastOrder = _orders.back();  // Fetching the last order in the queue
-        if (lastOrder != nullptr) {
-            return "Order Issued: A " + *lastOrder->orderName + " order has been issued by Player.";
-        }
-    }
-    return "No orders available."; // Or any default message for no orders in the queue
+string OrdersList::stringToLog()
+{
+	if (!_orders.empty())
+	{
+		Order *lastOrder = _orders.back(); // Fetching the last order in the queue
+		if (lastOrder != nullptr)
+		{
+			return "Order Issued: A " + *lastOrder->orderName + " order has been issued by Player.";
+		}
+	}
+	return "No orders available."; // Or any default message for no orders in the queue
 }
