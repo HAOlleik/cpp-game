@@ -220,7 +220,7 @@ ACTION GameEngine::mainGameLoop()
         // Move to the next game state
         // *_state = nextState();  // Implement a function to determine the next game state
     }
-
+    notify(this);
     return ACTION::end_game; // Or another appropriate action
 }
 
@@ -485,6 +485,37 @@ void GameEngine::setMap(std::shared_ptr<Map> map)
 {
     _map = std::make_unique<Map>(*map);
 }
+
+string GameEngine::getStateAsString(STATE state) {
+    // Assuming stateMap is a map that maps STATE enum values to string representations
+    std::map<STATE, std::string> stateMap = {
+        {STATE::start, "Start"},
+        {STATE::map_loaded, "Map Loaded"},
+        {STATE::map_validated, "Map Validated"},
+        // ... Add the remaining states here
+    };
+
+    auto it = stateMap.find(state);
+    if (it != stateMap.end()) {
+        return it->second;
+    } else {
+        return "Unknown State";
+    }
+}
+
+
+string GameEngine::stringToLog() {
+    string returnString = "The new game state is: ";
+
+    if (_state) {
+        string gameStateDetails = getStateAsString(*_state); // Assuming _state is a pointer to a STATE enum
+
+        return returnString + gameStateDetails;
+    } else {
+        return returnString + "No game state available.";
+    }
+}
+
 
 void testMainGameLoop()
 {

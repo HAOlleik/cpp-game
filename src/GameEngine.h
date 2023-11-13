@@ -19,7 +19,7 @@ using std::ostream;
 
 #define MAX_PLAYERS 6
 
-class GameEngine
+class GameEngine: public ILoggable, public Subject
 {
 public:
     GameEngine();                               // default
@@ -40,6 +40,8 @@ public:
     {
         _state = std::make_shared<STATE>(newState);
     };
+    string GameEngine::getStateAsString(STATE state);
+    string stringToLog();
     friend ostream &operator<<(ostream &os, GameEngine &g);
 
 private:
