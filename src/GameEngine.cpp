@@ -540,7 +540,7 @@ void testMainGameLoop()
 
     // Load a map (replace "map_filename.map" with your actual map file)
     MapLoader mapLoader;
-    if (mapLoader.load("map_filename.map"))
+    if (mapLoader.load("maps/Alberta/Alberta.map"))
     {
         game.setMap(std::make_shared<Map>(*mapLoader.getMap()));
         std::cout << "Map loaded successfully." << std::endl;

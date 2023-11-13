@@ -18,6 +18,7 @@ void testCommandProcessor(string fileName) {
 }
 
 void testCommandProcessor(vector<string> arguments, size_t size) {
+    cout << "\n testCommandProcessor running \n\n";
     bool optionProvided = false;
     for (size_t i = 1; i < size; ++i) {
         optionProvided = true;
