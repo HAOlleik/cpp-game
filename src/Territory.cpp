@@ -124,13 +124,13 @@ const std::vector<std::shared_ptr<Territory>> Territory::getAdjacentTerritories(
 
 const Territory *Territory::findAdjacentTerritory(Territory *t) const
 {
-    auto t = std::make_shared<Territory>(*t);
-    auto found = std::find(_adjacentTerritories->begin(), _adjacentTerritories->end(), t);
+    auto temp = std::make_shared<Territory>(*t);
+    auto found = std::find(getAdjacentTerritories().begin(), getAdjacentTerritories().end(), temp);
 
-    if (found != _adjacentTerritories->end())
+    if (found != getAdjacentTerritories().end())
     {
         // return raw locked poitner;
-        return found->lock().get();
+        return found->get();
     }
 
     return nullptr;
