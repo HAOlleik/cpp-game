@@ -20,6 +20,8 @@ class Hand;
 class Deck;
 class Order;
 class Card;
+class DeployOrder;
+class BombOrder;
 #include "Cards.h"
 
 class Player
@@ -84,4 +86,7 @@ private:
 	friend class Card;
 	friend class Map;
 	friend class Hand;
+	friend class Order;
+	friend class DeployOrder;
+	friend class BombOrder;
 };

@@ -276,42 +276,42 @@ void Hand::removeCard(int index)
     }
 }
 
-// void Hand::play(int index, Deck &deck, OrdersList &ordersList)
-// {
-//     index -= 1;
-//     int orderCard = (playHand[index]->getCardID());
+void Hand::play(int index, Deck &deck, OrdersList &ordersList)
+{
+    index -= 1;
+    int orderCard = (playHand[index]->getCardID());
 
-//     BombOrder b;
-//     BlockadeOrder bd;
-//     AirliftOrder al;
-//     NegotiateOrder n;
+    BombOrder b;
+    BlockadeOrder bd;
+    AirliftOrder al;
+    NegotiateOrder n;
 
-//     switch (orderCard)
-//     {
-//     case 1:
-//         cout << "A bomb order was added to the player's order list." << endl;
-//         ordersList.addOrder(&b);
-//         break;
-//     case 2:
-//         cout << "A reinforcement order was added to the player's order list." << endl;
-//         break;
-//     case 3:
-//         cout << "A blockade order was added to the player's order list." << endl;
-//         ordersList.addOrder(&bd);
-//         break;
-//     case 4:
-//         cout << "An airlift order was added to the player's order list." << endl;
-//         ordersList.addOrder(&al);
-//         break;
-//     case 5:
-//         cout << "A negotiate (diplomacy) order was added to the player's order list." << endl;
-//         ordersList.addOrder(&n);
-//         break;
-//     }
+    switch (orderCard)
+    {
+    case 1:
+        cout << "A bomb order was added to the player's order list." << endl;
+        ordersList.addOrder(&b);
+        break;
+    case 2:
+        cout << "A reinforcement order was added to the player's order list." << endl;
+        break;
+    case 3:
+        cout << "A blockade order was added to the player's order list." << endl;
+        ordersList.addOrder(&bd);
+        break;
+    case 4:
+        cout << "An airlift order was added to the player's order list." << endl;
+        ordersList.addOrder(&al);
+        break;
+    case 5:
+        cout << "A negotiate (diplomacy) order was added to the player's order list." << endl;
+        ordersList.addOrder(&n);
+        break;
+    }
 
-//     deck.addCardBackToDeck(orderCard);
-//     playHand.erase(playHand.begin() + index);
-//     cout << "Current OrderList: " << endl;
-//     ordersList.printOrders();
-//     cout << "\n------------------" << endl;
-// }
+    deck.addCardBackToDeck(orderCard);
+    playHand.erase(playHand.begin() + index);
+    cout << "Current OrderList: " << endl;
+    ordersList.printOrders();
+    cout << "\n------------------" << endl;
+}

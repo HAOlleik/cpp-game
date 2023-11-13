@@ -13,12 +13,12 @@ class Player;
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
-	deploy,
-	advance,
-	bomb,
-	blockade,
-	airlift,
-	negotiate
+    deploy,
+    advance,
+    bomb,
+    blockade,
+    airlift,
+    negotiate
 };
 
 class Order
@@ -32,7 +32,7 @@ public:
     // Destructor
     virtual ~Order() = default;
 
-    string *orderName; //not sure if needed
+    string *orderName; // not sure if needed
 
     /* Pure virtual execute method */
     virtual bool validate() = 0;
@@ -64,12 +64,11 @@ class DeployOrder : public Order
 public:
     DeployOrder();
     DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies); // parameterized
-    DeployOrder(const DeployOrder &d);               // copy
+    DeployOrder(const DeployOrder &d);                                       // copy
 
     /* Destructor */
     ~DeployOrder();
 
-    
     void execute() override;
     bool validate() override;
     // bool isValid;
@@ -88,17 +87,17 @@ public:
     AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies);
     virtual bool validate() override;
     virtual void execute() override;
-    
+
     bool isValid;
 
-    private:
-    private:
-        Player *currentPlayer;
-        Territory *source;
-        Territory *target;
-        int nbOfArmies;
-        void simulateAttack(Territory *source, Territory *target, int nbOfArmies);
-        Order *clone() const override;
+private:
+private:
+    Player *currentPlayer;
+    Territory *source;
+    Territory *target;
+    int nbOfArmies;
+    void simulateAttack(Territory *source, Territory *target, int nbOfArmies);
+    Order *clone() const override;
 };
 
 class BombOrder : public Order
@@ -111,10 +110,10 @@ public:
 
     bool isValid;
 
-    private:
-        Player *currentPlayer;
-        Territory *target;
-        Order *clone() const override;
+private:
+    Player *currentPlayer;
+    Territory *target;
+    Order *clone() const override;
 };
 
 class BlockadeOrder : public Order
@@ -124,13 +123,13 @@ public:
     BlockadeOrder(Player *player, Territory *target);
     virtual bool validate() override;
     virtual void execute() override;
-    
+
     bool isValid;
 
-    private:
-        Player *currentPlayer;
-        Territory *target;
-        Order *clone() const override;
+private:
+    Player *currentPlayer;
+    Territory *target;
+    Order *clone() const override;
 };
 
 class AirliftOrder : public Order
@@ -143,12 +142,12 @@ public:
 
     bool isValid;
 
-    private:
-        Player *currentPlayer;
-        Territory *source;
-        Territory *target;
-        int nbOfArmies;
-        Order *clone() const override;
+private:
+    Player *currentPlayer;
+    Territory *source;
+    Territory *target;
+    int nbOfArmies;
+    Order *clone() const override;
 };
 
 class NegotiateOrder : public Order
@@ -161,10 +160,10 @@ public:
 
     bool isValid;
 
-    private:
-        Player *currentPlayer;
-        Player *targetPlayer;
-        Order *clone() const override;
+private:
+    Player *currentPlayer;
+    Player *targetPlayer;
+    Order *clone() const override;
 };
 
 class OrdersList
