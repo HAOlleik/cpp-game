@@ -488,7 +488,7 @@ void GameEngine::setMap(std::shared_ptr<Map> map)
 
 #include "GameEngineState.h"
 
-std::string getStateAsString(STATE state) {
+std::string GameEngine::getStateAsString(STATE state) {
     switch (state) {
         case STATE::start:
             return "Start";
