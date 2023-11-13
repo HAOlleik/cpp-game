@@ -538,24 +538,24 @@ void testMainGameLoop()
     // Create a game engine instance
     GameEngine game;
 
-    // Load a map (replace "map_filename.map" with your actual map file)
-    MapLoader mapLoader;
-    if (mapLoader.load("maps/Alberta/Alberta.map"))
-    {
-        game.setMap(std::make_shared<Map>(*mapLoader.getMap()));
-        std::cout << "Map loaded successfully." << std::endl;
-    }
-    else
-    {
-        std::cerr << "Error: Map could not be loaded." << std::endl;
-        return;
-    }
+    // // Load a map (replace "map_filename.map" with your actual map file)
+    // MapLoader mapLoader;
+    // if (mapLoader.load("maps/Alberta/Alberta.map"))
+    // {
+    //     game.setMap(std::make_shared<Map>(*mapLoader.getMap()));
+    //     std::cout << "Map loaded successfully." << std::endl;
+    // }
+    // else
+    // {
+    //     std::cerr << "Error: Map could not be loaded." << std::endl;
+    //     return;
+    // }
 
-    // Add players to the game
-    game.addPlayer("Hussein");
-    game.addPlayer("Alex");
-    // Add more players as needed
+    // // Add players to the game
+    // game.addPlayer("Hussein");
+    // game.addPlayer("Alex");
+    // // Add more players as needed
 
-    // Start the main game loop
+    // // Start the main game loop
     game.startupPhase(); // Assuming you want to start with the startup phase
 }
