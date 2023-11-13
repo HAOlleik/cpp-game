@@ -2,11 +2,11 @@
 
 // Default constructor
 Player::Player()
-	: name(new string("Player")), reinforcementPool(new int(0)),
+	: reinforcementPool(new int(0)), name(new string("Player")),
 	  territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
 
 // Parameter constructor
-Player::Player(string *name) : name(name), reinforcementPool(new int(0)),
+Player::Player(string *name) : reinforcementPool(new int(0)), name(name),
 							   territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
 
 // Parameter constructor

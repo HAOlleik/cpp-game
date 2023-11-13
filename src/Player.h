@@ -73,15 +73,13 @@ public:
 	void removeTerritory(Territory &territory);
 
 private:
-	string *name;
 	int *reinforcementPool;
-	Hand *playerHand;
-	// by default false
-	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
-
-	vector<Card *> cards;
+	string *name;
 	vector<Territory *> territories;
+	Hand *playerHand;
 	vector<Order *> orders;
+	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
+	vector<Card *> cards;
 
 	// Friend classes of the Player class
 	friend class GameEngine;
