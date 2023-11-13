@@ -91,7 +91,7 @@ void GameEngine::startupPhase()
             //     player->getHand()->addCard(*_deck->draw());
             // }
 
-            *_state = STATE::assign_reinforcement;
+            setState(STATE::assign_reinforcement);
             result = "STATE::assign_reinforcement";
             command.saveEffect(result);
             mainGameLoop();
@@ -109,7 +109,7 @@ void GameEngine::startupPhase()
                 continue;
             }
             _map = std::make_unique<Map>(*loader.getMap().get());
-            *_state = STATE::map_loaded;
+            setState(STATE::map_loaded);
             result = "STATE::map_loaded";
             break;
         }
@@ -123,13 +123,13 @@ void GameEngine::startupPhase()
                 continue;
             }
 
-            *_state = STATE::map_validated;
+            setState(STATE::map_validated);
             result = "STATE::map_validated";
             break;
 
         case ACTION::add_player:
             // 3) use the addplayer <playername> command to enter players in the game (2-6 players)
-            *_state = STATE::players_added;
+            setState(STATE::players_added);
             if (_players.size() == 6)
             {
                 result = "Max players count 6 already reach.";
@@ -188,7 +188,8 @@ ACTION GameEngine::mainGameLoop()
 
     // Continue the game loop until a winner is determined
     // when we come first state
-    *_state = STATE::assign_reinforcement;
+
+    setState(STATE::assign_reinforcement);
     while (*_state != STATE::win)
     {
         switch (*_state)
@@ -210,7 +211,7 @@ ACTION GameEngine::mainGameLoop()
         // Check if a player has won
         if (conditionToCheckForWinner())
         {
-            *_state = STATE::win;
+            setState(STATE::win);
             break;
         }
 
@@ -366,7 +367,7 @@ void GameEngine::reinforcmentPhase()
     }
 
     // move to the next phase
-    *_state = STATE::issue_orders;
+    setState(STATE::issue_orders);
 }
 
 // Issue orders phase, should be round-robin
@@ -403,7 +404,7 @@ void GameEngine::issueOrdersPhase()
     _players[1]->issueOrder(mapVector);
 
     // move to the next phase
-    *_state = STATE::execute_orders;
+    setState(STATE::execute_orders);
 }
 
 // Execute orders phase
@@ -412,16 +413,16 @@ void GameEngine::executeOrdersPhase()
     // Orders Execution Phase—Once all the players have signified in the same turn that they are not issuing
     // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round-robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
     // Iterate through each player and execute their top order
-    for (auto& player : _players)
+    for (auto &player : _players)
     {
         // Get the player's orders
-        vector<Order*>orders = player->getOrders();
+        vector<Order*> orders = player->getOrders();
 
         // Execute the top order if there are any orders
         if (!orders.empty())
         {
             // Execute the order
-            Order* order = orders.front();
+            Order *order = orders.front();
             order->execute();
 
             // Remove the executed order from the player's order list using an iterator
@@ -433,7 +434,7 @@ void GameEngine::executeOrdersPhase()
     }
 
     // Check if any player still has orders to execute
-    for (auto& player : _players)
+    for (auto &player : _players)
     {
         if (!player->getOrders().empty())
         {
@@ -443,15 +444,11 @@ void GameEngine::executeOrdersPhase()
     }
 
     // No remaining orders for any player, move back to the reinforcement phase
-    *_state = STATE::assign_reinforcement;
+    setState(STATE::assign_reinforcement);
 
     // Continue with the main game loop
     mainGameLoop();
 }
-
-
-
-
 
 // Adding players
 void GameEngine::addPlayer(const std::string &playerName)

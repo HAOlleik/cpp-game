@@ -36,9 +36,9 @@ public:
     {
         return _state.get();
     };
-    void setState(STATE *newState) // setter for state
+    void setState(STATE newState) // setter for state
     {
-        _state = std::make_shared<STATE>(*newState);
+        _state = std::make_shared<STATE>(newState);
     };
     friend ostream &operator<<(ostream &os, GameEngine &g);
 

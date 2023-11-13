@@ -54,7 +54,8 @@ public:
 	vector<Order *> getOrders() const;
 	bool getPassTurn();
 	void setPassTurn(bool);
-	Hand getHand();
+	Hand *getHand();
+	void addReinforcements(int);
 	int getReinforcementPool();			  // get army units
 	int continentBonusValue();			  // the player is given a number of army units corresponding to the continent’s control bonus value
 	void setReinforcementPool(int *pool); // set army units
