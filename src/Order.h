@@ -97,7 +97,7 @@ public:
         Territory *source;
         Territory *target;
         int nbOfArmies;
-        void simulateAttack(Territory *source, Territory *target, int nbOfArmies);
+        void attackSimilate(Territory *source, Territory *target, int nbOfArmies);
         Order *clone() const override;
 };
 
