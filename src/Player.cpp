@@ -213,9 +213,9 @@ int Player::continentBonusValue()
 }
 
 // get hand of cards for player
-Hand Player::getHand()
+Hand *Player::getHand()
 {
-	return *playerHand;
+	return playerHand;
 }
 
 void Player::issueOrder(vector<Territory *> Map)
