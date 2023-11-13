@@ -410,21 +410,21 @@ void GameEngine::issueOrdersPhase()
 void GameEngine::executeOrdersPhase()
 {
     // Orders Execution Phase—Once all the players have signified in the same turn that they are not issuing
-    // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round - robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
+    // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round-robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
     // Iterate through each player and execute their top order
-    for (auto &player : _players)
+    for (auto& player : _players)
     {
         // Get the player's orders
-        auto &orders = player->getOrders();
+        vector<Order*>orders = player->getOrders();
 
         // Execute the top order if there are any orders
         if (!orders.empty())
         {
             // Execute the order
-            Order *order = orders.front();
+            Order* order = orders.front();
             order->execute();
 
-            // Remove the executed order from the player's order list
+            // Remove the executed order from the player's order list using an iterator
             orders.erase(orders.begin());
 
             // Output order execution information (for demonstration purposes)
@@ -433,7 +433,7 @@ void GameEngine::executeOrdersPhase()
     }
 
     // Check if any player still has orders to execute
-    for (const auto &player : _players)
+    for (auto& player : _players)
     {
         if (!player->getOrders().empty())
         {
@@ -448,6 +448,10 @@ void GameEngine::executeOrdersPhase()
     // Continue with the main game loop
     mainGameLoop();
 }
+
+
+
+
 
 // Adding players
 void GameEngine::addPlayer(const std::string &playerName)
