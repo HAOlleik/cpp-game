@@ -363,3 +363,17 @@ void Player::removeTerritory(Territory &territory)
 	}
 	throw std::runtime_error("Territory wasn't in the player's list.");
 }
+
+vector<Order *> Player::getOrders() const
+{
+	return orders;
+}
+
+void Player::printOrder()
+{
+	for (int i = 0; i < orders.size(); i++)
+	{
+		cout << "<" << orders.at(i) << "> ";
+	}
+	cout << endl;
+}

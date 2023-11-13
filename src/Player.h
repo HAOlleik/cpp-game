@@ -51,6 +51,7 @@ public:
 	vector<Territory *> getTerritories();
 	// get Territories that are neighblors
 	vector<Territory *> getNeigbourTerritories(vector<Territory *>);
+	vector<Order *> getOrders() const;
 	bool getPassTurn();
 	void setPassTurn(bool);
 	Hand getHand();
@@ -59,9 +60,9 @@ public:
 	void setReinforcementPool(int *pool); // set army units
 	void setTerritories(Territory *terr); // set Territory
 	void setNamePlayer(string *str);	  // Set name of the player
-	// Players issue orders and place them in their order list through a call to the Player::issueOrder() method
-	// print orders from orderList
-	// void printOrder();
+										  // Players issue orders and place them in their order list through a call to the Player::issueOrder() method
+										  // print orders from orderList
+	void printOrder();
 	// void printHandCard(); // prind hand card
 	void issueOrder(vector<Territory *>);
 	// check if any of the users should be removed
