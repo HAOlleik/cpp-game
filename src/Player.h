@@ -44,13 +44,13 @@ public:
 	// Get name of the palyer
 	string getName();
 	// Territories to be attacked
-	vector<Territory *> toAttack(vector<Territory *>);
+	vector<Territory *> toAttack();
 	// Territories to be defended
 	vector<Territory *> toDefend();
 	// get Territory
 	vector<Territory *> getTerritories();
 	// get Territories that are neighblors
-	vector<Territory *> getNeigbourTerritories(vector<Territory *>);
+	vector<Territory *> getNeigbourTerritories();
 	vector<Order *> getOrders() const;
 	bool getPassTurn();
 	void setPassTurn(bool);
@@ -65,7 +65,7 @@ public:
 										  // print orders from orderList
 	void printOrder();
 	// void printHandCard(); // prind hand card
-	void issueOrder(vector<Territory *>);
+	void issueOrder();
 	// check if any of the users should be removed
 
 	// Only for Assignment 1

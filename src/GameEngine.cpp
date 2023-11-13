@@ -401,7 +401,7 @@ void GameEngine::issueOrdersPhase()
     }
 
     // Call issueOrder with the converted vector
-    _players[1]->issueOrder(mapVector);
+    _players[1]->issueOrder();
 
     // move to the next phase
     setState(STATE::execute_orders);
@@ -416,7 +416,7 @@ void GameEngine::executeOrdersPhase()
     for (auto &player : _players)
     {
         // Get the player's orders
-        vector<Order*> orders = player->getOrders();
+        vector<Order *> orders = player->getOrders();
 
         // Execute the top order if there are any orders
         if (!orders.empty())
@@ -488,45 +488,49 @@ void GameEngine::setMap(std::shared_ptr<Map> map)
 
 #include "GameEngineState.h"
 
-std::string GameEngine::getStateAsString(STATE state) {
-    switch (state) {
-        case STATE::start:
-            return "Start";
-        case STATE::map_loaded:
-            return "Map Loaded";
-        case STATE::map_validated:
-            return "Map Validated";
-        case STATE::players_added:
-            return "Players added";
-        case STATE::assign_reinforcement:
-            return "Assign reinforcement";
-        case STATE::issue_orders:
-            return "Issue orders";
-        case STATE::execute_orders:
-            return "Execute orders";
-        case STATE::win:
-            return "Win";
-        case STATE::game_ended:
-            return "Game ended";
-        // Add cases for other states
-        default:
-            return "Unknown State";
+std::string GameEngine::getStateAsString(STATE state)
+{
+    switch (state)
+    {
+    case STATE::start:
+        return "Start";
+    case STATE::map_loaded:
+        return "Map Loaded";
+    case STATE::map_validated:
+        return "Map Validated";
+    case STATE::players_added:
+        return "Players added";
+    case STATE::assign_reinforcement:
+        return "Assign reinforcement";
+    case STATE::issue_orders:
+        return "Issue orders";
+    case STATE::execute_orders:
+        return "Execute orders";
+    case STATE::win:
+        return "Win";
+    case STATE::game_ended:
+        return "Game ended";
+    // Add cases for other states
+    default:
+        return "Unknown State";
     }
 }
 
-
-string GameEngine::stringToLog() {
+string GameEngine::stringToLog()
+{
     string returnString = "The new game state is: ";
 
-    if (_state) {
+    if (_state)
+    {
         string gameStateDetails = getStateAsString(*_state); // Assuming _state is a pointer to a STATE enum
 
         return returnString + gameStateDetails;
-    } else {
+    }
+    else
+    {
         return returnString + "No game state available.";
     }
 }
-
 
 void testMainGameLoop()
 {

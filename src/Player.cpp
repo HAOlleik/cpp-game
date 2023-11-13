@@ -134,7 +134,7 @@ void Player::setTerritories(Territory *terr)
 }
 
 // get Territories that are neighblors
-vector<Territory *> Player::getNeigbourTerritories(vector<Territory *> Map)
+vector<Territory *> Player::getNeigbourTerritories()
 {
 	vector<Territory *> neighbTerrritories;
 	for (auto &t : territories)
@@ -149,13 +149,13 @@ vector<Territory *> Player::getNeigbourTerritories(vector<Territory *> Map)
 }
 
 // Get list of territories that are to be attacked
-vector<Territory *> Player::toAttack(vector<Territory *> Map)
+vector<Territory *> Player::toAttack()
 {
 	vector<Territory *> listToAttack;
-	listToAttack = getNeigbourTerritories(Map);
+	listToAttack = getNeigbourTerritories();
 
 	cout << "The list of territories that are be Attacked" << endl;
-	for (int i = 0; i < listToAttack.size(); i++)
+	for (uint64_t i = 0; i < listToAttack.size(); i++)
 	{
 		cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << " Name of the continent: " << (*listToAttack[i]).getContinent() << endl;
 	}
@@ -168,7 +168,7 @@ vector<Territory *> Player::toDefend()
 	vector<Territory *> listToDefend;
 	Territory *temp = NULL;
 	cout << "The list of territories that are be defended" << endl;
-	for (int i = 0; i < territories.size(); i++)
+	for (uint64_t i = 0; i < territories.size(); i++)
 	{
 		cout << "Index " << i << " Name of the territory : " << (*territories[i]).getName() << " Name of the continent: " << (*territories[i]).getContinent() << endl;
 		temp = territories[i];
@@ -218,10 +218,10 @@ Hand *Player::getHand()
 	return playerHand;
 }
 
-void Player::issueOrder(vector<Territory *> Map)
+void Player::issueOrder()
 {
 	vector<Territory *> listToAttack;
-	listToAttack = toAttack(Map);
+	listToAttack = toAttack();
 	vector<Territory *> listToDefend;
 	listToDefend = toDefend();
 
@@ -230,7 +230,7 @@ void Player::issueOrder(vector<Territory *> Map)
 	{
 		int army = getReinforcementPool();
 
-		for (int i = 0; i < listToDefend.size(); i++)
+		for (uint64_t i = 0; i < listToDefend.size(); i++)
 		{
 			srand(time(NULL));
 			int temp = rand() % army + 1;
@@ -251,9 +251,9 @@ void Player::issueOrder(vector<Territory *> Map)
 
 	// Advance order
 	srand(time(NULL));
-	int actionNumber = rand() % listToAttack.size();
+	// int actionNumber = rand() % listToAttack.size();
 
-	int enemy = listToAttack[actionNumber]->getArmies();
+	// int enemy = listToAttack[actionNumber]->getArmies();
 
 	// Using one of the cards in the hand to issue an order
 	if (!playerHand->getPlayHand().empty())
@@ -371,7 +371,7 @@ vector<Order *> Player::getOrders() const
 
 void Player::printOrder()
 {
-	for (int i = 0; i < orders.size(); i++)
+	for (uint64_t i = 0; i < orders.size(); i++)
 	{
 		cout << "<" << orders.at(i) << "> ";
 	}
