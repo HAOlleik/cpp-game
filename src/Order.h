@@ -90,14 +90,14 @@ public:
 
     bool isValid;
 
-private:
-private:
-    Player *currentPlayer;
-    Territory *source;
-    Territory *target;
-    int nbOfArmies;
-    void simulateAttack(Territory *source, Territory *target, int nbOfArmies);
-    Order *clone() const override;
+   
+    private:
+        Player *currentPlayer;
+        Territory *source;
+        Territory *target;
+        int nbOfArmies;
+        void attackSimilate(Territory *source, Territory *target, int nbOfArmies);
+        Order *clone() const override;
 };
 
 class BombOrder : public Order

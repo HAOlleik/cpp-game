@@ -46,7 +46,7 @@ Order &Order::operator=(const Order &other)
 	else
 	{
 		orderName = nullptr;
-	}
+	}fadva
 
 	// Return a reference to the current object
 	return *this;
@@ -63,10 +63,10 @@ Order *DeployOrder::clone() const { return new DeployOrder(*this); }
 
 DeployOrder::DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies)
 {
-	string string_1 = "Deploy";
-	this->setDescription(string_1);
-	string string_2 = "Deploys your troops";
-	this->setEffect(string_2);
+	string name = "Deploy";
+	this->setDescription(name);
+	string orderEffect = "Deploys the troops";
+	this->setEffect(orderEffect);
 
 	this->currentPlayer = new Player(*player);
 	this->target = new Territory(*targetTerritory);
@@ -124,10 +124,10 @@ AdvanceOrder::AdvanceOrder()
 
 AdvanceOrder::AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies)
 {
-	string string_1 = "Advance";
-	this->setDescription(string_1);
-	string string_2 = "Advance";
-	this->setEffect(string_2);
+	string name = "Advance";
+	this->setDescription(name);
+	string orderEffect = "Advance Order";
+	this->setEffect(orderEffect);
 
 	this->currentPlayer = player;
 	this->target = targetTerritory;
@@ -135,106 +135,101 @@ AdvanceOrder::AdvanceOrder(Player *player, Territory *sourceTerritory, Territory
 	this->nbOfArmies = nbOfArmies;
 }
 
-// bool AdvanceOrder::validate()
-// {
-// 	if (source->getOwner()->getName() != currentPlayer->getName())
-// 	{
-// 		cout << "Order is invalid" << endl;
-// 		return false;
-// 	}
+bool AdvanceOrder::validate()
+{
+	if (source->getOwner()->getName() != currentPlayer->getName())
+	{
+		cout << "Order is invalid" << endl;
+		return false;
+	}
 
-// 	auto it = std::find(source->getAdjacentTerritories().begin(), source->getAdjacentTerritories().end(), target);
-// 	if (it == source->getAdjacentTerritories().end())
-// 	{
-// 		cout << "The target territory is not adjacent to the source territory!\n"
-// 			 << endl;
-// 		return false;
-// 	}
+	auto it = std::find(source->getAdjacentTerritories().begin(), source->getAdjacentTerritories().end(), target);
+	if (it == source->getAdjacentTerritories().end())
+	{
+		cout << "The target territory is not adjacent to the source territory!\n"
+			 << endl;
+		return false;
+	}
 
-// 	else
-// 	{
-// 		cout << "Validated Advance" << endl;
-// 		return true;
-// 	}
-// }
+	else
+	{
+		cout << "Validated Advance" << endl;
+		return true;
+	}
+}
 
-// void AdvanceOrder::simulateAttack(Territory *source, Territory *target, int numArmiesToMove)
-// {
-// 	// Calculate the number of attacking and defending armies
-// 	int numAttackingArmies = numArmiesToMove;
-// 	int numDefendingArmies = target->getArmies();
+void AdvanceOrder::attackSimilate(Territory *source, Territory *target, int numArmiesToMove)
+{
+	// Calculate the number of attacking and defending armies
+	int numAttackingArmies = numArmiesToMove;
+	int numDefendingArmies = target->getArmies();
 
-// 	// Set random seed for battle simulation
-// 	srand(static_cast<unsigned int>(time(nullptr)));
+	// Set random seed for battle simulation
+	srand(static_cast<unsigned int>(time(nullptr)));
 
-// 	// Simulate the battle
-// 	while (numAttackingArmies > 0 && numDefendingArmies > 0)
-// 	{
-// 		if (rand() % 100 < 60)
-// 		{
-// 			--numDefendingArmies;
-// 		}
-// 		else if (rand() % 100 < 70)
-// 		{
-// 			--numAttackingArmies;
-// 		}
-// 	}
+	// Simulate the battle
+	while (numAttackingArmies > 0 && numDefendingArmies > 0)
+	{
+		if (rand() % 100 < 60)
+		{
+			--numDefendingArmies;
+		}
+		else if (rand() % 100 < 70)
+		{
+			--numAttackingArmies;
+		}
+	}
 
-// 	// Determine the result of the battle
-// 	if (numDefendingArmies <= 0)
-// 	{
-// 		// The attacker wins the battle and captures the territory
-// 		cout << currentPlayer->getName() << " has conquered territory " << target->getId()
-// 			 << " from " << target->getOwner()->getName() << endl;
+	// Determine the result of the battle
+	if (numDefendingArmies <= 0)
+	{
+		// The attacker wins the battle and captures the territory
+		cout << currentPlayer->getName() << " has conquered territory " << target->getName()
+			 << " from " << target->getOwner()->getName() << endl;
 
-// 		target->getOwner()->removeTerritory(target);
-// 		currentPlayer->addTerritory(target);
-// 		target->setArmies(numArmiesToMove);
-// 		source->setArmies(std::max(0, source->getArmies() - numArmiesToMove));
-// 	}
-// 	else
-// 	{
-// 		// The defender wins the battle
-// 		source->setArmies(std::max(0, source->getArmies() - numArmiesToMove));
-// 	}
-// }
+		target->getOwner()->removeTerritory(*target);
+		//capture the territory
+		
+		target->setArmies(numArmiesToMove);
+		source->setArmies(std::max(0, source->getArmies() - numArmiesToMove));
+	}
+	else
+	{
+		// The defender wins the battle
+		source->setArmies(std::max(0, source->getArmies() - numArmiesToMove));
+	}
+}
 
-// void AdvanceOrder::execute()
-// {
-// 	if (this->validate())
-// 	{
+void AdvanceOrder::execute()
+{
+	if (this->validate())
+	{
 
-// 		if (source->getOwner()->getName() == target->getOwner()->getName())
-// 		{
-// 			int armiesToMove = nbOfArmies;
+		if (source->getOwner()->getName() == target->getOwner()->getName())
+		{
+			int armiesToMove = nbOfArmies;
 
-// 			// Check if the source has fewer armies than we're trying to move
-// 			if (armiesToMove > source->getArmies())
-// 			{
-// 				armiesToMove = source->getArmies();
-// 			}
+			// Check if the source has fewer armies than we're trying to move
+			if (armiesToMove > source->getArmies())
+			{
+				armiesToMove = source->getArmies();
+			}
 
-// 			// Move the armies
-// 			target->setArmies(target->getArmies() + armiesToMove);
-// 			source->setArmies(source->getArmies() - armiesToMove);
-// 		}
+			// Move the armies
+			target->setArmies(target->getArmies() + armiesToMove);
+			source->setArmies(source->getArmies() - armiesToMove);
+		}
 
-// 		else
-// 		{
+		else
+		{
 
-// 			if (currentPlayer->isFriend(target->getOwner()))
-// 			{
-// 				cout << "You cannot attack your friend player" << endl;
-// 				return;
-// 			}
+			attackSimilate(source, target, nbOfArmies);
+			cout << "Advance has been executed" << endl;
 
-// 			simulateAttack(source, target, nbOfArmies);
-// 			cout << "Advance has been executed" << endl;
-
-// 			// gets a card??
-// 		}
-// 	}
-// }
+			
+		}
+	}
+}
 
 // Bomb
 Order *BombOrder::clone() const { return new BombOrder(*this); }
@@ -248,10 +243,10 @@ BombOrder::BombOrder()
 }
 BombOrder::BombOrder(Player *currentPlayer, Territory *target)
 {
-	string string_1 = "Bomb";
-	this->setDescription(string_1);
-	string string_2 = "Bomb";
-	this->setEffect(string_2);
+	string name = "Bomb";
+	this->setDescription(name);
+	string orderEffect = "Bomb Order";
+	this->setEffect(orderEffect);
 
 	this->target = target;
 	this->currentPlayer = currentPlayer;
@@ -284,11 +279,7 @@ bool BombOrder::validate()
 		return false;
 	}
 
-	// if (currentPlayer->isFriend(target->getOwner()))
-	// {
-	// 	cout << "Target is one of the friends of the current player, cannot attack!" << endl;
-	// 	return false;
-	// }
+	
 
 	else
 	{
@@ -327,10 +318,10 @@ BlockadeOrder::BlockadeOrder()
 }
 BlockadeOrder::BlockadeOrder(Player *player, Territory *target)
 {
-	string string_1 = "Blockade";
-	this->setDescription(string_1);
-	string string_2 = "Blocked";
-	this->setEffect(string_2);
+	string name = "Blockade";
+	this->setDescription(name);
+	string orderEffect = "Blocked Order";
+	this->setEffect(orderEffect);
 
 	this->currentPlayer = new Player(*player);
 	this->target = new Territory(*target);
@@ -376,10 +367,10 @@ AirliftOrder::AirliftOrder()
 }
 AirliftOrder::AirliftOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies)
 {
-	string string_1 = "Airlift";
-	this->setDescription(string_1);
-	string string_2 = "Airlift your troops";
-	this->setEffect(string_2);
+	string name = "Airlift";
+	this->setDescription(name);
+	string orderEffect = "Airlift Order";
+	this->setEffect(orderEffect);
 
 	this->currentPlayer = new Player(*player);
 	this->source = new Territory(*sourceTerritory);
@@ -421,10 +412,10 @@ NegotiateOrder::NegotiateOrder()
 }
 NegotiateOrder::NegotiateOrder(Player *currentPlayer, Player *targetPlayer)
 {
-	string string_1 = "Negotiate";
-	this->setDescription(string_1);
-	string string_2 = "Negotiated";
-	this->setEffect(string_2);
+	string name = "Negotiate";
+	this->setDescription(name);
+	string orderEffect = "Negotiate Order";
+	this->setEffect(orderEffect);
 
 	this->currentPlayer = currentPlayer;
 	this->targetPlayer = targetPlayer;
