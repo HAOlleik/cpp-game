@@ -22,7 +22,7 @@ enum OrderType
     negotiate
 };
 
-class Order
+class Order: public ILoggable, public Subject
 {
 public:
     Order();
