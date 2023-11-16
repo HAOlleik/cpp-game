@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
     // testPlayers();
     // testCards();
     // testLoadMaps();
-    testCommandProcessor(arguments, arguments.size());
+    // testCommandProcessor(arguments, arguments.size());
     // testGameEngineStates();
-    //testMainGameLoop();
-    testLoggingObserver();
+    testMainGameLoop();
+    // testLoggingObserver();
 
     return 0;
 }

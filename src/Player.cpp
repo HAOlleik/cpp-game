@@ -116,6 +116,11 @@ int Player::getReinforcementPool()
 	return *reinforcementPool;
 }
 
+void Player::addReinforcements(int n)
+{
+	reinforcementPool += n;
+}
+
 // set army units
 void Player::setReinforcementPool(int *pool)
 {

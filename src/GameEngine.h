@@ -19,7 +19,7 @@ using std::ostream;
 
 #define MAX_PLAYERS 6
 
-class GameEngine: public ILoggable, public Subject
+class GameEngine : public ILoggable, public Subject
 {
 public:
     GameEngine();                               // default
@@ -39,6 +39,7 @@ public:
     void setState(STATE newState) // setter for state
     {
         _state = std::make_shared<STATE>(newState);
+        cout << "in setstate " << _state;
         notify(this);
     };
     std::string getStateAsString(STATE state);
