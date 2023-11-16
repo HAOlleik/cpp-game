@@ -231,7 +231,7 @@ void Player::issueOrder()
 	listToDefend = toDefend();
 
 	// Deploy order until no armies left
-	while (getReinforcementPool() != 0)
+	while (getReinforcementPool() > 0)
 	{
 		int army = getReinforcementPool();
 
@@ -256,9 +256,9 @@ void Player::issueOrder()
 
 	// Advance order
 	srand(time(NULL));
-	// int actionNumber = rand() % listToAttack.size();
+	int actionNumber = rand() % listToAttack.size();
 
-	// int enemy = listToAttack[actionNumber]->getArmies();
+	int enemy = listToAttack[actionNumber]->getArmies();
 
 	// Using one of the cards in the hand to issue an order
 	if (!playerHand->getPlayHand().empty())

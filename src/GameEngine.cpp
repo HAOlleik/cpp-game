@@ -227,6 +227,7 @@ ACTION GameEngine::mainGameLoop()
         if (conditionToCheckForWinner())
         {
             setState(STATE::win);
+            std::cout << "Player " << _players[1]->getName() << " wins by controlling all territories!" << std::endl;
             break;
         }
 
