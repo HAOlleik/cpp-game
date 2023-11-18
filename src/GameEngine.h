@@ -39,7 +39,6 @@ public:
     void setState(STATE newState) // setter for state
     {
         _state = std::make_shared<STATE>(newState);
-        cout << "in setstate " << _state;
         notify(this);
     };
     std::string getStateAsString(STATE state);
