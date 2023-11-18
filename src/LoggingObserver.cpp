@@ -88,13 +88,13 @@ void Subject::notify(ILoggable *iloggable)
 // TO IMPLEMENT
 void testLoggingObserver()
 {
-    GameEngine* myGameEngine = new GameEngine();
+    GameEngine *myGameEngine = new GameEngine();
     Subject *engineSubject = new GameEngine();
     ILoggable *engineLoggable = new GameEngine();
 
-    Command* myCommand = new Command();
-    Subject* commandSubject = new Command();
-    ILoggable* commandLoggable = new Command();
+    Command *myCommand = new Command();
+    // Subject* commandSubject = new Command();
+    // ILoggable* commandLoggable = new Command();
 
     CommandProcessor *myCommandProcessor = new CommandProcessor();
     Subject *commandProccessorSubject = new CommandProcessor();
@@ -125,7 +125,7 @@ void testLoggingObserver()
     cout << "orderSubject type: " << typeid(orderSubject).name() << endl;
     cout << "orderLoggable type " << typeid(orderLoggable).name() << endl;
 
-    LogObserver* myLogObserver = new LogObserver();
+    LogObserver *myLogObserver = new LogObserver();
     myGameEngine->attachObserver(myLogObserver);
     myCommand->attachObserver(myLogObserver);
     myCommandProcessor->attachObserver(myLogObserver);
@@ -136,7 +136,7 @@ void testLoggingObserver()
     myCommand->saveEffect("testeffect");
     myCommandProcessor->getCommand(map_loaded);
     myOrdersList->addOrder(myOrder);
-    //myOrder->execute();
+    // myOrder->execute();
 
     cout << "Part 5 is done " << endl;
 }

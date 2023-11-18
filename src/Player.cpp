@@ -118,7 +118,7 @@ int Player::getReinforcementPool()
 
 void Player::addReinforcements(int n)
 {
-	reinforcementPool += n;
+	*reinforcementPool += n;
 }
 
 // set army units
@@ -162,7 +162,7 @@ vector<Territory *> Player::toAttack()
 	cout << "The list of territories that are be Attacked" << endl;
 	for (uint64_t i = 0; i < listToAttack.size(); i++)
 	{
-		cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << " Name of the continent: " << (*listToAttack[i]).getContinent() << endl;
+		// cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << " Name of the continent: " << (*listToAttack[i]).getContinent() << endl;
 	}
 	return listToAttack;
 }
@@ -170,16 +170,18 @@ vector<Territory *> Player::toAttack()
 // Get list of territories that are to be defended
 vector<Territory *> Player::toDefend()
 {
-	vector<Territory *> listToDefend;
-	Territory *temp = NULL;
-	cout << "The list of territories that are be defended" << endl;
-	for (uint64_t i = 0; i < territories.size(); i++)
-	{
-		cout << "Index " << i << " Name of the territory : " << (*territories[i]).getName() << " Name of the continent: " << (*territories[i]).getContinent() << endl;
-		temp = territories[i];
-		listToDefend.push_back(temp);
-	}
-	return listToDefend;
+	// vector<Territory *> listToDefend;
+	// Territory *temp = NULL;
+	// cout << "The list of territories that are be defended" << endl;
+	// for (uint64_t i = 0; i < territories.size(); i++)
+	// {
+	// 	cout << "Index " << i << " Name of the territory : " << (*territories[i]).getName() << " Name of the continent: " << (*territories[i]).getContinent() << endl;
+	// 	temp = territories[i];
+	// 	listToDefend.push_back(temp);
+	// }
+	// return listToDefend;
+
+	return territories;
 }
 
 int Player::continentBonusValue()
@@ -256,9 +258,9 @@ void Player::issueOrder()
 
 	// Advance order
 	srand(time(NULL));
-	int actionNumber = rand() % listToAttack.size();
+	// int actionNumber = rand() % listToAttack.size();
 
-	int enemy = listToAttack[actionNumber]->getArmies();
+	// int enemy = listToAttack[actionNumber]->getArmies();
 
 	// Using one of the cards in the hand to issue an order
 	if (!playerHand->getPlayHand().empty())

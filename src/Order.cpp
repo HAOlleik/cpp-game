@@ -7,7 +7,7 @@ string blockade1 = "blockade";
 string airlift1 = "airlift";
 string negotiate1 = "negotiate";
 
-Order::Order() {}
+Order::Order() : orderName(new std::string("")), orderDescription(new std::string("")), orderEffect(new std::string("")) {}
 
 Order::Order(string *str)
 {
@@ -69,7 +69,10 @@ void Order::setPlayer(Player *player)
 
 void Order::setDescription(string &desc)
 {
-	*orderDescription = desc;
+	if (orderDescription)
+		delete orderDescription;
+
+	orderDescription = new std::string(desc);
 }
 
 void Order::setEffect(string &effect)

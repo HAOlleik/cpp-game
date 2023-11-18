@@ -74,32 +74,20 @@ void GameEngine::startupPhase()
         {
         case ACTION::gamestart:
         {
-            std::cout << "entered gmaestart" << std::endl;
-            // 4) use the gamestart command to
-            // a) fairly distribute all the territories to the players
-            // b) determine randomly the order of play of the players in the game
-            // c) give 50 initial army units to the players, which are placed in their respective reinforcement pool
-            // d) let each player draw 2 initial cards from the deck using the deck’s draw() method
-            // e) switch the game to the play phase
             assignPlayersRandomOrder();
-            std::cout << "entered gmaestart 1" << std::endl;
-
             assignTerritoriesPlayers();
-            std::cout << "entered gmaestart 2" << std::endl;
 
-            _deck = std::make_unique<Deck>();
+            // initial size of the deck is 10
+            _deck = std::make_unique<Deck>(10);
             _deck->fillDeck();
             for (auto &player : _players)
             {
                 player->addReinforcements(50);
-                std::cout << "entered gmaestart 3" << std::endl;
                 // can and wil fail if passed null-ref
                 player->getHand()->addCard(*_deck->draw());
                 player->getHand()->addCard(*_deck->draw());
-                std::cout << "entered gmaestart 4" << std::endl;
             }
 
-            std::cout << "number of players: " << _players.size() << std::endl;
             setState(STATE::assign_reinforcement);
             result = "STATE::assign_reinforcement";
             command.saveEffect(result);
@@ -108,9 +96,6 @@ void GameEngine::startupPhase()
         }
         case ACTION::load_map:
         {
-            cout << "i am in loadmap\n ";
-            // 1) use the loadmap <filename> command to select a map from a list of map files as stored in a directory,
-            // which results in the map being loaded in the game.
             MapLoader loader;
             if (!loader.load(request[1]))
             {
@@ -119,7 +104,6 @@ void GameEngine::startupPhase()
                 continue;
             }
 
-            std::cout << "map address is " << *loader.getMap() << std::endl;
             _map = std::make_unique<Map>(*loader.getMap().get());
             setState(STATE::map_loaded);
             result = "STATE::map_loaded";
@@ -128,8 +112,6 @@ void GameEngine::startupPhase()
         }
 
         case ACTION::validate_map:
-            cout << "i am in validation\n ";
-            // 2) use the validatemap command to validate the map (i.e. it is a connected graph, etc – see assignment 1).
             if (!_map->validate())
             {
                 result = "Map is not valid";
@@ -142,8 +124,6 @@ void GameEngine::startupPhase()
             break;
 
         case ACTION::add_player:
-
-            // 3) use the addplayer <playername> command to enter players in the game (2-6 players)
             setState(STATE::players_added);
             if (_players.size() == MAX_PLAYERS)
             {
@@ -173,21 +153,7 @@ bool GameEngine::conditionToCheckForWinner()
         if (player->getTerritories().size() == territoriesCount)
         {
             // Player controls all territories, declare winner
-            std::cout << "Player " << player->getName() << " wins by controlling all territories!" << std::endl;
             return true;
-        }
-    }
-
-    // Check if any player doesn't control any territory
-    for (const auto &player : _players)
-    {
-        if (player->getTerritories().empty())
-        {
-            // Player doesn't control any territory, remove from the game
-            std::cout << "Player " << player->getName() << " has no territories and is eliminated from the game." << std::endl;
-            // Remove the player from the list
-            _players.erase(std::remove(_players.begin(), _players.end(), player), _players.end());
-            return false; // The game continues after removing the player
         }
     }
 
@@ -226,8 +192,8 @@ ACTION GameEngine::mainGameLoop()
         // Check if a player has won
         if (conditionToCheckForWinner())
         {
-            setState(STATE::win);
             std::cout << "Player " << _players[1]->getName() << " wins by controlling all territories!" << std::endl;
+            setState(STATE::win);
             break;
         }
 
@@ -241,12 +207,24 @@ ACTION GameEngine::mainGameLoop()
 
 void GameEngine::checkLoosers()
 {
-    for (auto &player : _players)
+    // Check if any player doesn't control any territory
+    for (const auto &player : _players)
     {
-        // if a player has 0 terr, remove looser
-        if (player->getTerritories().size() == 0)
+        if (player->getTerritories().empty())
+        {
+            // Player doesn't control any territory, remove from the game
+            std::cout << "Player " << player->getName() << " has no territories and is eliminated from the game." << std::endl;
+            // Remove the player from the list
             _players.erase(std::remove(_players.begin(), _players.end(), player), _players.end());
+        }
     }
+
+    // for (auto &player : _players)
+    // {
+    //     // if a player has 0 terr, remove looser
+    //     if (player->getTerritories().size() == 0)
+    //         _players.erase(std::remove(_players.begin(), _players.end(), player), _players.end());
+    // }
 }
 
 void GameEngine::assignPlayersRandomOrder()
@@ -284,7 +262,6 @@ void GameEngine::assignTerritoriesPlayers()
 {
     auto terr = _map->getTerritories();
 
-    auto size = terr->size();
     uint64_t iter = 0;
     for (auto &it : *terr)
     {
