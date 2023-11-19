@@ -1,2 +1,0 @@
-The new game state is: Map Loaded
-The command's effect is: testeffect

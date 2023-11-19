@@ -307,7 +307,8 @@ void GameEngine::reinforcmentPhase()
     // implemented in a function/method named reinforcementPhase() in the game engine.
     for (auto &player : _players)
     {
-        int *currentRPool = new int(0);
+
+        int *currentRPool;
         uint32_t count = 0;
 
         // check the player's terriotries

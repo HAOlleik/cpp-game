@@ -1,4 +1,0 @@
-The new game state is: Map Loaded
-The command's effect is: testeffect
-The command has been saved with an effect of: error because command is incompatible for current state.
-Order Issued: A deploy order has been issued by Player.
