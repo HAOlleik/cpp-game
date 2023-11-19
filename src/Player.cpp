@@ -70,19 +70,18 @@ ostream &operator<<(ostream &os, const Player &player) // insertion stream opera
 // Destructor
 Player::~Player()
 {
-    delete name;
-    delete reinforcementPool;
+	delete name;
+	delete reinforcementPool;
 
-    for (auto ord : orders)
-    {
-        delete ord;
-    }
+	for (auto ord : orders)
+	{
+		delete ord;
+	}
 
-    territories.clear();
-    cards.clear();
-    orders.clear();
+	territories.clear();
+	cards.clear();
+	orders.clear();
 }
-
 
 // Get name of the palyer
 string Player::getName()
@@ -118,9 +117,9 @@ void Player::addReinforcements(int n)
 }
 
 // set army units
-void Player::setReinforcementPool(int *pool)
+void Player::setReinforcementPool(int pool)
 {
-	this->reinforcementPool = pool;
+	*this->reinforcementPool = pool;
 }
 
 // get Territory
@@ -241,7 +240,7 @@ void Player::issueOrder()
 			listToDefend[i]->setArmies(temp);
 			army -= temp; // Update army by subtracting temp
 
-			setReinforcementPool(&army);
+			setReinforcementPool(army);
 
 			if (army <= 0)
 			{

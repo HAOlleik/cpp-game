@@ -144,7 +144,7 @@ void DeployOrder::execute()
 
 		// Pass the address of the int value
 		int newReinforcementPool = currentPlayer->getReinforcementPool() - nbOfArmies;
-		currentPlayer->setReinforcementPool(&newReinforcementPool);
+		currentPlayer->setReinforcementPool(newReinforcementPool);
 
 		cout << "Deploy has been executed" << endl;
 	}
@@ -602,9 +602,9 @@ string OrdersList::stringToLog()
 // OrdersList destructor
 OrdersList::~OrdersList()
 {
-    while (!_orders.empty())
-    {
-        delete _orders.front();
-        _orders.pop();
-    }
+	while (!_orders.empty())
+	{
+		delete _orders.front();
+		_orders.pop();
+	}
 }

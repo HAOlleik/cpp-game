@@ -58,7 +58,7 @@ public:
 	void addReinforcements(int);
 	int getReinforcementPool();			  // get army units
 	int continentBonusValue();			  // the player is given a number of army units corresponding to the continent’s control bonus value
-	void setReinforcementPool(int *pool); // set army units
+	void setReinforcementPool(int pool);  // set army units
 	void setTerritories(Territory *terr); // set Territory
 	void setNamePlayer(string *str);	  // Set name of the player
 										  // Players issue orders and place them in their order list through a call to the Player::issueOrder() method

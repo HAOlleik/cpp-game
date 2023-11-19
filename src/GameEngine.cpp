@@ -308,26 +308,25 @@ void GameEngine::reinforcmentPhase()
     for (auto &player : _players)
     {
 
-        int *currentRPool;
+        int currentRPool = 0;
         uint32_t count = 0;
 
         // check the player's terriotries
-        *currentRPool = player->getReinforcementPool();
+        currentRPool = player->getReinforcementPool();
 
         // count the terriorties number
         count = player->territories.size();
 
         // adding bonus of continents
-        *currentRPool += player->continentBonusValue();
+        currentRPool += player->continentBonusValue();
 
         // # terr / 3
-        *currentRPool += floor(count / 3);
+        currentRPool += floor(count / 3);
 
         // minimum reinforcement
-        *currentRPool += 3;
+        currentRPool += 3;
 
         player->setReinforcementPool(currentRPool);
-        delete currentRPool;
     }
 
     // move to the next phase
