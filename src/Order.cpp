@@ -598,3 +598,13 @@ string OrdersList::stringToLog()
 	}
 	return "No orders available."; // Or any default message for no orders in the queue
 }
+
+// OrdersList destructor
+OrdersList::~OrdersList()
+{
+    while (!_orders.empty())
+    {
+        delete _orders.front();
+        _orders.pop();
+    }
+}

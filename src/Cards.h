@@ -29,6 +29,7 @@ public:
     Card();                         // default constructor
     Card(const Card &c);            // copy constructor
     Card(int cardNum);              // constructor
+    ~Card();
     Card &operator=(const Card &c); // assignment operator overload
     // no destructor since Card does not use instance variables of other classes
 

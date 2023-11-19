@@ -70,23 +70,19 @@ ostream &operator<<(ostream &os, const Player &player) // insertion stream opera
 // Destructor
 Player::~Player()
 {
-	*name = "";
-	name = nullptr;
-	delete name;
-	*reinforcementPool = 0;
-	delete reinforcementPool;
-	territories.clear();
-	cards.clear();
+    delete name;
+    delete reinforcementPool;
 
-	for (auto ord : orders)
-	{
-		delete ord;
-	}
-	orders.clear();
-	vector<Territory *>().swap(territories);
-	vector<Card *>().swap(cards);
-	vector<Order *>().swap(orders);
+    for (auto ord : orders)
+    {
+        delete ord;
+    }
+
+    territories.clear();
+    cards.clear();
+    orders.clear();
 }
+
 
 // Get name of the palyer
 string Player::getName()
@@ -231,6 +227,7 @@ void Player::issueOrder()
 	listToAttack = toAttack();
 	vector<Territory *> listToDefend;
 	listToDefend = toDefend();
+	srand(time(NULL));
 
 	// Deploy order until no armies left
 	while (getReinforcementPool() > 0)
@@ -239,25 +236,23 @@ void Player::issueOrder()
 
 		for (uint64_t i = 0; i < listToDefend.size(); i++)
 		{
-			srand(time(NULL));
-			int temp = rand() % army + 1;
+			int temp = (rand() + 1) % (army + 1);
 			temp += listToDefend[i]->getArmies();
 			listToDefend[i]->setArmies(temp);
-			army = temp - army;
-			int *armPoint = &army;
-			setReinforcementPool(armPoint);
-			if (army == 1)
+			army -= temp; // Update army by subtracting temp
+
+			setReinforcementPool(&army);
+
+			if (army <= 0)
 			{
-				temp = 1;
-				temp += listToDefend[i]->getArmies();
-				listToDefend[i]->setArmies(temp);
+				listToDefend[i]->setArmies(temp + army); // Adjust armies if army is negative
 				setReinforcementPool(0);
 			}
 		}
 	}
 
 	// Advance order
-	srand(time(NULL));
+
 	// int actionNumber = rand() % listToAttack.size();
 
 	// int enemy = listToAttack[actionNumber]->getArmies();

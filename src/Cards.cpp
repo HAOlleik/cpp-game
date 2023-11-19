@@ -73,6 +73,10 @@ string Card::getCardType()
     return cardType;
 }
 
+Card::~Card() {
+    delete _player;
+}
+
 /*
     ----------------------------
     Deck Class

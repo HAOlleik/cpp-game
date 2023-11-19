@@ -326,6 +326,7 @@ void GameEngine::reinforcmentPhase()
         *currentRPool += 3;
 
         player->setReinforcementPool(currentRPool);
+        delete currentRPool;
     }
 
     // move to the next phase

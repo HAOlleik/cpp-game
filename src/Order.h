@@ -174,6 +174,7 @@ private:
 public:
     OrdersList();
     OrdersList(const OrdersList &o); // copy constuctor
+    ~OrdersList();
     void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
