@@ -233,9 +233,9 @@ void Player::issueOrder()
 	{
 		int army = getReinforcementPool();
 
-		for (uint64_t i = 0; i < listToDefend.size(); i++)
+		for (uint64_t i = 0; i < listToDefend.size() && army >= 0; i++)
 		{
-			int temp = (rand() + 1) % (army + 1);
+			int temp = rand() % army;
 			temp += listToDefend[i]->getArmies();
 			listToDefend[i]->setArmies(temp);
 			army -= temp; // Update army by subtracting temp

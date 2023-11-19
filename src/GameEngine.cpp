@@ -124,14 +124,8 @@ void GameEngine::startupPhase()
             break;
 
         case ACTION::add_player:
+            addPlayer(request[1]);
             setState(STATE::players_added);
-            if (_players.size() == MAX_PLAYERS)
-            {
-                result = "Max players count 6 already reach.";
-                std::cout << result << std::endl;
-                continue;
-            }
-            _players.push_back(std::make_shared<Player>(new std::string(request[1])));
             result = "STATE::players_added";
             break;
 
@@ -382,32 +376,22 @@ void GameEngine::executeOrdersPhase()
     bool haveOrdersToExecute = true;
     while (haveOrdersToExecute)
     {
-        std::cout << "readched 1" << std::endl;
         std::vector<bool> playerLeftOrders;
         for (auto &player : _players)
         {
             // Get the player's orders
             list<Order *> orders = player->getOrders();
-            std::cout << "length of orders is " << orders.size() << std::endl;
 
-            std::cout << "readched 2" << std::endl;
             // Execute the top order if there are any orders
             if (orders.empty())
-            {
-
                 continue;
-            }
 
-            std::cout << "readched 3" << std::endl;
             playerLeftOrders.push_back(false);
-            std::cout << "readched 4" << std::endl;
             // Execute the order
             Order *order = orders.front();
             order->execute();
-            std::cout << "readched 5" << std::endl;
             // Remove the executed order from the player's order list using an iterator
             orders.pop_front();
-            std::cout << "readched 6" << std::endl;
             // Output order execution information (for demonstration purposes)
             std::cout << "Player " << player->getName() << " executed an order." << std::endl;
             player->orders = orders;
@@ -418,22 +402,12 @@ void GameEngine::executeOrdersPhase()
         // Check if any player still has orders to execute
         if (playerLeftOrders.empty())
             haveOrdersToExecute = false;
-
-        // for (auto &player : _players)
-        // {
-        //     if (!player->getOrders().empty())
-        //     {
-        //         // There are remaining orders, continue executing orders in the next turn
-        //         return;
-        //     }
-        // }
     }
+
+    std::cout << "Exit from execute order" << std::endl;
 
     // No remaining orders for any player, move back to the reinforcement phase
     setState(STATE::assign_reinforcement);
-
-    // Continue with the main game loop
-    // mainGameLoop(); // this is not the way
 }
 
 // Adding players
