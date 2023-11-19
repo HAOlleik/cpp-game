@@ -30,9 +30,9 @@ public:
 	Player(); // default constructor
 	Player(string *name);
 	// Parameter constructor
-	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders);
+	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders);
 	// Parameter constructor
-	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders, bool passTurn);
+	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders, bool passTurn);
 	// copy constructor
 	Player(const Player &plr);
 	// Operator assignment
@@ -51,7 +51,7 @@ public:
 	vector<Territory *> getTerritories();
 	// get Territories that are neighblors
 	vector<Territory *> getNeigbourTerritories();
-	vector<Order *> getOrders() const;
+	list<Order *> getOrders() const;
 	bool getPassTurn();
 	void setPassTurn(bool);
 	Hand *getHand();
@@ -77,7 +77,7 @@ private:
 	string *name;
 	vector<Territory *> territories;
 	Hand *playerHand;
-	vector<Order *> orders;
+	list<Order *> orders;
 	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
 	vector<Card *> cards;
 

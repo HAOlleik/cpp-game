@@ -3,14 +3,14 @@
 // Default constructor
 Player::Player()
 	: reinforcementPool(new int(0)), name(new string("Player")),
-	  territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
+	  territories(vector<Territory *>()), playerHand(new Hand()), orders(list<Order *>()) {}
 
 // Parameter constructor
 Player::Player(string *name) : reinforcementPool(new int(0)), name(name),
-							   territories(vector<Territory *>()), playerHand(new Hand()), orders(vector<Order *>()) {}
+							   territories(vector<Territory *>()), playerHand(new Hand()), orders(list<Order *>()) {}
 
 // Parameter constructor
-Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders)
 {
 	this->reinforcementPool = reinforcementPool;
 	this->name = name;
@@ -20,7 +20,7 @@ Player::Player(int *reinforcementPool, string *name, vector<Territory *> territo
 }
 
 // Parameter constructor
-Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, vector<Order *> orders, bool passTurn)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders, bool passTurn)
 {
 	this->reinforcementPool = reinforcementPool;
 	this->name = name;
@@ -365,16 +365,17 @@ void Player::removeTerritory(Territory &territory)
 	throw std::runtime_error("Territory wasn't in the player's list.");
 }
 
-vector<Order *> Player::getOrders() const
+list<Order *> Player::getOrders() const
 {
 	return orders;
 }
 
 void Player::printOrder()
 {
-	for (uint64_t i = 0; i < orders.size(); i++)
+
+	for (Order *o : orders)
 	{
-		cout << "<" << orders.at(i) << "> ";
+		cout << "<" << o << "> ";
 	}
 	cout << endl;
 }

@@ -274,26 +274,28 @@ void GameEngine::assignTerritoriesPlayers()
 
 ostream &operator<<(ostream &os, GameEngine &gameEngine)
 { // insert stream operator
-    const char *currentStateString;
-    switch (*gameEngine.getState())
-    {
-    case 5:
-        currentStateString = "Assign Reinforcement";
-        break;
-    case 6:
-        currentStateString = "Issue Orders";
-        break;
-    case 7:
-        currentStateString = "Execute Orders";
-        break;
-    case 8:
-        currentStateString = "Win";
-        break;
-    default:
-        break;
-    }
+    // const char *currentStateString;
+    // switch (*gameEngine.getState())
+    // {
+    // case 5:
+    //     currentStateString = "Assign Reinforcement";
+    //     break;
+    // case 6:
+    //     currentStateString = "Issue Orders";
+    //     break;
+    // case 7:
+    //     currentStateString = "Execute Orders";
+    //     break;
+    // case 8:
+    //     currentStateString = "Win";
+    //     break;
+    // default:
+    //     break;
+    // }
 
-    return os << "The current state is: " << currentStateString << "\n\n";
+    return os << "The current state is: "
+              << "currentStateString"
+              << "\n\n";
 }
 
 // Reinforcement phase
@@ -375,42 +377,63 @@ void GameEngine::executeOrdersPhase()
 {
     // Orders Execution Phase—Once all the players have signified in the same turn that they are not issuing
     // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round-robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
-    // Iterate through each player and execute their top order
-    for (auto &player : _players)
-    {
-        // Get the player's orders
-        vector<Order *> orders = player->getOrders();
 
-        // Execute the top order if there are any orders
-        if (!orders.empty())
+    // Iterate through each player and execute their top order
+    bool haveOrdersToExecute = true;
+    while (haveOrdersToExecute)
+    {
+        std::cout << "readched 1" << std::endl;
+        std::vector<bool> playerLeftOrders;
+        for (auto &player : _players)
         {
+            // Get the player's orders
+            list<Order *> orders = player->getOrders();
+            std::cout << "length of orders is " << orders.size() << std::endl;
+
+            std::cout << "readched 2" << std::endl;
+            // Execute the top order if there are any orders
+            if (orders.empty())
+            {
+
+                continue;
+            }
+
+            std::cout << "readched 3" << std::endl;
+            playerLeftOrders.push_back(false);
+            std::cout << "readched 4" << std::endl;
             // Execute the order
             Order *order = orders.front();
             order->execute();
-
+            std::cout << "readched 5" << std::endl;
             // Remove the executed order from the player's order list using an iterator
-            orders.erase(orders.begin());
-
+            orders.pop_front();
+            std::cout << "readched 6" << std::endl;
             // Output order execution information (for demonstration purposes)
             std::cout << "Player " << player->getName() << " executed an order." << std::endl;
+            player->orders = orders;
         }
-    }
 
-    // Check if any player still has orders to execute
-    for (auto &player : _players)
-    {
-        if (!player->getOrders().empty())
-        {
-            // There are remaining orders, continue executing orders in the next turn
-            return;
-        }
+        std::cout << "readched 7 "
+                  << "size of nothing " << playerLeftOrders.size() << " size of player " << _players.size() << std::endl;
+        // Check if any player still has orders to execute
+        if (playerLeftOrders.empty())
+            haveOrdersToExecute = false;
+
+        // for (auto &player : _players)
+        // {
+        //     if (!player->getOrders().empty())
+        //     {
+        //         // There are remaining orders, continue executing orders in the next turn
+        //         return;
+        //     }
+        // }
     }
 
     // No remaining orders for any player, move back to the reinforcement phase
     setState(STATE::assign_reinforcement);
 
     // Continue with the main game loop
-    mainGameLoop();
+    // mainGameLoop(); // this is not the way
 }
 
 // Adding players
