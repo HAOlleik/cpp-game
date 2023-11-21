@@ -79,7 +79,7 @@ public:
     friend ostream &operator<<(ostream &os, const Hand &hand); // insertion stream operator
 
     int getHandSize();
-    vector<Card *> getPlayHand() const;
+    vector<Card *> &getPlayHand();
     void addCard(Card &myCard);
     void printPlayHand();
     void play(int index, Deck &deck, OrdersList &OrdersList);

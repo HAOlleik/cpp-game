@@ -253,7 +253,7 @@ ostream &operator<<(ostream &os, const Hand &hand) // insertion stream operator
     return os;
 }
 
-vector<Card *> Hand::getPlayHand() const
+vector<Card *> &Hand::getPlayHand()
 {
     return playHand;
 }
