@@ -377,7 +377,7 @@ bool BlockadeOrder::validate()
 
 void BlockadeOrder::execute()
 {
-	if (this->validate())
+	if (this->validate() && target->getArmies() != 0)
 	{
 		target->setArmies(target->getArmies() * 2);
 		if (target->getOwner())

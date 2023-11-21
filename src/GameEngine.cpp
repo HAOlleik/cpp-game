@@ -387,12 +387,17 @@ void GameEngine::executeOrdersPhase()
                 continue;
 
             playerLeftOrders.push_back(false);
-            // Execute the order
-            Order *order = orders.front();
-            order->execute();
-            // Remove the executed order from the player's order list using an iterator
-            orders.pop_front();
-            // Output order execution information (for demonstration purposes)
+
+            if (!orders.empty())
+            {
+                orders.front()->execute();
+                orders.pop_front();
+            }
+            else
+            {
+                continue;
+            }
+
             std::cout << "Player " << player->getName() << " executed an order." << std::endl;
             player->orders = orders;
         }
@@ -400,8 +405,9 @@ void GameEngine::executeOrdersPhase()
         std::cout << "readched 7 "
                   << "size of nothing " << playerLeftOrders.size() << " size of player " << _players.size() << std::endl;
         // Check if any player still has orders to execute
-        if (playerLeftOrders.empty())
+        if (playerLeftOrders.empty()) {
             haveOrdersToExecute = false;
+        }
     }
 
     std::cout << "Exit from execute order" << std::endl;
