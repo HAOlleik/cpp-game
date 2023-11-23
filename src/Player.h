@@ -22,6 +22,7 @@ class Order;
 class Card;
 class DeployOrder;
 class BombOrder;
+class PlayerStrategy;
 #include "Cards.h"
 
 class Player
@@ -40,6 +41,7 @@ public:
 	// insertion stream operator
 	friend ostream &operator<<(ostream &os, const Player &player);
 	~Player();
+	Player(PlayerStrategy*);
 
 	// Get name of the palyer
 	string getName();
@@ -71,6 +73,8 @@ public:
 	// Only for Assignment 1
 	// bool validate(string *s);									// Only for Assignment 1
 	void removeTerritory(Territory &territory);
+	PlayerStrategy* getPlayerStrategy() const;
+	void setPlayerStrategy(PlayerStrategy*);
 
 private:
 	int *reinforcementPool;
@@ -80,6 +84,7 @@ private:
 	list<Order *> orders;
 	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
 	vector<Card *> cards;
+	PlayerStrategy *playerStrategy;
 
 	// Friend classes of the Player class
 	friend class GameEngine;
