@@ -30,23 +30,18 @@ PlayerStrategy* PlayerStrategy::handleStrategyCreation(Player* player, std::stri
     }
 }
 
+std::ostream& operator<<(std::ostream& out, const PlayerStrategy& strategy) {
+    strategy.print(out);
+    return out;
+}
+
 //*******************************************
 //  HumanPlayerStrategy Comcrete Class
 //*******************************************
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
     this->player = player;
-    cout << "Human" << std::endl;
 }
-
-HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& strategy) {
-    // implementation
-}
-
-HumanPlayerStrategy::~HumanPlayerStrategy() {
-    // implementation
-}
-
 //TO IMPLEMENT
 vector<Territory *> HumanPlayerStrategy::toAttack(){
     cout<<"HumanPlayerStrategy::toAttack"<<endl;
@@ -64,12 +59,20 @@ void HumanPlayerStrategy::issueOrder(){
 
 }
 
-std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& strategy) {
-    // implementation
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& strategy) {
+    this->player = new Player(*strategy.player);
+}
+
+HumanPlayerStrategy::~HumanPlayerStrategy() {
+    delete player;
 }
 
 HumanPlayerStrategy& HumanPlayerStrategy::operator =(const HumanPlayerStrategy& strategy) {
-    // implementation
+    if (this != &strategy) {
+        delete player;
+        player = new Player(*strategy.player);
+    }
+    return *this;
 }
 
 
@@ -79,8 +82,6 @@ HumanPlayerStrategy& HumanPlayerStrategy::operator =(const HumanPlayerStrategy& 
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player){
     this->player = player;
-        cout << "agressive" << std::endl;
-
 }
 
 //TO IMPLEMENT
@@ -100,6 +101,21 @@ void AggressivePlayerStrategy::issueOrder(){
 
 }
 
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& strategy) {
+    this->player = new Player(*strategy.player);
+}
+
+AggressivePlayerStrategy::~AggressivePlayerStrategy() {
+    delete player;
+}
+
+AggressivePlayerStrategy& AggressivePlayerStrategy::operator =(const AggressivePlayerStrategy& strategy) {
+    if (this != &strategy) {
+        delete player;
+        player = new Player(*strategy.player);
+    }
+    return *this;
+}
 
 //*******************************************
 //  BenevolentPlayerStrategy Comcrete Class
@@ -107,8 +123,6 @@ void AggressivePlayerStrategy::issueOrder(){
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player){
     this->player = player;
-        cout << "benevolent" << std::endl;
-
 }
 
 //TO IMPLEMENT
@@ -128,6 +142,22 @@ void BenevolentPlayerStrategy::issueOrder(){
 
 }
 
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& strategy) {
+    this->player = new Player(*strategy.player);
+}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+    delete player;
+}
+
+BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator =(const BenevolentPlayerStrategy& strategy) {
+    if (this != &strategy) {
+        delete player;
+        player = new Player(*strategy.player);
+    }
+    return *this;
+}
+
 
 
 //*******************************************
@@ -136,8 +166,6 @@ void BenevolentPlayerStrategy::issueOrder(){
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player){
     this->player = player;
-        cout << "neutral" << std::endl;
-
 }
 
 //TO IMPLEMENT
@@ -157,6 +185,22 @@ void NeutralPlayerStrategy::issueOrder(){
     
 }
 
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& strategy) {
+    this->player = new Player(*strategy.player);
+}
+
+NeutralPlayerStrategy::~NeutralPlayerStrategy() {
+    delete player;
+}
+
+NeutralPlayerStrategy& NeutralPlayerStrategy::operator =(const NeutralPlayerStrategy& strategy) {
+    if (this != &strategy) {
+        delete player;
+        player = new Player(*strategy.player);
+    }
+    return *this;
+}
+
 
 //*******************************************
 //  CheaterPlayerStrategy Comcrete Class
@@ -164,8 +208,6 @@ void NeutralPlayerStrategy::issueOrder(){
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player){
     this->player = player;
-        cout << "cheater" << std::endl;
-
 }
 
 //TO IMPLEMENT
@@ -183,4 +225,20 @@ vector<Territory *> CheaterPlayerStrategy::toDefend(){
 //TO IMPLEMENT
 void CheaterPlayerStrategy::issueOrder(){
     
+}
+
+CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& strategy) {
+    this->player = new Player(*strategy.player);
+}
+
+CheaterPlayerStrategy::~CheaterPlayerStrategy() {
+    delete player;
+}
+
+CheaterPlayerStrategy& CheaterPlayerStrategy::operator =(const CheaterPlayerStrategy& strategy) {
+    if (this != &strategy) {
+        delete player;
+        player = new Player(*strategy.player);
+    }
+    return *this;
 }

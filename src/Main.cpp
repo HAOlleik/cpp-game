@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
         cout << "Next\n";
         cin >> strategyName;
         PlayerStrategy *strategy = PlayerStrategy::handleStrategyCreation(player, strategyName);
+        cout << *strategy << endl;
     }
 
     return 0;
