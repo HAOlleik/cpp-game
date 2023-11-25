@@ -235,7 +235,7 @@ void Player::issueOrder()
 
 		for (uint64_t i = 0; i < listToDefend.size() && army >= 0; i++)
 		{
-			int temp = rand() % army;
+			int temp = (rand() + 1) % army;
 			temp += listToDefend[i]->getArmies();
 			listToDefend[i]->setArmies(temp);
 			army -= temp; // Update army by subtracting temp
@@ -265,82 +265,74 @@ void Player::issueOrder()
 		int j = 0;
 		// Assuming you want to use the first card in the hand for simplicity
 		Card *selectedCard = playerHand->getPlayHand().front();
+		Territory *targetTerritory;
+		Territory *sourceTerritory;
 
 		// Check the type of the card and issue a corresponding order
 		if (selectedCard->getCardType() == "deploy")
 		{
 			// Create a deploy order and add it to the player's orders
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 			orders.push_back(new DeployOrder(this, targetTerritory, 3));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued DEPLOY order." << std::endl;
 			i++;
 		}
 		else if (selectedCard->getCardType() == "advance")
 		{
 			// Assuming source and target territories are obtained from Map vector
-			Territory *sourceTerritory = listToDefend[j]; // Get the source territory
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			sourceTerritory = listToDefend[j]; // Get the source territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 
 			// Create an advance order and add it to the player's orders
 			orders.push_back(new AdvanceOrder(this, sourceTerritory, targetTerritory, 3));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued ADVANCE order." << std::endl;
 			i++;
 			j++;
 		}
 		else if (selectedCard->getCardType() == "airlift")
 		{
 			// Assuming target territory is obtained from Map vector
-			Territory *sourceTerritory = listToDefend[j]; // Get the source territory
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			sourceTerritory = listToDefend[j]; // Get the source territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 
 			// Create a bomb order and add it to the player's orders
 			orders.push_back(new AirliftOrder(this, sourceTerritory, targetTerritory, 3));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued AIRLIFT order." << std::endl;
 			i++;
 			j++;
 		}
 		else if (selectedCard->getCardType() == "bomb")
 		{
 			// Assuming target territory is obtained from Map vector
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 
 			// Create a bomb order and add it to the player's orders
 			orders.push_back(new BombOrder(this, targetTerritory));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued BOMB order." << std::endl;
 			i++;
 		}
 		else if (selectedCard->getCardType() == "blockade")
 		{
 			// Assuming target territory is obtained from Map vector
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 
 			// Create a bomb order and add it to the player's orders
 			orders.push_back(new BlockadeOrder(this, targetTerritory));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued BLOCKADE order." << std::endl;
 			i++;
 		}
 		else if (selectedCard->getCardType() == "diplomacy")
 		{
 			// Assuming target territory is obtained from Map vector
-			Territory *targetTerritory = listToAttack[i]; // Get the target territory
+			targetTerritory = listToAttack[i]; // Get the target territory
 
 			// Create a bomb order and add it to the player's orders
 			orders.push_back(new NegotiateOrder(this, targetTerritory->getOwner().get()));
 
-			// Output order information (for demonstration purposes)
-			std::cout << "Player " << getName() << " issued NEGOTIATE order." << std::endl;
 			i++;
 		}
+
+		std::cout << "Player " << getName() << " issued " << selectedCard->getCardType() << " order." << std::endl;
 
 		// Remove the used card from the hand
 		playerHand->getPlayHand().erase(playerHand->getPlayHand().begin());

@@ -360,7 +360,9 @@ void GameEngine::issueOrdersPhase()
     }
 
     // Call issueOrder with the converted vector
-    _players[1]->issueOrder();
+    for(auto &player : _players) {
+        player->issueOrder();
+    }
 
     // move to the next phase
     setState(STATE::execute_orders);
@@ -373,35 +375,16 @@ void GameEngine::executeOrdersPhase()
     // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round-robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
 
     // Iterate through each player and execute their top order
-    bool haveOrdersToExecute = true;
-    while (haveOrdersToExecute)
-    {
-        std::vector<bool> playerLeftOrders;
-        for (auto &player : _players)
+    for (auto &player : _players) {
+        std::cout << "Player " << player->getName() << " started.\n" << std::endl;
+        list<Order *> orders = player->getOrders();
+        while (!orders.empty())
         {
-            // Get the player's orders
-            list<Order *> orders = player->getOrders();
-
-            // Execute the top order if there are any orders
-            if (orders.empty())
-                continue;
-
-            playerLeftOrders.push_back(false);
-            // Execute the order
-            Order *order = orders.front();
-            order->execute();
-            // Remove the executed order from the player's order list using an iterator
+            orders.front()->execute();
             orders.pop_front();
-            // Output order execution information (for demonstration purposes)
             std::cout << "Player " << player->getName() << " executed an order." << std::endl;
-            player->orders = orders;
         }
-
-        std::cout << "readched 7 "
-                  << "size of nothing " << playerLeftOrders.size() << " size of player " << _players.size() << std::endl;
-        // Check if any player still has orders to execute
-        if (playerLeftOrders.empty())
-            haveOrdersToExecute = false;
+        std::cout << "Player " << player->getName() << " finished.\n" << std::endl;
     }
 
     std::cout << "Exit from execute order" << std::endl;

@@ -298,7 +298,7 @@ bool BombOrder::validate()
 	bool isAdjacent = 0;
 
 	// check if the target is not adjacent to any of the current players territories
-	for (Territory *territoryPtr : currentPlayer->getTerritories())
+	for (auto &territoryPtr : currentPlayer->getTerritories())
 	{
 		// auto it = std::find(territoryPtr->getAdjacentTerritories().begin(), territoryPtr->getAdjacentTerritories().end(), target);
 		// if (!(it == territoryPtr->getAdjacentTerritories().end()))
@@ -377,7 +377,7 @@ bool BlockadeOrder::validate()
 
 void BlockadeOrder::execute()
 {
-	if (this->validate())
+	if (this->validate() && target->getArmies() != 0)
 	{
 		target->setArmies(target->getArmies() * 2);
 		if (target->getOwner())
