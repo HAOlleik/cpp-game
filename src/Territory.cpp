@@ -77,7 +77,20 @@ std::shared_ptr<Player> Territory::getOwner() const
 {
     return _owner;
 }
-
+Player Territory::getOwnerValue() const
+{
+    // Dereference the shared_ptr to get the value
+    if (_owner)
+    {
+        return *_owner;
+    }
+    else
+    {
+        // Handle the case when the shared_ptr is null
+        // For example, you could throw an exception or return a default-constructed Player
+        throw std::runtime_error("Attempted to access null shared_ptr");
+    }
+}
 int Territory::getArmies() const
 {
     return *_armies;

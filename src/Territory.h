@@ -23,6 +23,7 @@ public:
     std::string getName() const;
     std::shared_ptr<Continent> getContinent() const;
     std::shared_ptr<Player> getOwner() const;
+    Player getOwnerValue() const;
     int getArmies() const;
     void setArmies(int);
     void setOwner(std::shared_ptr<Player> p);

@@ -61,9 +61,9 @@ Player &Player::operator=(const Player &p)
 
 ostream &operator<<(ostream &os, const Player &player) // insertion stream operator
 {
-	os << "Name of the player: " << player.name << endl
-	   << "ReinforcementPool: " << endl
-	   << "Player's Hand: " << *(player.playerHand) << endl;
+	os << " Name of the player: " << *(player.name) << endl
+	   << " ReinforcementPool: " << endl
+	   << " Player's Hand: " << *(player.playerHand) << endl;
 	return os;
 }
 
@@ -157,7 +157,7 @@ vector<Territory *> Player::toAttack()
 	cout << "The list of territories that are be Attacked" << endl;
 	for (uint64_t i = 0; i < listToAttack.size(); i++)
 	{
-		// cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << " Name of the continent: " << (*listToAttack[i]).getContinent() << endl;
+		cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << (*listToAttack[i]).getOwnerValue() << endl;
 	}
 	return listToAttack;
 }
