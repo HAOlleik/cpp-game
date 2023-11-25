@@ -24,6 +24,7 @@ class DeployOrder;
 class BombOrder;
 class PlayerStrategy;
 #include "Cards.h"
+#include "PlayerStrategies.h"
 
 class Player
 {

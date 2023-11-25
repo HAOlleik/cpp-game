@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "PlayerStrategies.h"
 
 // Default constructor
 Player::Player()
