@@ -1,72 +1,86 @@
 #include "Player.h"
-using namespace std;
 
 // Default constructor
 Player::Player()
-{
-	*name = "Player";
-	vector<string *> territories;
-	vector<string *> cards;
-	vector<Order *> orders;
-}
+	: reinforcementPool(new int(0)), name(new string("Player")),
+	  territories(vector<Territory *>()), playerHand(new Hand()), orders(list<Order *>()) {}
 
 // Parameter constructor
-Player::Player(string *name)
-{
-	this->name = name;
-}
+Player::Player(string *name) : reinforcementPool(new int(0)), name(name),
+							   territories(vector<Territory *>()), playerHand(new Hand()), orders(list<Order *>()) {}
 
 // Parameter constructor
-Player::Player(string *name, vector<string *> territories, vector<string *> cards, vector<Order *> orders)
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders)
 {
+	this->reinforcementPool = reinforcementPool;
 	this->name = name;
 	this->territories = territories;
-	this->cards = cards;
+	this->playerHand = playerHand;
 	this->orders = orders;
+}
+
+// Parameter constructor
+Player::Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders, bool passTurn)
+{
+	this->reinforcementPool = reinforcementPool;
+	this->name = name;
+	this->territories = territories;
+	this->playerHand = playerHand;
+	this->orders = orders;
+	this->passTurn = std::make_shared<bool>(passTurn);
 }
 
 // Copy constructor
 Player::Player(const Player &plr)
 {
+	this->reinforcementPool = plr.reinforcementPool;
 	this->name = plr.name;
 	this->territories = plr.territories;
-	this->cards = plr.cards;
+	this->playerHand = new Hand(*(plr.playerHand));
 	this->orders = plr.orders;
+	this->passTurn = std::make_shared<bool>(plr.passTurn);
 }
 
 // Operator assignment
 Player &Player::operator=(const Player &p)
 {
-	this->name = p.name;
-	this->territories = p.territories;
-	this->cards = p.cards;
-	this->orders = p.orders;
+	if (this != &p)
+	{ // self-assignment check
+		delete name;
+		delete reinforcementPool;
+		delete playerHand;
+		name = new string(*p.name);
+		reinforcementPool = new int(*p.reinforcementPool);
+		territories = p.territories;
+		playerHand = new Hand(*(p.playerHand));
+		orders = p.orders;
+		passTurn = std::make_shared<bool>(p.passTurn);
+	}
 	return *this;
 }
 
 ostream &operator<<(ostream &os, const Player &player) // insertion stream operator
 {
-	os << "Name of the player: " << player.name << endl;
+	os << " Name of the player: " << *(player.name) << endl
+	   << " ReinforcementPool: " << endl
+	   << " Player's Hand: " << *(player.playerHand) << endl;
 	return os;
 }
 
 // Destructor
 Player::~Player()
 {
-	*name = "";
-	name = nullptr;
 	delete name;
+	delete reinforcementPool;
+
+	for (auto ord : orders)
+	{
+		delete ord;
+	}
+
 	territories.clear();
 	cards.clear();
-
-	// for (auto ord : orders)
-	//{
-	//	delete ord;
-	// }
 	orders.clear();
-	// vector<Territory*>().swap(territories);
-	// vector<string*>().swap(cards);
-	vector<Order *>().swap(orders);
 }
 
 // Get name of the palyer
@@ -76,48 +90,284 @@ string Player::getName()
 }
 
 // Set name of the player
-void Player::setName(string *str)
+void Player::setNamePlayer(string *str)
 {
 	this->name = str;
 }
 
-// Get list of territories that are to be attacked
-void Player::toAttack()
+bool Player::getPassTurn()
 {
-	for (size_t i = 0; i < territories.size(); i++)
+	return *passTurn;
+}
+
+void Player::setPassTurn(bool change)
+{
+	*passTurn = change;
+}
+
+// get Territories that are neighblors
+int Player::getReinforcementPool()
+{
+	return *reinforcementPool;
+}
+
+void Player::addReinforcements(int n)
+{
+	*reinforcementPool += n;
+}
+
+// set army units
+void Player::setReinforcementPool(int pool)
+{
+	*this->reinforcementPool = pool;
+}
+
+// get Territory
+vector<Territory *> Player::getTerritories()
+{
+	return territories;
+}
+
+void Player::setTerritories(Territory *terr)
+{
+	this->territories.push_back(terr);
+}
+
+// get Territories that are neighblors
+vector<Territory *> Player::getNeigbourTerritories()
+{
+	vector<Territory *> neighbTerrritories;
+	for (auto &t : territories)
 	{
-		cout << *territories[i] << endl;
+		// for all territories that player owns, get adjecent and
+		// add to the set
+		for (auto &tt : t->getAdjacentTerritories())
+			neighbTerrritories.push_back(tt.get()); // using get to get raw pointer from smart pointers
 	}
+
+	return neighbTerrritories;
+}
+
+// Get list of territories that are to be attacked
+vector<Territory *> Player::toAttack()
+{
+	vector<Territory *> listToAttack;
+	listToAttack = getNeigbourTerritories();
+
+	cout << "The list of territories that are be Attacked" << endl;
+	for (uint64_t i = 0; i < listToAttack.size(); i++)
+	{
+		cout << "Index " << i << " Name of the territory : " << (*listToAttack[i]).getName() << (*listToAttack[i]).getOwnerValue() << endl;
+	}
+	return listToAttack;
 }
 
 // Get list of territories that are to be defended
-void Player::toDefend()
+vector<Territory *> Player::toDefend()
 {
-	for (size_t i = 0; i < territories.size(); i++)
-	{
-		cout << *territories[i] << endl;
-	}
+	// vector<Territory *> listToDefend;
+	// Territory *temp = NULL;
+	// cout << "The list of territories that are be defended" << endl;
+	// for (uint64_t i = 0; i < territories.size(); i++)
+	// {
+	// 	cout << "Index " << i << " Name of the territory : " << (*territories[i]).getName() << " Name of the continent: " << (*territories[i]).getContinent() << endl;
+	// 	temp = territories[i];
+	// 	listToDefend.push_back(temp);
+	// }
+	// return listToDefend;
+
+	return territories;
 }
 
-// Validates if the irder is correct
-bool Player::validate(string *s)
+int Player::continentBonusValue()
 {
-	string temps = *s;
-	if (temps == "deploy" || temps == "advance" || temps == "bomb" || temps == "blockade" || temps == "airlift" || temps == "negotiate") {
-		return true;
+	// get first continent to check
+	std::vector<Territory *> notMatched;
+	int bonusPool = 0;
+	for (auto &t : territories)
+	{
+		// if found in notMatched, means already checked, skip
+		if (std::find(notMatched.begin(), notMatched.end(), t) != notMatched.end())
+		{
+			continue;
+		}
+
+		// get current continent
+		std::shared_ptr<Continent> current = t->getContinent();
+		std::vector<Territory *> matches;
+		// copy into matches all terr if their continent is == to current
+		std::copy_if(territories.begin(), territories.end(), std::back_inserter(matches), [&](Territory *v)
+					 { return v->getContinent() == current; });
+
+		// if the size of matches == to current continent terr size good
+		if (matches.size() == current->getTerritories().size())
+		{
+			bonusPool += current->getScore();
+		}
+		else
+		{
+			// if not add all terr from current iter to notMatched
+			notMatched.insert(notMatched.end(), matches.begin(), matches.end());
+		}
 	}
-	return false;
+
+	return bonusPool;
 }
 
-// Creats list of order objects
-void Player::issueOrder(string *ord)
+// get hand of cards for player
+Hand *Player::getHand()
 {
-	Order *ordObj = new Order(ord);
-	if (validate(ord))
+	return playerHand;
+}
+
+void Player::issueOrder()
+{
+	vector<Territory *> listToAttack;
+	listToAttack = toAttack();
+	vector<Territory *> listToDefend;
+	listToDefend = toDefend();
+	srand(time(NULL));
+
+	// Deploy order until no armies left
+	while (getReinforcementPool() > 0)
 	{
-		orders.push_back(ordObj);
-		cout << *ord << endl;
+		int army = getReinforcementPool();
+
+		for (uint64_t i = 0; i < listToDefend.size() && army >= 0; i++)
+		{
+			int temp = (rand() + 1) % army;
+			temp += listToDefend[i]->getArmies();
+			listToDefend[i]->setArmies(temp);
+			army -= temp; // Update army by subtracting temp
+
+			setReinforcementPool(army);
+
+			if (army <= 0)
+			{
+				listToDefend[i]->setArmies(temp + army); // Adjust armies if army is negative
+				setReinforcementPool(0);
+			}
+		}
 	}
-	else
-		cout << "Wrong order!" << endl;
+
+	// Advance order
+
+	// int actionNumber = rand() % listToAttack.size();
+
+	// int enemy = listToAttack[actionNumber]->getArmies();
+
+	// Using one of the cards in the hand to issue an order
+	if (!playerHand->getPlayHand().empty())
+	{
+		// playerHand->play(1,)
+
+		int i = 0;
+		int j = 0;
+		// Assuming you want to use the first card in the hand for simplicity
+		Card *selectedCard = playerHand->getPlayHand().front();
+		Territory *targetTerritory;
+		Territory *sourceTerritory;
+
+		// Check the type of the card and issue a corresponding order
+		if (selectedCard->getCardType() == "deploy")
+		{
+			// Create a deploy order and add it to the player's orders
+			targetTerritory = listToAttack[i]; // Get the target territory
+			orders.push_back(new DeployOrder(this, targetTerritory, 3));
+
+			i++;
+		}
+		else if (selectedCard->getCardType() == "advance")
+		{
+			// Assuming source and target territories are obtained from Map vector
+			sourceTerritory = listToDefend[j]; // Get the source territory
+			targetTerritory = listToAttack[i]; // Get the target territory
+
+			// Create an advance order and add it to the player's orders
+			orders.push_back(new AdvanceOrder(this, sourceTerritory, targetTerritory, 3));
+
+			i++;
+			j++;
+		}
+		else if (selectedCard->getCardType() == "airlift")
+		{
+			// Assuming target territory is obtained from Map vector
+			sourceTerritory = listToDefend[j]; // Get the source territory
+			targetTerritory = listToAttack[i]; // Get the target territory
+
+			// Create a bomb order and add it to the player's orders
+			orders.push_back(new AirliftOrder(this, sourceTerritory, targetTerritory, 3));
+
+			i++;
+			j++;
+		}
+		else if (selectedCard->getCardType() == "bomb")
+		{
+			// Assuming target territory is obtained from Map vector
+			targetTerritory = listToAttack[i]; // Get the target territory
+
+			// Create a bomb order and add it to the player's orders
+			orders.push_back(new BombOrder(this, targetTerritory));
+
+			i++;
+		}
+		else if (selectedCard->getCardType() == "blockade")
+		{
+			// Assuming target territory is obtained from Map vector
+			targetTerritory = listToAttack[i]; // Get the target territory
+
+			// Create a bomb order and add it to the player's orders
+			orders.push_back(new BlockadeOrder(this, targetTerritory));
+
+			i++;
+		}
+		else if (selectedCard->getCardType() == "diplomacy")
+		{
+			// Assuming target territory is obtained from Map vector
+			targetTerritory = listToAttack[i]; // Get the target territory
+
+			// Create a bomb order and add it to the player's orders
+			orders.push_back(new NegotiateOrder(this, targetTerritory->getOwner().get()));
+
+			i++;
+		}
+
+		std::cout << "Player " << getName() << " issued " << selectedCard->getCardType() << " order." << std::endl;
+
+		// Remove the used card from the hand
+		playerHand->getPlayHand().erase(playerHand->getPlayHand().begin());
+	}
+
+	// Continue with the rest of the order issuance logic
+	// ...
+}
+
+void Player::removeTerritory(Territory &territory)
+{
+	territory.setOwner(nullptr);
+	auto end = territories.end();
+	for (auto it = territories.begin(); it != end; it++)
+	{
+		if (territory.getName() == (*it)->getName())
+		{
+			territories.erase(it);
+			return;
+		}
+	}
+	throw std::runtime_error("Territory wasn't in the player's list.");
+}
+
+list<Order *> Player::getOrders() const
+{
+	return orders;
+}
+
+void Player::printOrder()
+{
+
+	for (Order *o : orders)
+	{
+		cout << "<" << o << "> ";
+	}
+	cout << endl;
 }

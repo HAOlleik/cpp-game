@@ -1,38 +1,92 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <iostream>
 using std::ostream;
 #include <vector>
 using std::vector;
+#include <set>
+#include <time.h>
+#include <algorithm>
+#include <assert.h>
 using namespace std;
 
-#include "Cards.h"
-#include "Order.h"
 #include "Territory.h"
+#include "Continent.h"
+class Map;
+class GameEngine;
+class Hand;
+class Deck;
+class Order;
+class Card;
+class DeployOrder;
+class BombOrder;
+#include "Cards.h"
 
 class Player
 {
 public:
-	Player();	// default constructor
-	Player(string* name);
-	Player(string* name, vector<string*>territories, vector<string*>cards, vector<Order*>orders);	// Parameter constructor
-	Player(const Player& plr);	// copy constructor
-	Player& operator=(const Player& p);	// Operator assignment
-	friend ostream& operator<<(ostream& os, const Player& player); //insertion stream operator
+	Player(); // default constructor
+	Player(string *name);
+	// Parameter constructor
+	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders);
+	// Parameter constructor
+	Player(int *reinforcementPool, string *name, vector<Territory *> territories, Hand *playerHand, list<Order *> orders, bool passTurn);
+	// copy constructor
+	Player(const Player &plr);
+	// Operator assignment
+	Player &operator=(const Player &p);
+	// insertion stream operator
+	friend ostream &operator<<(ostream &os, const Player &player);
 	~Player();
 
-	string getName();	// Get name of the palyer
-	void toDefend();
-	void toAttack();
-	void setName(string* str);	// Set name of the player
-	void issueOrder(string* str);
+	// Get name of the palyer
+	string getName();
+	// Territories to be attacked
+	vector<Territory *> toAttack();
+	// Territories to be defended
+	vector<Territory *> toDefend();
+	// get Territory
+	vector<Territory *> getTerritories();
+	// get Territories that are neighblors
+	vector<Territory *> getNeigbourTerritories();
+	list<Order *> getOrders() const;
+	bool getPassTurn();
+	void setPassTurn(bool);
+	Hand *getHand();
+	void addReinforcements(int);
+	int getReinforcementPool();			  // get army units
+	int continentBonusValue();			  // the player is given a number of army units corresponding to the continent’s control bonus value
+	void setReinforcementPool(int pool);  // set army units
+	void setTerritories(Territory *terr); // set Territory
+	void setNamePlayer(string *str);	  // Set name of the player
+										  // Players issue orders and place them in their order list through a call to the Player::issueOrder() method
+										  // print orders from orderList
+	void printOrder();
+	// void printHandCard(); // prind hand card
+	void issueOrder();
+	// check if any of the users should be removed
 
-	bool validate(string* s);
+	// Only for Assignment 1
+	// bool validate(string *s);									// Only for Assignment 1
+	void removeTerritory(Territory &territory);
 
 private:
-	string* name;
-	vector<string*> territories;
-	vector<string*> cards;
-	vector<Order*> orders;
+	int *reinforcementPool;
+	string *name;
+	vector<Territory *> territories;
+	Hand *playerHand;
+	list<Order *> orders;
+	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
+	vector<Card *> cards;
+
+	// Friend classes of the Player class
+	friend class GameEngine;
+	friend class Card;
+	friend class Map;
+	friend class Hand;
+	friend class Order;
+	friend class DeployOrder;
+	friend class BombOrder;
 };

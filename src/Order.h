@@ -4,31 +4,60 @@ using std::ostream;
 #include <queue>
 using std::queue;
 
-// #include "Player.h"
+#include "LoggingObserver.h"
+#include "Player.h"
 using namespace std;
+
+class Territory;
+class Player;
 
 // Not sure yet if it is usefull, can be removed
 enum OrderType
 {
-	deploy,
-	advance,
-	bomb,
-	blockade,
-	airlift,
-	negotiate
+    deploy,
+    advance,
+    bomb,
+    blockade,
+    airlift,
+    negotiate
 };
 
-class Order
+class Order : public ILoggable, public Subject
 {
 public:
     Order();
-    // ~Order();
     Order(string *str);
     Order(const Order &o);            // copy contructor
     Order &operator=(const Order &c); // assignment operrator
-    // void execute(Player &player);
-    bool validate();
-    string *orderName;
+
+    // Destructor
+    virtual ~Order() = default;
+    string stringToLog();
+
+    string *orderName; // not sure if needed
+
+    /* Pure virtual execute method */
+    virtual bool validate() = 0;
+    virtual void execute() = 0;
+
+    virtual Order *clone() const = 0;
+
+    // Stream insertion
+    friend ostream &operator<<(ostream &os, const Order &order);
+
+    // Access modifiers
+    const string &getDescription() const;
+    void setDescription(string &desc);
+
+    const string &getEffect() const;
+    void setEffect(string &effect);
+
+    void setPlayer(Player *player);
+
+protected:
+    string *orderDescription;
+    string *orderEffect;
+    Player *player;
 };
 ostream &operator<<(ostream &os, const Order &o);
 
@@ -36,57 +65,107 @@ class DeployOrder : public Order
 {
 public:
     DeployOrder();
-    void execute();
-    bool validate();
-    bool isValid;
+    DeployOrder(Player *player, Territory *targetTerritory, int nbOfArmies); // parameterized
+    //DeployOrder(const DeployOrder &d);                                       // copy
+    string stringToLog();
+    
+    void execute() override;
+    bool validate() override;
+    // bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *target;
+    int nbOfArmies;
+    Order *clone() const override;
 };
 
 class AdvanceOrder : public Order
 {
 public:
     AdvanceOrder();
-    void execute();
-    bool validate();
+    AdvanceOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *source;
+    Territory *target;
+    int nbOfArmies;
+    void attackSimilate(Territory *source, Territory *target, int nbOfArmies);
+    Order *clone() const override;
 };
 
 class BombOrder : public Order
 {
 public:
     BombOrder();
-    void execute();
-    bool validate();
+    BombOrder(Player *currentPlayer, Territory *target);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *target;
+    Order *clone() const override;
 };
 
 class BlockadeOrder : public Order
 {
 public:
     BlockadeOrder();
-    void execute();
-    bool validate();
+    BlockadeOrder(Player *player, Territory *target);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *target;
+    Order *clone() const override;
 };
 
 class AirliftOrder : public Order
 {
 public:
     AirliftOrder();
-    void execute();
-    bool validate();
+    AirliftOrder(Player *player, Territory *sourceTerritory, Territory *targetTerritory, int nbOfArmies);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+private:
+    Player *currentPlayer;
+    Territory *source;
+    Territory *target;
+    int nbOfArmies;
+    Order *clone() const override;
 };
 
 class NegotiateOrder : public Order
 {
 public:
     NegotiateOrder();
-    void execute();
-    bool validate();
+    NegotiateOrder(Player *currentPlayer, Player *targetPlayer);
+    virtual bool validate() override;
+    virtual void execute() override;
+
     bool isValid;
+
+private:
+    Player *currentPlayer;
+    Player *targetPlayer;
+    Order *clone() const override;
 };
 
-class OrdersList
+class OrdersList : public ILoggable, public Subject
 {
 private:
     // FIFO queue
@@ -95,10 +174,12 @@ private:
 public:
     OrdersList();
     OrdersList(const OrdersList &o); // copy constuctor
+    ~OrdersList();
     void move(int initialPosition, int desiredPosition);
     void remove(int index);
     void execute();
     void addOrder(Order *order);
+    string stringToLog();
     void printOrders() const;
 };
 

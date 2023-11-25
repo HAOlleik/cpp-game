@@ -1,56 +1,67 @@
-#ifndef CARD_H
-#define CARD_H
+#ifndef GAME_ENGINE_H
+#define GAME_ENGINE_H
 #include <iostream>
-#include <map>
 using std::ostream;
+#include <memory>
+#include <map>
+#include <algorithm>
+#include <random>
+#include <vector>
 
-enum State // available states
+#include "GameEngineState.h"
+#include "Territory.h"
+#include "Map.h"
+#include "Cards.h"
+#include "Command.h"
+#include "CommandProcessing.h"
+#include "MapLoader.h"
+#include "Player.h"
+
+#define MAX_PLAYERS 6
+
+class GameEngine : public ILoggable, public Subject
 {
-    start = 1,
-    map_loaded = 2,
-    map_validated = 3,
-    players_added = 4,
-    assign_reinforcement = 5,
-    issue_orders = 6,
-    execute_orders = 7,
-    win = 8
-};
-
-enum Action // available actions
-{
-    load_map = 1,
-    validate_map = 2,
-    add_player = 3,
-    assign_countries = 4,
-    issue_order = 5,
-    end_issue_orders = 6,
-    exec_order = 7,
-    end_exec_orders = 8,
-    win_game = 9,
-    play = 10,
-    end_game = 11
-};
-
-extern std::map<State, std::map<Action, State>> mapStateToActions;
-extern std::map<std::string, Action> actionToString;
-
-void inputToLower(char *input); // free function to change to inputted action to lower case
-
-class GameEngine
-{
-private:
-    State *state;
-
 public:
-    GameEngine();                                         // default
-    GameEngine(const GameEngine &g);                      // copy constr
-    GameEngine &operator=(const GameEngine &c);           // assignment operator overload
-    ~GameEngine();                                        // destructor
-    State *getState() { return state; };                  // getter for state
-    void setState(State *newState) { state = newState; }; // setter for state
+    GameEngine();                               // default
+    GameEngine(const GameEngine &g);            // copy constr
+    GameEngine(CommandProcessor cli);           // paratemtrized contructor
+    GameEngine &operator=(const GameEngine &c); // assignment operator
+    ~GameEngine();                              // destructor
+    void startupPhase();                        // startup phase of the game
+
+    void addPlayer(const std::string &playerName); // Part 3
+    void setMap(std::shared_ptr<Map> map);         // Part 3
+
+    STATE *getState() const // getter for state
+    {
+        return _state.get();
+    };
+    void setState(STATE newState) // setter for state
+    {
+        _state = std::make_shared<STATE>(newState);
+        notify(this);
+    };
+    std::string getStateAsString(STATE state);
+    string stringToLog();
+    friend ostream &operator<<(ostream &os, GameEngine &g);
+
+private:
+    std::shared_ptr<STATE> _state = NULL;
+    std::vector<shared_ptr<Player>> _players;
+    std::unique_ptr<Map> _map = NULL;
+    std::unique_ptr<CommandProcessor> _cli = NULL;
+    std::unique_ptr<Deck> _deck;
+    // ACTION mainGameLoop();    // It is put in comment 2023-11-11
+    void assignPlayersRandomOrder();
+    void assignTerritoriesPlayers();
+    void checkLoosers();
+    void reinforcmentPhase();  // Part 3
+    void issueOrdersPhase();   // Part 3
+    void executeOrdersPhase(); // Part 3
+    ACTION mainGameLoop();     // Part 3
+    bool conditionToCheckForWinner();
 };
 
-ostream &
-operator<<(ostream &os, GameEngine &g);
-void testGameEngineStates();
+void testMainGameLoop(); // Part 3
+
 #endif

@@ -8,7 +8,8 @@
 
 #include "MapLoader.h"
 #include "Territory.h"
-#include "Map.h"
+
+class Map;
 
 class MapLoader
 {

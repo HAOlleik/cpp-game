@@ -1,0 +1,4 @@
+load_map abc.txt
+loaD_map maps/Alberta/Alberta.map
+validate_map
+load_map

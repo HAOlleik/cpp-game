@@ -1,4 +1,5 @@
 #include "MapLoader.h"
+#include "Map.h"
 
 std::string MapLoader::trim(const std::string &s)
 {
@@ -26,7 +27,10 @@ MapLoader::MapLoader(const MapLoader &m)
     map = m.getMap();
 }
 
-MapLoader::~MapLoader() {}
+MapLoader::~MapLoader()
+{
+    map = nullptr;
+}
 
 bool MapLoader::load(const std::string &filePath)
 {
@@ -83,9 +87,9 @@ bool MapLoader::load(const std::string &filePath)
                 v.push_back(s);
             };
             // Create Territory
-            auto terr = std::make_shared<Territory>(v[0]);
-            map->addTerritory(terr);
             auto c = map->getContinent(v[3]);
+            auto terr = std::make_shared<Territory>(v[0], c);
+            map->addTerritory(terr);
             c->addTerritory(terr);
         }
     }
@@ -124,6 +128,7 @@ bool MapLoader::load(const std::string &filePath)
         };
 
         std::shared_ptr<Territory> terr = map->getTerritory(v[0]);
+
         if (terr == nullptr)
         {
             std::cout << "Territory not found: " + v[0] << std::endl;
@@ -137,6 +142,7 @@ bool MapLoader::load(const std::string &filePath)
         while (tc > 3 && (unsigned long)tc < v.size())
         {
             std::shared_ptr<Territory> t = map->getTerritory(v[tc]);
+
             if (t != nullptr)
             {
                 terr->addAdjacent(t);
@@ -149,38 +155,38 @@ bool MapLoader::load(const std::string &filePath)
         }
     }
     // To print out the map
-    auto &terri = *(map->getTerritories());
-    for (const auto &elem : terri)
-    {
-        std::cout << "MAP:"
-                  << " " << elem.first << " " << elem.second->getName() << "\n";
-    }
-    auto &cont = *(map->getContinents());
-    if (!cont.empty())
-    {
-        for (const auto &elem : cont)
-        {
-            if (elem.second)
-            {
-                std::cout << "CONTINENT:"
-                          << " " << elem.first << " " << elem.second->getName() << "\n";
-                auto &cter = elem.second->getTerritories();
-                for (const auto &elem : cter)
-                {
-                    std::cout << "CTER:"
-                              << " " << elem->getName() << "\n";
-                }
-            }
-            else
-            {
-                std::cout << "Error: Null Continent for key: " << elem.first << "\n";
-            }
-        }
-    }
-    else
-    {
-        std::cout << "Error: continents map is empty." << '\n';
-    }
+    // auto &terri = *(map->getTerritories());
+    // for (const auto &elem : terri)
+    // {
+    //     std::cout << "MAP:"
+    //               << " " << elem.first << " " << elem.second->getName() << "\n";
+    // }
+    // auto &cont = *(map->getContinents());
+    // if (!cont.empty())
+    // {
+    //     for (const auto &elem : cont)
+    //     {
+    //         if (elem.second)
+    //         {
+    //             std::cout << "CONTINENT:"
+    //                       << " " << elem.first << " " << elem.second->getName() << "\n";
+    //             auto &cter = elem.second->getTerritories();
+    //             for (const auto &elem : cter)
+    //             {
+    //                 std::cout << "CTER:"
+    //                           << " " << elem->getName() << "\n";
+    //             }
+    //         }
+    //         else
+    //         {
+    //             std::cout << "Error: Null Continent for key: " << elem.first << "\n";
+    //         }
+    //     }
+    // }
+    // else
+    // {
+    //     std::cout << "Error: continents map is empty." << '\n';
+    // }
 
     file.close();
     return true;
