@@ -1,4 +1,5 @@
-load_map abc.txt
-loaD_map maps/Alberta/Alberta.map
+load_map maps/Alberta/Alberta.map
 validate_map
-load_map
+add_player pl1
+add_player pl2
+gamestart

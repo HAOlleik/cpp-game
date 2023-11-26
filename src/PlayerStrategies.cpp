@@ -1,19 +1,22 @@
 #include "PlayerStrategies.h"
-    using std::cout;
-    using std::endl;
 
-std::map<std::string, std::function<PlayerStrategy*(Player*)>> strategyMap = {
-    {"human", [](Player* player) { return new HumanPlayerStrategy(player); }},
-    {"aggressive", [](Player* player) { return new AggressivePlayerStrategy(player); }},
-    {"benevolent", [](Player* player) { return new BenevolentPlayerStrategy(player); }},
-    {"neutral", [](Player* player) { return new NeutralPlayerStrategy(player); }},
-    {"cheater", [](Player* player) { return new CheaterPlayerStrategy(player); }},
+std::map<std::string, std::function<PlayerStrategy *(Player *)>> strategyMap = {
+    {"human", [](Player *player)
+     { return new HumanPlayerStrategy(player); }},
+    {"aggressive", [](Player *player)
+     { return new AggressivePlayerStrategy(player); }},
+    {"benevolent", [](Player *player)
+     { return new BenevolentPlayerStrategy(player); }},
+    {"neutral", [](Player *player)
+     { return new NeutralPlayerStrategy(player); }},
+    {"cheater", [](Player *player)
+     { return new CheaterPlayerStrategy(player); }},
 };
 
-PlayerStrategy* PlayerStrategy::handleStrategyCreation(Player* player, std::string& strategy)
+PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::string &strategy)
 {
     std::string strategy_name;
-    for (auto& c : strategy)
+    for (auto &c : strategy)
     {
         strategy_name += (char)std::tolower(c);
     }
@@ -30,7 +33,8 @@ PlayerStrategy* PlayerStrategy::handleStrategyCreation(Player* player, std::stri
     }
 }
 
-std::ostream& operator<<(std::ostream& out, const PlayerStrategy& strategy) {
+std::ostream &operator<<(std::ostream &out, const PlayerStrategy &strategy)
+{
     strategy.print(out);
     return out;
 }
@@ -39,78 +43,176 @@ std::ostream& operator<<(std::ostream& out, const PlayerStrategy& strategy) {
 //  HumanPlayerStrategy Comcrete Class
 //*******************************************
 
-HumanPlayerStrategy::HumanPlayerStrategy(Player* player){
+HumanPlayerStrategy::HumanPlayerStrategy(Player *player)
+{
     this->player = player;
 }
-//TO IMPLEMENT
-vector<Territory *> HumanPlayerStrategy::toAttack(){
-    cout<<"HumanPlayerStrategy::toAttack"<<endl;
-    return vector<Territory*>();
+
+void HumanPlayerStrategy::deployArmies()
+{
+    int territoryChoice;
+    int armiesToDeployChoice;
+    vector<Territory *> territories = player->getTerritories();
+    cout << "Which territory would you like to deploy to?\n\n";
+    for (int i = 0; i < territories.size(); i++)
+    {
+        cout << i << ".\n"
+             << territories[i] << endl;
+    }
+    cin >> territoryChoice;
+    cout << "How many armies would you like to deploy?\n\n";
+    cin >> armiesToDeployChoice;
+    territories[territoryChoice]->setArmies(territories[territoryChoice]->getArmies() + armiesToDeployChoice);
+    cout << territories[territoryChoice] << endl;
 }
 
-//TO IMPLEMENT
-vector<Territory *> HumanPlayerStrategy::toDefend(){
-    cout<<"HumanPlayerStrategy::toDefend"<<endl;
-    return vector<Territory*>();
+void HumanPlayerStrategy::issueOrder()
+{
+    int reinforcementPoolLeft = player->getReinforcementPool();
+    int cardsLeft = (int)player->getHand()->getHandSize();
+    std::string playerName = player->getName();
+    int choice;
+
+    std::cout << "Human player " << playerName << " is issuing an order.\n"
+              << "You have " << reinforcementPoolLeft << " left for deployment.\n"
+              << "You have " << cardsLeft << " cards in your hand.\n"
+              << "What's next?\n\n"
+              << "1. Deploy\n"
+              << "2. Advance\n"
+              << "3. Play cards\n"
+              << "4. Exit\n"
+              << "5. Finished issuing orders for the entire turn\n\n";
+
+    cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+        if (reinforcementPoolLeft > 0)
+        {
+            deployArmies();
+            issueOrder();
+        }
+        else
+        {
+            cout << "You have no armies left to deploy." << endl;
+            issueOrder();
+        }
+        break;
+    case 2:
+        // if (!advance())
+        // {
+        //     issueOrder();
+        // }
+        break;
+    case 3:
+        // if (cardsLeft > 0)
+        // {
+        //     if (!playCard())
+        //     {
+        //         issueOrder();
+        //     }
+        // }
+        // else
+        // {
+        //     cout << "You have no cards to play." << endl;
+        //     issueOrder();
+        // }
+        break;
+    case 4:
+        cout << "Exiting..." << endl;
+        break;
+    case 5:
+        if (reinforcementPoolLeft > 0)
+        {
+            cout << "You have " << reinforcementPoolLeft << " armies left to deploy." << endl;
+            cout << "You must deploy all armies before you can end your turn." << endl;
+            issueOrder();
+        }
+        break;
+    default:
+        cout << "Invalid choice." << endl;
+        issueOrder();
+        break;
+    }
 }
 
-//TO IMPLEMENT
-void HumanPlayerStrategy::issueOrder(){
-
+// TO IMPLEMENT
+vector<Territory *> HumanPlayerStrategy::toAttack()
+{
+    cout << "HumanPlayerStrategy::toAttack" << endl;
+    return vector<Territory *>();
 }
 
-HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& strategy) {
+// TO IMPLEMENT
+vector<Territory *> HumanPlayerStrategy::toDefend()
+{
+    cout << "HumanPlayerStrategy::toDefend" << endl;
+    return vector<Territory *>();
+}
+
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &strategy)
+{
     this->player = new Player(*strategy.player);
 }
 
-HumanPlayerStrategy::~HumanPlayerStrategy() {
+HumanPlayerStrategy::~HumanPlayerStrategy()
+{
     delete player;
 }
 
-HumanPlayerStrategy& HumanPlayerStrategy::operator =(const HumanPlayerStrategy& strategy) {
-    if (this != &strategy) {
+HumanPlayerStrategy &HumanPlayerStrategy::operator=(const HumanPlayerStrategy &strategy)
+{
+    if (this != &strategy)
+    {
         delete player;
         player = new Player(*strategy.player);
     }
     return *this;
 }
 
-
 //*******************************************
 //  AggressivePlayerStrategy Comcrete Class
 //*******************************************
 
-AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player){
+AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player)
+{
     this->player = player;
 }
 
-//TO IMPLEMENT
-vector<Territory *> AggressivePlayerStrategy::toAttack(){
-    cout<<"AggressivePlayerStrategy::toAttack"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> AggressivePlayerStrategy::toAttack()
+{
+    cout << "AggressivePlayerStrategy::toAttack" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-vector<Territory *> AggressivePlayerStrategy::toDefend(){
-    cout<<"AggressivePlayerStrategy::toDefend"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> AggressivePlayerStrategy::toDefend()
+{
+    cout << "AggressivePlayerStrategy::toDefend" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-void AggressivePlayerStrategy::issueOrder(){
-
+// TO IMPLEMENT
+void AggressivePlayerStrategy::issueOrder()
+{
 }
 
-AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& strategy) {
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &strategy)
+{
     this->player = new Player(*strategy.player);
 }
 
-AggressivePlayerStrategy::~AggressivePlayerStrategy() {
+AggressivePlayerStrategy::~AggressivePlayerStrategy()
+{
     delete player;
 }
 
-AggressivePlayerStrategy& AggressivePlayerStrategy::operator =(const AggressivePlayerStrategy& strategy) {
-    if (this != &strategy) {
+AggressivePlayerStrategy &AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy &strategy)
+{
+    if (this != &strategy)
+    {
         delete player;
         player = new Player(*strategy.player);
     }
@@ -121,122 +223,140 @@ AggressivePlayerStrategy& AggressivePlayerStrategy::operator =(const AggressiveP
 //  BenevolentPlayerStrategy Comcrete Class
 //*******************************************
 
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player){
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player)
+{
     this->player = player;
 }
 
-//TO IMPLEMENT
-vector<Territory *> BenevolentPlayerStrategy::toAttack(){
-    cout<<"BenevolentPlayerStrategy::toAttack"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> BenevolentPlayerStrategy::toAttack()
+{
+    cout << "BenevolentPlayerStrategy::toAttack" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-vector<Territory *> BenevolentPlayerStrategy::toDefend(){
-    cout<<"BenevolentPlayerStrategy::toDefend"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> BenevolentPlayerStrategy::toDefend()
+{
+    cout << "BenevolentPlayerStrategy::toDefend" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-void BenevolentPlayerStrategy::issueOrder(){
-
+// TO IMPLEMENT
+void BenevolentPlayerStrategy::issueOrder()
+{
 }
 
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& strategy) {
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &strategy)
+{
     this->player = new Player(*strategy.player);
 }
 
-BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy()
+{
     delete player;
 }
 
-BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator =(const BenevolentPlayerStrategy& strategy) {
-    if (this != &strategy) {
+BenevolentPlayerStrategy &BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy &strategy)
+{
+    if (this != &strategy)
+    {
         delete player;
         player = new Player(*strategy.player);
     }
     return *this;
 }
-
-
 
 //*******************************************
 //  NeutralPlayerStrategy Comcrete Class
 //*******************************************
 
-NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player){
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player)
+{
     this->player = player;
 }
 
-//TO IMPLEMENT
-vector<Territory *> NeutralPlayerStrategy::toAttack(){
-    cout<<"NeutralPlayerStrategy::toAttack"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> NeutralPlayerStrategy::toAttack()
+{
+    cout << "NeutralPlayerStrategy::toAttack" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-vector<Territory *> NeutralPlayerStrategy::toDefend(){
-    cout<<"NeutralPlayerStrategy::toDefend"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> NeutralPlayerStrategy::toDefend()
+{
+    cout << "NeutralPlayerStrategy::toDefend" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-void NeutralPlayerStrategy::issueOrder(){
-    
+// TO IMPLEMENT
+void NeutralPlayerStrategy::issueOrder()
+{
 }
 
-NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& strategy) {
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy &strategy)
+{
     this->player = new Player(*strategy.player);
 }
 
-NeutralPlayerStrategy::~NeutralPlayerStrategy() {
+NeutralPlayerStrategy::~NeutralPlayerStrategy()
+{
     delete player;
 }
 
-NeutralPlayerStrategy& NeutralPlayerStrategy::operator =(const NeutralPlayerStrategy& strategy) {
-    if (this != &strategy) {
+NeutralPlayerStrategy &NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy &strategy)
+{
+    if (this != &strategy)
+    {
         delete player;
         player = new Player(*strategy.player);
     }
     return *this;
 }
 
-
 //*******************************************
 //  CheaterPlayerStrategy Comcrete Class
 //*******************************************
 
-CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player){
+CheaterPlayerStrategy::CheaterPlayerStrategy(Player *player)
+{
     this->player = player;
 }
 
-//TO IMPLEMENT
-vector<Territory *> CheaterPlayerStrategy::toAttack(){
-    cout<<"CheaterPlayerStrategy::toAttack"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> CheaterPlayerStrategy::toAttack()
+{
+    cout << "CheaterPlayerStrategy::toAttack" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-vector<Territory *> CheaterPlayerStrategy::toDefend(){
-    cout<<"CheaterPlayerStrategy::toDefend"<<endl;
-    return vector<Territory*>();
+// TO IMPLEMENT
+vector<Territory *> CheaterPlayerStrategy::toDefend()
+{
+    cout << "CheaterPlayerStrategy::toDefend" << endl;
+    return vector<Territory *>();
 }
 
-//TO IMPLEMENT
-void CheaterPlayerStrategy::issueOrder(){
-    
+// TO IMPLEMENT
+void CheaterPlayerStrategy::issueOrder()
+{
 }
 
-CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& strategy) {
+CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy &strategy)
+{
     this->player = new Player(*strategy.player);
 }
 
-CheaterPlayerStrategy::~CheaterPlayerStrategy() {
+CheaterPlayerStrategy::~CheaterPlayerStrategy()
+{
     delete player;
 }
 
-CheaterPlayerStrategy& CheaterPlayerStrategy::operator =(const CheaterPlayerStrategy& strategy) {
-    if (this != &strategy) {
+CheaterPlayerStrategy &CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy &strategy)
+{
+    if (this != &strategy)
+    {
         delete player;
         player = new Player(*strategy.player);
     }

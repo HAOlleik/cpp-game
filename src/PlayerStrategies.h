@@ -4,8 +4,8 @@
 #include <map>
 #include <iostream>
 #include <vector>
-    using std::vector;
-
+#include <functional>
+using namespace std;
 
 // abstract class
 class PlayerStrategy{
@@ -34,6 +34,7 @@ class HumanPlayerStrategy : public PlayerStrategy{
             out << "HumanPlayerStrategy";
         }
         HumanPlayerStrategy& operator =(const HumanPlayerStrategy& strategy);
+        void deployArmies();
 };
 
 //concrete strategy class
