@@ -35,6 +35,7 @@ class HumanPlayerStrategy : public PlayerStrategy{
         }
         HumanPlayerStrategy& operator =(const HumanPlayerStrategy& strategy);
         void deployArmies(int* armyAvailableCount);
+        void advanceArmies(int* armyAvailableCount);
 };
 
 //concrete strategy class

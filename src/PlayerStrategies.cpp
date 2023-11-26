@@ -53,15 +53,15 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player *player)
     this->player = player;
 }
 
-void HumanPlayerStrategy::deployArmies(int *armyCount)
+void HumanPlayerStrategy::deployArmies(int *armyAvailableCount)
 {
     int territoryChoice;
     int armiesToDeployChoice;
     vector<Territory *> territories = toDefend();
-    for (int i = 0; i < territories.size(); i++)
+    for (int i = 1; i <= territories.size(); i++)
     {
         cout << i << ".\n"
-             << *territories[i]
+             << *territories[i - 1]
              << "\n"
              << endl;
     }
@@ -69,18 +69,88 @@ void HumanPlayerStrategy::deployArmies(int *armyCount)
     cin >> territoryChoice;
     cout << "\nHow many armies would you like to deploy?\n";
     cin >> armiesToDeployChoice;
-    if (*armyCount < armiesToDeployChoice)
+    if (*armyAvailableCount < armiesToDeployChoice)
     {
         cout << "You do not have enough armies to deploy that many." << endl;
     }
+    else if (territoryChoice < 1 || territoryChoice > territories.size())
+    {
+        cout << "Invalid territory." << endl;
+    }
     else
     {
-        territories[territoryChoice]->setArmies(territories[territoryChoice]->getArmies() + armiesToDeployChoice);
+        territories[territoryChoice - 1]->setArmies(territories[territoryChoice - 1]->getArmies() + armiesToDeployChoice);
         cout << "\n"
-             << *territories[territoryChoice] << "\n"
+             << *territories[territoryChoice - 1] << "\n"
              << endl;
-        *armyCount -= armiesToDeployChoice;
+        *armyAvailableCount -= armiesToDeployChoice;
     }
+}
+
+void HumanPlayerStrategy::advanceArmies(int *armyAvailableCount)
+{
+    vector<Territory *> territoriesToDefend = player->toDefend();
+    vector<Territory *> ownedAdjacentTerritories;
+    int sourceTerritoryChoice, destinationTerritoryChoice, armiesToAdvanceChoice;
+
+    for (int i = 1; i <= territoriesToDefend.size(); i++)
+    {
+        cout << i << ".\n"
+             << *territoriesToDefend[i - 1]
+             << "\n"
+             << endl;
+    }
+
+    cout << "Please select a territory to advance from: " << endl;
+    cin >> sourceTerritoryChoice;
+    cout << endl;
+
+    if (sourceTerritoryChoice < 1 || sourceTerritoryChoice > territoriesToDefend.size())
+    {
+        cout << "Invalid choice." << endl;
+        return;
+    }
+
+    for (auto &tt : territoriesToDefend[sourceTerritoryChoice - 1]->getAdjacentTerritories())
+    {
+        if (find(territoriesToDefend.begin(), territoriesToDefend.end(), tt.get()) == territoriesToDefend.end())
+        {
+            ownedAdjacentTerritories.push_back(tt.get());
+        }
+    }
+
+    cout << "Which territory do you want to advance to?" << endl;
+
+    for (int i = 1; i <= ownedAdjacentTerritories.size(); i++)
+    {
+        cout << i << ".\n"
+             << *ownedAdjacentTerritories[i - 1]
+             << "\n"
+             << endl;
+    }
+
+    cin >> destinationTerritoryChoice;
+    cout << endl;
+
+    if (destinationTerritoryChoice < 1 || destinationTerritoryChoice > ownedAdjacentTerritories.size())
+    {
+        cout << "Invalid choice." << endl;
+        return;
+    }
+
+    cout << "How many armies do you want to advance to " << ownedAdjacentTerritories[destinationTerritoryChoice-1] << "?" << endl;
+    cin >> armiesToAdvanceChoice;
+    cout << endl;
+
+    if (armiesToAdvanceChoice < 1 || armiesToAdvanceChoice > *armyAvailableCount)
+    {
+        cout << "Invalid choice." << endl;
+        return;
+    }
+
+    territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(territoriesToDefend[sourceTerritoryChoice - 1]->getArmies() - armiesToAdvanceChoice);
+    ownedAdjacentTerritories[destinationTerritoryChoice - 1]->setArmies(ownedAdjacentTerritories[destinationTerritoryChoice - 1]->getArmies() + armiesToAdvanceChoice);
+    *armyAvailableCount -= armiesToAdvanceChoice;
 }
 
 void HumanPlayerStrategy::issueOrder()
@@ -117,10 +187,17 @@ void HumanPlayerStrategy::issueOrder()
         }
         break;
     case 2:
-        // if (!advance())
-        // {
-        //     issueOrder();
-        // }
+        if (reinforcementPoolLeft == 0)
+        {
+            advanceArmies(&reinforcementPoolLeft);
+            player->setReinforcementPool(reinforcementPoolLeft);
+            issueOrder();
+        }
+        else
+        {
+            cout << "You have more armies left to deploy." << endl;
+            issueOrder();
+        }
         break;
     case 3:
         // if (cardsLeft > 0)
@@ -152,7 +229,6 @@ void HumanPlayerStrategy::issueOrder()
     }
 }
 
-// TO IMPLEMENT
 vector<Territory *> HumanPlayerStrategy::toAttack()
 {
     vector<Territory *> possibleToAttack;
@@ -161,7 +237,7 @@ vector<Territory *> HumanPlayerStrategy::toAttack()
     {
         for (auto &tt : t->getAdjacentTerritories())
         {
-            if (find(ownedTerritories.begin(), ownedTerritories.end(), tt.get()) == ownedTerritories.end() && 
+            if (find(ownedTerritories.begin(), ownedTerritories.end(), tt.get()) == ownedTerritories.end() &&
                 find(possibleToAttack.begin(), possibleToAttack.end(), tt.get()) == possibleToAttack.end())
             {
                 possibleToAttack.push_back(tt.get());
@@ -173,7 +249,6 @@ vector<Territory *> HumanPlayerStrategy::toAttack()
     return possibleToAttack;
 }
 
-// TO IMPLEMENT
 vector<Territory *> HumanPlayerStrategy::toDefend()
 {
     return player->getTerritories();

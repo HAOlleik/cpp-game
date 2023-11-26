@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
         // {
         //     cout << *t << endl;
         // }
-        // strategy->issueOrder();
+        strategy1->issueOrder();
     }
 
     return 0;
