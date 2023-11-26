@@ -1,5 +1,10 @@
 #include "PlayerStrategies.h"
 
+bool compareTerritoriesByName(const Territory *a, const Territory *b)
+{
+    return a->getName() < b->getName();
+}
+
 std::map<std::string, std::function<PlayerStrategy *(Player *)>> strategyMap = {
     {"human", [](Player *player)
      { return new HumanPlayerStrategy(player); }},
@@ -52,7 +57,7 @@ void HumanPlayerStrategy::deployArmies(int *armyCount)
 {
     int territoryChoice;
     int armiesToDeployChoice;
-    vector<Territory *> territories = player->getTerritories();
+    vector<Territory *> territories = toDefend();
     for (int i = 0; i < territories.size(); i++)
     {
         cout << i << ".\n"
@@ -92,8 +97,7 @@ void HumanPlayerStrategy::issueOrder()
               << "1. Deploy\n"
               << "2. Advance\n"
               << "3. Play cards\n"
-              << "4. Exit\n"
-              << "5. Finished issuing orders for the entire turn\n\n";
+              << "4. Exit\n\n";
 
     cin >> choice;
 
@@ -133,15 +137,13 @@ void HumanPlayerStrategy::issueOrder()
         // }
         break;
     case 4:
-        cout << "Exiting..." << endl;
-        break;
-    case 5:
         if (reinforcementPoolLeft > 0)
         {
             cout << "You have " << reinforcementPoolLeft << " armies left to deploy." << endl;
-            cout << "You must deploy all armies before you can end your turn." << endl;
+            cout << "Deploy all armies before ending your turn." << endl;
             issueOrder();
         }
+        cout << "Exiting..." << endl;
         break;
     default:
         cout << "Invalid choice." << endl;
@@ -153,15 +155,28 @@ void HumanPlayerStrategy::issueOrder()
 // TO IMPLEMENT
 vector<Territory *> HumanPlayerStrategy::toAttack()
 {
-    cout << "HumanPlayerStrategy::toAttack" << endl;
-    return vector<Territory *>();
+    vector<Territory *> possibleToAttack;
+    vector<Territory *> ownedTerritories = player->getTerritories();
+    for (auto &t : ownedTerritories)
+    {
+        for (auto &tt : t->getAdjacentTerritories())
+        {
+            if (find(ownedTerritories.begin(), ownedTerritories.end(), tt.get()) == ownedTerritories.end() && 
+                find(possibleToAttack.begin(), possibleToAttack.end(), tt.get()) == possibleToAttack.end())
+            {
+                possibleToAttack.push_back(tt.get());
+            }
+        }
+    }
+
+    sort(possibleToAttack.begin(), possibleToAttack.end(), compareTerritoriesByName);
+    return possibleToAttack;
 }
 
 // TO IMPLEMENT
 vector<Territory *> HumanPlayerStrategy::toDefend()
 {
-    cout << "HumanPlayerStrategy::toDefend" << endl;
-    return vector<Territory *>();
+    return player->getTerritories();
 }
 
 HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy &strategy)
