@@ -48,22 +48,34 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player *player)
     this->player = player;
 }
 
-void HumanPlayerStrategy::deployArmies()
+void HumanPlayerStrategy::deployArmies(int *armyCount)
 {
     int territoryChoice;
     int armiesToDeployChoice;
     vector<Territory *> territories = player->getTerritories();
-    cout << "Which territory would you like to deploy to?\n\n";
     for (int i = 0; i < territories.size(); i++)
     {
         cout << i << ".\n"
-             << territories[i] << endl;
+             << *territories[i]
+             << "\n"
+             << endl;
     }
+    cout << "\nWhich territory would you like to deploy to?\n";
     cin >> territoryChoice;
-    cout << "How many armies would you like to deploy?\n\n";
+    cout << "\nHow many armies would you like to deploy?\n";
     cin >> armiesToDeployChoice;
-    territories[territoryChoice]->setArmies(territories[territoryChoice]->getArmies() + armiesToDeployChoice);
-    cout << territories[territoryChoice] << endl;
+    if (*armyCount < armiesToDeployChoice)
+    {
+        cout << "You do not have enough armies to deploy that many." << endl;
+    }
+    else
+    {
+        territories[territoryChoice]->setArmies(territories[territoryChoice]->getArmies() + armiesToDeployChoice);
+        cout << "\n"
+             << *territories[territoryChoice] << "\n"
+             << endl;
+        *armyCount -= armiesToDeployChoice;
+    }
 }
 
 void HumanPlayerStrategy::issueOrder()
@@ -90,7 +102,8 @@ void HumanPlayerStrategy::issueOrder()
     case 1:
         if (reinforcementPoolLeft > 0)
         {
-            deployArmies();
+            deployArmies(&reinforcementPoolLeft);
+            player->setReinforcementPool(reinforcementPoolLeft);
             issueOrder();
         }
         else

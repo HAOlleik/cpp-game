@@ -23,17 +23,15 @@ int main(int argc, char *argv[])
     game.setMap(loader.getMap());
     string name = "pl1";
     Player *player = new Player(&name);
-    auto terr = _map->getTerritories();
+    auto terr = loader.getMap()->getTerritories();
 
     uint64_t iter = 0;
     for (auto &it : *terr)
     {
-        it.second->setOwner(_players[iter % _players.size()]);
-        // add terr pointer to player
-        _players[iter % _players.size()]->setTerritories(it.second.get());
+        player->setTerritories(it.second.get());
         iter++;
     }
-    player->setReinforcementPool(10);
+    player->setReinforcementPool(50);
     std::string strategyName = "";
     while (true)
     {
