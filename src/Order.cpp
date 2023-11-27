@@ -486,11 +486,19 @@ ostream &operator<<(ostream &os, const Order &o)
 }
 
 // methods for orderList
-OrdersList::OrdersList() {}
+OrdersList::OrdersList() : _orders() {}
 void OrdersList::addOrder(Order *order)
 {
-	this->_orders.push(order);
-	notify(this);
+	if (order)
+    {
+        this->_orders.push(order);
+        notify(this);
+    }
+    else
+    {
+        cout << "ORDER IS NULL\n";
+		return;
+    }
 }
 void OrdersList::move(int initialPosition, int desiredPosition)
 {

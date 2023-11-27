@@ -23,7 +23,9 @@ class Card;
 class DeployOrder;
 class BombOrder;
 class PlayerStrategy;
+class OrdersList;
 #include "Cards.h"
+#include "Order.h"
 #include "PlayerStrategies.h"
 
 class Player
@@ -58,6 +60,7 @@ public:
 	bool getPassTurn();
 	void setPassTurn(bool);
 	Hand *getHand();
+	OrdersList *getOrdersList();
 	void addReinforcements(int);
 	int getReinforcementPool();			  // get army units
 	int continentBonusValue();			  // the player is given a number of army units corresponding to the continent’s control bonus value
@@ -82,7 +85,8 @@ private:
 	string *name;
 	vector<Territory *> territories;
 	Hand *playerHand;
-	list<Order *> orders;
+	list<Order *> orders; // WHOEVER WROTE THIS FIX IT TO USE OBJECT OrdersList
+	OrdersList *orderList;
 	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
 	vector<Card *> cards;
 	PlayerStrategy *playerStrategy;

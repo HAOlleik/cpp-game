@@ -69,6 +69,7 @@ class Hand
 {
 protected:
     vector<Card *> playHand;
+    Deck *deck;
 
 public:
     Hand();                         // default constructor
@@ -80,9 +81,10 @@ public:
 
     int getHandSize();
     vector<Card *> &getPlayHand();
+    Deck *getDeck() { return deck; };
     void addCard(Card &myCard);
     void printPlayHand();
-    void play(int index, Deck &deck, OrdersList &OrdersList);
+    void play(int index, OrdersList &OrdersList);
     void removeCard(int index);
 };
 

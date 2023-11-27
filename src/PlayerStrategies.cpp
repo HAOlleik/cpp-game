@@ -166,6 +166,33 @@ void HumanPlayerStrategy::advanceArmies()
     ownedAdjacentTerritories[destinationTerritoryChoice - 1]->setArmies(ownedAdjacentTerritories[destinationTerritoryChoice - 1]->getArmies() + armiesToAdvanceChoice);
 }
 
+void HumanPlayerStrategy::playCards() {
+  int cardsLeft = player->getHand()->getHandSize();
+  int choice;
+  cout << "You have " << cardsLeft << " cards in your hand." << endl;
+  cout << "Choose card to play:\n" << endl;
+
+  int i = 1;
+  for(Card* card : player->getHand()->getPlayHand()) {
+    cout << i << ". " << card->getCardType() << endl;
+    i++;
+  }
+
+  cin >> choice;
+  cout << endl;
+
+  if(choice < 1 || choice > cardsLeft) {
+    cout << "Invalid choice." << endl;
+    return;
+  }
+
+  player->getHand()->play(choice, *player->getOrdersList());
+
+
+  cout << "You have " << cardsLeft - 1 << " cards left in your hand." << endl;
+  cout << endl;
+}
+
 void HumanPlayerStrategy::issueOrder()
 {
     int reinforcementPoolLeft = player->getReinforcementPool();
@@ -209,18 +236,14 @@ void HumanPlayerStrategy::issueOrder()
         }
         break;
     case 3:
-        // if (cardsLeft > 0)
-        // {
-        //     if (!playCard())
-        //     {
-        //         issueOrder();
-        //     }
-        // }
-        // else
-        // {
-        //     cout << "You have no cards to play." << endl;
-        //     issueOrder();
-        // }
+        if (cardsLeft > 0)
+        {
+            playCards();
+        }
+        else
+        {
+            cout << "You have more armies left to deploy." << endl;
+        }
         break;
     case 4:
         if (reinforcementPoolLeft > 0)

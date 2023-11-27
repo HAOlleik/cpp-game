@@ -26,6 +26,14 @@ int main(int argc, char *argv[])
     string name2 = "pl2";
     Player *player1 = new Player(&name1);
     Player *player2 = new Player(&name2);
+    player1->getHand()->getDeck()->fillDeck();
+    Deck testDeck = *player1->getHand()->getDeck();
+    player1->getHand()->addCard(*testDeck.draw());
+    player1->getHand()->addCard(*testDeck.draw());
+    player1->getHand()->addCard(*testDeck.draw());
+    player2->getHand()->addCard(*testDeck.draw());
+    player2->getHand()->addCard(*testDeck.draw());
+    player2->getHand()->addCard(*testDeck.draw());
     auto terr = loader.getMap()->getTerritories();
 
     std::random_device rd;

@@ -53,16 +53,16 @@ void testCards()
 
     cout <<"\n********Cards will now be played one by one********" << endl;
 
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
-    testHand.play(1, testDeck, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
+    testHand.play(1, testOrdersList);
 
     cout <<"\n********All cards have now been played********\n" << "Deck after playing all the cards:\n" << testDeck << endl;
     cout <<"Player hand after playing all the cards: " << testHand << endl;

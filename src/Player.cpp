@@ -3,7 +3,7 @@
 // Default constructor
 Player::Player()
 	: reinforcementPool(new int(0)), name(new string("Player")),
-	  territories(vector<Territory *>()), playerHand(new Hand()), orders(list<Order *>()) {}
+	  territories(vector<Territory *>()), playerHand(new Hand()), orderList(new OrdersList()), orders(list<Order *>()) {}
 
 // Parameter constructor
 Player::Player(string *name) : reinforcementPool(new int(0)), name(name),
@@ -263,6 +263,11 @@ int Player::continentBonusValue()
 Hand *Player::getHand()
 {
 	return playerHand;
+}
+
+OrdersList *Player::getOrdersList()
+{
+	return orderList;
 }
 
 // void Player::issueOrder()

@@ -209,6 +209,7 @@ Deck::~Deck()
 Hand::Hand()
 {
     playHand = vector<Card *>();
+    deck = new Deck(10);
 }
 
 // copy constructor
@@ -280,7 +281,7 @@ void Hand::removeCard(int index)
     }
 }
 
-void Hand::play(int index, Deck &deck, OrdersList &ordersList)
+void Hand::play(int index, OrdersList &ordersList)
 {
     index -= 1;
     int orderCard = (playHand[index]->getCardID());
@@ -313,7 +314,7 @@ void Hand::play(int index, Deck &deck, OrdersList &ordersList)
         break;
     }
 
-    deck.addCardBackToDeck(orderCard);
+    deck->addCardBackToDeck(orderCard);
     playHand.erase(playHand.begin() + index);
     cout << "Current OrderList: " << endl;
     ordersList.printOrders();
