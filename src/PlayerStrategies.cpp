@@ -171,7 +171,7 @@ void HumanPlayerStrategy::advanceArmies()
     {
         if (typeid(*adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()->getPlayerStrategy()) == typeid(NeutralPlayerStrategy))
         {
-            cout << "Neutral territory cannot be attacked." << endl;
+            adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()->setPlayerStrategy(new AggressivePlayerStrategy(adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()));
             return;
         }
 
