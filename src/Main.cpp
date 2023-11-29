@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     game.setMap(loader.getMap());
     string name1 = "pl1";
     string name2 = "pl2";
-        string neutral = "neutral";
+    string neutral = "neutral";
 
-    Player *player1 = new Player(&name1);
-    Player *player2 = new Player(&name2);
+    std::shared_ptr<Player> player1 = std::make_shared<Player>(&name1);
+    std::shared_ptr<Player> player2 = std::make_shared<Player>(&name2);
     player1->getHand()->getDeck()->fillDeck();
     Deck testDeck = *player1->getHand()->getDeck();
     player1->getHand()->addCard(*testDeck.draw());
@@ -45,13 +45,16 @@ int main(int argc, char *argv[])
     uint64_t iter = 0;
     for (auto &it : *terr)
     {
+        it.second.get()->setArmies(1);
         if (dis(gen) == 0)
         {
             player1->setTerritories(it.second.get());
+            it.second->setOwner(player1);
         }
         else
         {
             player2->setTerritories(it.second.get());
+            it.second->setOwner(player2);
         }
         iter++;
     }
@@ -62,8 +65,8 @@ int main(int argc, char *argv[])
     {
         cout << "Next\n";
         cin >> strategyName;
-        PlayerStrategy *strategy1 = PlayerStrategy::handleStrategyCreation(player1, strategyName);
-        PlayerStrategy *strategy2 = PlayerStrategy::handleStrategyCreation(player2, neutral);
+        PlayerStrategy *strategy1 = PlayerStrategy::handleStrategyCreation(player1.get(), strategyName);
+        PlayerStrategy *strategy2 = PlayerStrategy::handleStrategyCreation(player2.get(), neutral);
         cout << *strategy1 << endl;
         // cout << "Territories to defend1: " << endl;
         // for (auto &t : strategy1->toDefend())
@@ -87,7 +90,8 @@ int main(int argc, char *argv[])
         // }
         strategy1->issueOrder();
 
-        if (player1->getConqueredTerritory()) {
+        if (player1->getConqueredTerritory())
+        {
             player1->getHand()->addCard(*testDeck.draw());
             player1->setConqueredTerritory(false);
         }

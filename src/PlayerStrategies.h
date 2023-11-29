@@ -13,13 +13,15 @@ class PlayerStrategy{
         virtual void issueOrder() = 0;
         virtual vector<Territory *> toAttack() = 0;
         virtual vector<Territory *> toDefend() = 0;
-        virtual ~PlayerStrategy() = default;
+        virtual ~PlayerStrategy() { delete player; };
         virtual void print(std::ostream& out) const = 0;
         static PlayerStrategy* handleStrategyCreation(Player* player, std::string& strategy);
-        Player* player = nullptr;
+        void setPlayer(Player* player) { this->player = player; };
+        Player* player;
+        string strategyName;
+        string getStrategyName() { return strategyName; };
         friend std::ostream& operator<<(std::ostream& out, const PlayerStrategy& strategy);
 };
-
 
 //concrete strategy class
 class HumanPlayerStrategy : public PlayerStrategy{

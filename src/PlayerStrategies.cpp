@@ -30,6 +30,8 @@ PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::stri
     {
         PlayerStrategy *newStrategy = (it->second)(player);
         player->setPlayerStrategy(newStrategy);
+        newStrategy->setPlayer(player);
+        newStrategy->strategyName = strategy_name; // Fix: Assign strategy_name to strategyName member variable
         return newStrategy;
     }
     else
@@ -37,6 +39,7 @@ PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::stri
         cout << "Invalid strategy name: " << strategy << endl;
         return nullptr;
     }
+
 }
 
 std::ostream &operator<<(std::ostream &out, const PlayerStrategy &strategy)
@@ -99,7 +102,7 @@ void HumanPlayerStrategy::advanceArmies()
 {
     vector<Territory *> territoriesToDefend = toDefend();
     vector<Territory *> adjacentTerritories;
-    int sourceTerritoryChoice, destinationTerritoryChoice, armiesToAdvanceChoice;
+    int sourceTerritoryChoice = 0, destinationTerritoryChoice = 0, armiesToAdvanceChoice = 0;
 
     cout << "Please select a territory to advance from: " << endl;
 
@@ -161,6 +164,13 @@ void HumanPlayerStrategy::advanceArmies()
     int defenceArmy = adjacentTerritories[destinationTerritoryChoice - 1]->getArmies();
     int attackKillCount = 0;
     int defenceKillCount = 0;
+    std::shared_ptr<Player> territoryOwnerPtr = adjacentTerritories[destinationTerritoryChoice - 1]->getOwner();
+    if (!territoryOwnerPtr)
+    {
+        cout << "Error: Territory owner is null." << endl;
+        return;
+    }
+    Player *territoryOwner = territoryOwnerPtr.get();
 
     if (adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get() == player)
     {
@@ -169,9 +179,11 @@ void HumanPlayerStrategy::advanceArmies()
     }
     else
     {
-        if (typeid(*adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()->getPlayerStrategy()) == typeid(NeutralPlayerStrategy))
+            cout << "Player was " << territoryOwner->getPlayerStrategy()->getStrategyName() << " and neutral is " << typeid(NeutralPlayerStrategy).name() << endl;
+        if (territoryOwner->getPlayerStrategy()->getStrategyName() == "neutral")
         {
-            adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()->setPlayerStrategy(new AggressivePlayerStrategy(adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()));
+            territoryOwner->setPlayerStrategy(new AggressivePlayerStrategy(territoryOwner));
+            cout << "Player is now " << *territoryOwner->getPlayerStrategy() << endl;
             return;
         }
 
@@ -182,6 +194,7 @@ void HumanPlayerStrategy::advanceArmies()
                 defenceKillCount++;
             }
         }
+
         for (int i = 0; i < defenceArmy; i++)
         {
             if (rand() % 100 >= 70)
@@ -196,6 +209,7 @@ void HumanPlayerStrategy::advanceArmies()
             territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
             adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(armiesToAdvanceChoice - attackKillCount);
             player->setTerritories(adjacentTerritories[destinationTerritoryChoice - 1]);
+            adjacentTerritories[destinationTerritoryChoice - 1]->setOwner(std::make_shared<Player>(*player));
             player->setConqueredTerritory(true);
             return;
         }
