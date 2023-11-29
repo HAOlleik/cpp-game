@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
         // {
         //     cout << *t << endl;
         // }
-        strategy1->issueOrder();
+        strategy1->issueOrder(&testDeck);
     }
 
     return 0;

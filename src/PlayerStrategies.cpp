@@ -15,8 +15,7 @@ std::map<std::string, std::function<PlayerStrategy *(Player *)>> strategyMap = {
     {"neutral", [](Player *player)
      { return new NeutralPlayerStrategy(player); }},
     {"cheater", [](Player *player)
-     { return new CheaterPlayerStrategy(player); }}
-};
+     { return new CheaterPlayerStrategy(player); }}};
 
 PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::string &strategy)
 {
@@ -98,7 +97,7 @@ void HumanPlayerStrategy::advanceArmies()
 {
     vector<Territory *> territoriesToDefend = toDefend();
     vector<Territory *> adjacentTerritories;
-    vector<Territory *> ownedAdjacentTerritories;
+    vector<Territory *> adjacentTerritories;
     int sourceTerritoryChoice, destinationTerritoryChoice, armiesToAdvanceChoice;
 
     cout << "Please select a territory to advance from: " << endl;
@@ -125,18 +124,15 @@ void HumanPlayerStrategy::advanceArmies()
 
     for (auto &tt : territoriesToDefend[sourceTerritoryChoice - 1]->getAdjacentTerritories())
     {
-        if (find(territoriesToDefend.begin(), territoriesToDefend.end(), tt.get()) != territoriesToDefend.end())
-        {
-            ownedAdjacentTerritories.push_back(tt.get());
-        }
+        adjacentTerritories.push_back(tt.get());
     }
 
     cout << "Which territory do you want to advance to?" << endl;
 
-    for (int i = 1; i <= ownedAdjacentTerritories.size(); i++)
+    for (int i = 1; i <= adjacentTerritories.size(); i++)
     {
         cout << i << ".\n"
-             << *ownedAdjacentTerritories[i - 1]
+             << *adjacentTerritories[i - 1]
              << "\n"
              << endl;
     }
@@ -144,13 +140,13 @@ void HumanPlayerStrategy::advanceArmies()
     cin >> destinationTerritoryChoice;
     cout << endl;
 
-    if (destinationTerritoryChoice < 1 || destinationTerritoryChoice > ownedAdjacentTerritories.size())
+    if (destinationTerritoryChoice < 1 || destinationTerritoryChoice > adjacentTerritories.size())
     {
         cout << "Invalid choice." << endl;
         return;
     }
 
-    cout << "How many armies do you want to advance to " << ownedAdjacentTerritories[destinationTerritoryChoice - 1]->getName() << "?" << endl;
+    cout << "How many armies do you want to advance to " << adjacentTerritories[destinationTerritoryChoice - 1]->getName() << "?" << endl;
     cin >> armiesToAdvanceChoice;
     cout << endl;
 
@@ -160,38 +156,80 @@ void HumanPlayerStrategy::advanceArmies()
         return;
     }
 
-    territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(territoriesToDefend[sourceTerritoryChoice - 1]->getArmies() - armiesToAdvanceChoice);
-    ownedAdjacentTerritories[destinationTerritoryChoice - 1]->setArmies(ownedAdjacentTerritories[destinationTerritoryChoice - 1]->getArmies() + armiesToAdvanceChoice);
+    int attackArmy = territoriesToDefend[sourceTerritoryChoice - 1]->getArmies();
+    int defenceArmy = adjacentTerritories[destinationTerritoryChoice - 1]->getArmies();
+    int attackKillCount = 0;
+    int defenceKillCount = 0;
+
+
+    if (adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get() == player)
+    {
+        territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
+        adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(defenceArmy + armiesToAdvanceChoice);
+    }
+    else
+    {
+        for(int i = 0; i < armiesToAdvanceChoice; i++)
+        {
+            if(rand() % 100 >= 60) {
+                defenceKillCount++;
+            }
+        }
+        for(int i = 0; i < defenceArmy; i++)
+        {
+            if(rand() % 100 >= 70) {
+                attackKillCount++;
+            }
+        }
+
+        if(defenceKillCount >= defenceArmy) {
+            cout << "Defense lost." << endl;
+            territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
+            adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(armiesToAdvanceChoice - attackKillCount);
+            player->setTerritories(adjacentTerritories[destinationTerritoryChoice - 1]);
+            player->setConqueredTerritory(true);
+            return;
+        } else if(attackKillCount >= armiesToAdvanceChoice) {
+            cout << "Attack lost." << endl;
+            territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
+            adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(defenceArmy - defenceKillCount);
+            return;
+        }
+        
+    }
 }
 
-void HumanPlayerStrategy::playCards() {
-  int cardsLeft = player->getHand()->getHandSize();
-  int choice;
-  cout << "You have " << cardsLeft << " cards in your hand." << endl;
-  cout << "Choose card to play:\n" << endl;
+void HumanPlayerStrategy::playCards()
+{
+    int cardsLeft = player->getHand()->getHandSize();
+    int choice;
+    cout << "You have " << cardsLeft << " cards in your hand." << endl;
+    cout << "Choose card to play:\n"
+         << endl;
 
-  int i = 1;
-  for(Card* card : player->getHand()->getPlayHand()) {
-    cout << i << ". " << card->getCardType() << endl;
-    i++;
-  }
+    int i = 1;
+    for (Card *card : player->getHand()->getPlayHand())
+    {
+        cout << i << ". " << card->getCardType() << endl;
+        i++;
+    }
 
-  cin >> choice;
-  cout << endl;
+    cin >> choice;
+    cout << endl;
 
-  if(choice < 1 || choice > cardsLeft) {
-    cout << "Invalid choice." << endl;
-    return;
-  }
+    if (choice < 1 || choice > cardsLeft)
+    {
+        cout << "Invalid choice." << endl;
+        return;
+    }
 
-  player->getHand()->play(choice, *player->getOrdersList());
+    player->getHand()->play(choice, *player->getOrdersList());
 
-
-  cout << "You have " << cardsLeft - 1 << " cards left in your hand." << endl;
-  cout << endl;
+    cout << "You have " << cardsLeft - 1 << " cards left in your hand." << endl;
+    cout << endl;
 }
 
-void HumanPlayerStrategy::issueOrder()
+void HumanPlayerStrategy::issueOrder(Deck *deck)
 {
     int reinforcementPoolLeft = player->getReinforcementPool();
     int cardsLeft = (int)player->getHand()->getHandSize();
@@ -249,6 +287,11 @@ void HumanPlayerStrategy::issueOrder()
             cout << "You have " << reinforcementPoolLeft << " armies left to deploy." << endl;
             cout << "Deploy all armies before ending your turn." << endl;
         }
+        if (player->getConqueredTerritory()) {
+            Card* drawnCard = deck->draw();
+            player->getHand()->addCard(*drawnCard);
+            player->setConqueredTerritory(false);
+        }
         cout << "Exiting..." << endl;
         return;
         break;
@@ -256,7 +299,7 @@ void HumanPlayerStrategy::issueOrder()
         cout << "Invalid choice." << endl;
         break;
     }
-    issueOrder();
+    issueOrder(deck);
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack()
@@ -281,7 +324,8 @@ vector<Territory *> HumanPlayerStrategy::toAttack()
 
 vector<Territory *> HumanPlayerStrategy::toDefend()
 {
-    if (player == nullptr) {
+    if (player == nullptr)
+    {
         return vector<Territory *>();
     }
     return player->getTerritories();
@@ -331,7 +375,7 @@ vector<Territory *> AggressivePlayerStrategy::toDefend()
 }
 
 // TO IMPLEMENT
-void AggressivePlayerStrategy::issueOrder()
+void AggressivePlayerStrategy::issueOrder(Deck *deck)
 {
 }
 
@@ -379,7 +423,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend()
 }
 
 // TO IMPLEMENT
-void BenevolentPlayerStrategy::issueOrder()
+void BenevolentPlayerStrategy::issueOrder(Deck *deck)
 {
 }
 
@@ -427,7 +471,7 @@ vector<Territory *> NeutralPlayerStrategy::toDefend()
 }
 
 // TO IMPLEMENT
-void NeutralPlayerStrategy::issueOrder()
+void NeutralPlayerStrategy::issueOrder(Deck *deck)
 {
 }
 
@@ -467,13 +511,14 @@ vector<Territory *> CheaterPlayerStrategy::toAttack()
 
 vector<Territory *> CheaterPlayerStrategy::toDefend()
 {
-    if (player == nullptr) {
+    if (player == nullptr)
+    {
         return vector<Territory *>();
     }
     return player->getTerritories();
 }
 
-void CheaterPlayerStrategy::issueOrder()
+void CheaterPlayerStrategy::issueOrder(Deck *deck)
 {
     vector<Territory *> territories = player->getTerritories();
     for (auto &t : territories)

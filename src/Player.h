@@ -79,6 +79,8 @@ public:
 	void removeTerritory(Territory &territory);
 	PlayerStrategy* getPlayerStrategy() const;
 	void setPlayerStrategy(PlayerStrategy*);
+	void setConqueredTerritory(bool);
+	bool getConqueredTerritory() { return conqueredTerritory; };
 
 private:
 	int *reinforcementPool;
@@ -90,6 +92,7 @@ private:
 	std::shared_ptr<bool> passTurn = std::make_shared<bool>(false);
 	vector<Card *> cards;
 	PlayerStrategy *playerStrategy;
+	bool conqueredTerritory = false;
 
 	// Friend classes of the Player class
 	friend class GameEngine;

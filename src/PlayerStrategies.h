@@ -10,7 +10,7 @@ using namespace std;
 // abstract class
 class PlayerStrategy{
     public:
-        virtual void issueOrder() = 0;
+        virtual void issueOrder(Deck *deck) = 0;
         virtual vector<Territory *> toAttack() = 0;
         virtual vector<Territory *> toDefend() = 0;
         virtual ~PlayerStrategy() = default;
@@ -27,7 +27,7 @@ class HumanPlayerStrategy : public PlayerStrategy{
         explicit HumanPlayerStrategy(Player* player);
         HumanPlayerStrategy(const HumanPlayerStrategy& strategy);
         ~HumanPlayerStrategy();
-        void issueOrder() override;
+        void issueOrder(Deck *deck) override;
         vector<Territory *> toAttack() override;
         vector<Territory *> toDefend() override;
         void print(std::ostream& out) const override {
@@ -45,7 +45,7 @@ class AggressivePlayerStrategy : public PlayerStrategy{
         explicit AggressivePlayerStrategy(Player* player);
         AggressivePlayerStrategy(const AggressivePlayerStrategy& strategy);
         ~AggressivePlayerStrategy();
-        void issueOrder() override;
+        void issueOrder(Deck *deck) override;
         vector<Territory *> toAttack() override;
         vector<Territory *> toDefend() override;
         void print(std::ostream& out) const override {
@@ -60,7 +60,7 @@ class BenevolentPlayerStrategy : public PlayerStrategy{
         explicit BenevolentPlayerStrategy(Player* player);
         BenevolentPlayerStrategy(const BenevolentPlayerStrategy& strategy);
         ~BenevolentPlayerStrategy();
-        void issueOrder() override;
+        void issueOrder(Deck *deck) override;
         vector<Territory *> toAttack() override;
         vector<Territory *> toDefend() override;
         void print(std::ostream& out) const override {
@@ -75,7 +75,7 @@ class NeutralPlayerStrategy : public PlayerStrategy{
         explicit NeutralPlayerStrategy(Player* player);
         NeutralPlayerStrategy(const NeutralPlayerStrategy& strategy);
         ~NeutralPlayerStrategy();
-        void issueOrder() override;
+        void issueOrder(Deck *deck) override;
         vector<Territory *> toAttack() override;
         vector<Territory *> toDefend() override;
         void print(std::ostream& out) const override {
@@ -90,7 +90,7 @@ class CheaterPlayerStrategy : public PlayerStrategy{
         explicit CheaterPlayerStrategy(Player* player);
         CheaterPlayerStrategy(const CheaterPlayerStrategy& strategy);
         ~CheaterPlayerStrategy();
-        void issueOrder() override;
+        void issueOrder(Deck *deck) override;
         vector<Territory *> toAttack() override;
         vector<Territory *> toDefend() override;
         void print(std::ostream& out) const override {
