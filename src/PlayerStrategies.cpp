@@ -28,7 +28,9 @@ PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::stri
     auto it = strategyMap.find(strategy_name);
     if (it != strategyMap.end())
     {
-        return (it->second)(player);
+        PlayerStrategy *newStrategy = (it->second)(player);
+        player->setPlayerStrategy(newStrategy);
+        return newStrategy;
     }
     else
     {
@@ -39,7 +41,7 @@ PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::stri
 
 std::ostream &operator<<(std::ostream &out, const PlayerStrategy &strategy)
 {
-    if (&strategy != nullptr)
+    if (&strategy == nullptr)
     {
         out << "PlayerStrategy is null";
     }
@@ -96,7 +98,6 @@ void HumanPlayerStrategy::deployArmies(int *armyAvailableCount)
 void HumanPlayerStrategy::advanceArmies()
 {
     vector<Territory *> territoriesToDefend = toDefend();
-    vector<Territory *> adjacentTerritories;
     vector<Territory *> adjacentTerritories;
     int sourceTerritoryChoice, destinationTerritoryChoice, armiesToAdvanceChoice;
 
@@ -161,7 +162,6 @@ void HumanPlayerStrategy::advanceArmies()
     int attackKillCount = 0;
     int defenceKillCount = 0;
 
-
     if (adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get() == player)
     {
         territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
@@ -169,33 +169,43 @@ void HumanPlayerStrategy::advanceArmies()
     }
     else
     {
-        for(int i = 0; i < armiesToAdvanceChoice; i++)
+        if (typeid(*adjacentTerritories[destinationTerritoryChoice - 1]->getOwner().get()->getPlayerStrategy()) == typeid(NeutralPlayerStrategy))
         {
-            if(rand() % 100 >= 60) {
+            cout << "Neutral territory cannot be attacked." << endl;
+            return;
+        }
+
+        for (int i = 0; i < armiesToAdvanceChoice; i++)
+        {
+            if (rand() % 100 >= 60)
+            {
                 defenceKillCount++;
             }
         }
-        for(int i = 0; i < defenceArmy; i++)
+        for (int i = 0; i < defenceArmy; i++)
         {
-            if(rand() % 100 >= 70) {
+            if (rand() % 100 >= 70)
+            {
                 attackKillCount++;
             }
         }
 
-        if(defenceKillCount >= defenceArmy) {
+        if (defenceKillCount >= defenceArmy)
+        {
             cout << "Defense lost." << endl;
             territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
             adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(armiesToAdvanceChoice - attackKillCount);
             player->setTerritories(adjacentTerritories[destinationTerritoryChoice - 1]);
             player->setConqueredTerritory(true);
             return;
-        } else if(attackKillCount >= armiesToAdvanceChoice) {
+        }
+        else if (attackKillCount >= armiesToAdvanceChoice)
+        {
             cout << "Attack lost." << endl;
             territoriesToDefend[sourceTerritoryChoice - 1]->setArmies(attackArmy - armiesToAdvanceChoice);
             adjacentTerritories[destinationTerritoryChoice - 1]->setArmies(defenceArmy - defenceKillCount);
             return;
         }
-        
     }
 }
 
@@ -203,6 +213,7 @@ void HumanPlayerStrategy::playCards()
 {
     int cardsLeft = player->getHand()->getHandSize();
     int choice;
+    cout << *player->getPlayerStrategy();
     cout << "You have " << cardsLeft << " cards in your hand." << endl;
     cout << "Choose card to play:\n"
          << endl;
@@ -229,7 +240,7 @@ void HumanPlayerStrategy::playCards()
     cout << endl;
 }
 
-void HumanPlayerStrategy::issueOrder(Deck *deck)
+void HumanPlayerStrategy::issueOrder()
 {
     int reinforcementPoolLeft = player->getReinforcementPool();
     int cardsLeft = (int)player->getHand()->getHandSize();
@@ -287,11 +298,6 @@ void HumanPlayerStrategy::issueOrder(Deck *deck)
             cout << "You have " << reinforcementPoolLeft << " armies left to deploy." << endl;
             cout << "Deploy all armies before ending your turn." << endl;
         }
-        if (player->getConqueredTerritory()) {
-            Card* drawnCard = deck->draw();
-            player->getHand()->addCard(*drawnCard);
-            player->setConqueredTerritory(false);
-        }
         cout << "Exiting..." << endl;
         return;
         break;
@@ -299,7 +305,7 @@ void HumanPlayerStrategy::issueOrder(Deck *deck)
         cout << "Invalid choice." << endl;
         break;
     }
-    issueOrder(deck);
+    issueOrder();
 }
 
 vector<Territory *> HumanPlayerStrategy::toAttack()
@@ -375,7 +381,7 @@ vector<Territory *> AggressivePlayerStrategy::toDefend()
 }
 
 // TO IMPLEMENT
-void AggressivePlayerStrategy::issueOrder(Deck *deck)
+void AggressivePlayerStrategy::issueOrder()
 {
 }
 
@@ -423,7 +429,7 @@ vector<Territory *> BenevolentPlayerStrategy::toDefend()
 }
 
 // TO IMPLEMENT
-void BenevolentPlayerStrategy::issueOrder(Deck *deck)
+void BenevolentPlayerStrategy::issueOrder()
 {
 }
 
@@ -456,22 +462,17 @@ NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player)
     this->player = player;
 }
 
-// TO IMPLEMENT
 vector<Territory *> NeutralPlayerStrategy::toAttack()
 {
-    cout << "NeutralPlayerStrategy::toAttack" << endl;
     return vector<Territory *>();
 }
 
-// TO IMPLEMENT
 vector<Territory *> NeutralPlayerStrategy::toDefend()
 {
-    cout << "NeutralPlayerStrategy::toDefend" << endl;
     return vector<Territory *>();
 }
 
-// TO IMPLEMENT
-void NeutralPlayerStrategy::issueOrder(Deck *deck)
+void NeutralPlayerStrategy::issueOrder()
 {
 }
 
@@ -518,7 +519,7 @@ vector<Territory *> CheaterPlayerStrategy::toDefend()
     return player->getTerritories();
 }
 
-void CheaterPlayerStrategy::issueOrder(Deck *deck)
+void CheaterPlayerStrategy::issueOrder()
 {
     vector<Territory *> territories = player->getTerritories();
     for (auto &t : territories)

@@ -107,7 +107,7 @@ PlayerStrategy* Player::getPlayerStrategy() const
 };
 void Player::setPlayerStrategy(PlayerStrategy* strategy)
 {
-	playerStrategy = strategy;
+	this->playerStrategy = strategy;
 }
 
 // Get name of the palyer

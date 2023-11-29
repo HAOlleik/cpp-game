@@ -79,8 +79,8 @@ public:
 	void removeTerritory(Territory &territory);
 	PlayerStrategy* getPlayerStrategy() const;
 	void setPlayerStrategy(PlayerStrategy*);
-	void setConqueredTerritory(bool);
-	bool getConqueredTerritory() { return conqueredTerritory; };
+	void setConqueredTerritory(bool i) { this->conqueredTerritory = i; };
+	bool getConqueredTerritory() { return this->conqueredTerritory; };
 
 private:
 	int *reinforcementPool;

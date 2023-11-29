@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     game.setMap(loader.getMap());
     string name1 = "pl1";
     string name2 = "pl2";
+        string neutral = "neutral";
+
     Player *player1 = new Player(&name1);
     Player *player2 = new Player(&name2);
     player1->getHand()->getDeck()->fillDeck();
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
         cout << "Next\n";
         cin >> strategyName;
         PlayerStrategy *strategy1 = PlayerStrategy::handleStrategyCreation(player1, strategyName);
-        PlayerStrategy *strategy2 = PlayerStrategy::handleStrategyCreation(player2, strategyName);
+        PlayerStrategy *strategy2 = PlayerStrategy::handleStrategyCreation(player2, neutral);
         cout << *strategy1 << endl;
         // cout << "Territories to defend1: " << endl;
         // for (auto &t : strategy1->toDefend())
@@ -83,7 +85,12 @@ int main(int argc, char *argv[])
         // {
         //     cout << *t << endl;
         // }
-        strategy1->issueOrder(&testDeck);
+        strategy1->issueOrder();
+
+        if (player1->getConqueredTerritory()) {
+            player1->getHand()->addCard(*testDeck.draw());
+            player1->setConqueredTerritory(false);
+        }
     }
 
     return 0;
