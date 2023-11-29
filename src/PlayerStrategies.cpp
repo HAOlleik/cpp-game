@@ -15,9 +15,7 @@ std::map<std::string, std::function<PlayerStrategy *(Player *)>> strategyMap = {
     {"neutral", [](Player *player)
      { return new NeutralPlayerStrategy(player); }},
     {"cheater", [](Player *player)
-     { return new CheaterPlayerStrategy(player); }},
-    {"cheater", [](Player *player)
-     { return nullptr; }}
+     { return new CheaterPlayerStrategy(player); }}
 };
 
 PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::string &strategy)
@@ -462,23 +460,42 @@ CheaterPlayerStrategy::CheaterPlayerStrategy(Player *player)
     this->player = player;
 }
 
-// TO IMPLEMENT
 vector<Territory *> CheaterPlayerStrategy::toAttack()
 {
-    cout << "CheaterPlayerStrategy::toAttack" << endl;
     return vector<Territory *>();
 }
 
-// TO IMPLEMENT
 vector<Territory *> CheaterPlayerStrategy::toDefend()
 {
-    cout << "CheaterPlayerStrategy::toDefend" << endl;
-    return vector<Territory *>();
+    if (player == nullptr) {
+        return vector<Territory *>();
+    }
+    return player->getTerritories();
 }
 
-// TO IMPLEMENT
 void CheaterPlayerStrategy::issueOrder()
 {
+    vector<Territory *> territories = player->getTerritories();
+    for (auto &t : territories)
+    {
+        for (auto &tt : t->getAdjacentTerritories())
+        {
+            if (find(territories.begin(), territories.end(), tt.get()) == territories.end())
+            {
+                player->setTerritories(tt.get());
+            }
+        }
+    }
+
+    territories = player->getTerritories();
+    for (int i = 1; i <= territories.size(); i++)
+    {
+        cout << player->getName() << " now owns territories: \n"
+             << i << ".\n"
+             << *territories[i - 1]
+             << "\n"
+             << endl;
+    }
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy &strategy)
