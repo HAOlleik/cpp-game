@@ -490,6 +490,10 @@ std::string GameEngine::getStateAsString(STATE state)
     {
     case STATE::start:
         return "Start";
+    case STATE::tournament_is_started:
+        return "Tournamnent is started";
+    case STATE::tournament_is_finished:
+        return "Tournament is finished";
     case STATE::map_loaded:
         return "Map Loaded";
     case STATE::map_validated:
