@@ -5,6 +5,11 @@ bool compareTerritoriesByName(const Territory *a, const Territory *b)
     return a->getName() < b->getName();
 }
 
+bool compareTerritoriesByArmyCount(const Territory *a, const Territory *b)
+{
+    return a->getArmies() > b->getArmies();
+}
+
 std::map<std::string, std::function<PlayerStrategy *(Player *)>> strategyMap = {
     {"human", [](Player *player)
      { return new HumanPlayerStrategy(player); }},
@@ -37,9 +42,9 @@ PlayerStrategy *PlayerStrategy::handleStrategyCreation(Player *player, std::stri
     else
     {
         cout << "Invalid strategy name: " << strategy << endl;
+        delete player;
         return nullptr;
     }
-
 }
 
 std::ostream &operator<<(std::ostream &out, const PlayerStrategy &strategy)
@@ -96,6 +101,12 @@ void HumanPlayerStrategy::deployArmies(int *armyAvailableCount)
              << endl;
         *armyAvailableCount -= armiesToDeployChoice;
     }
+
+    for (Territory *territory : territories)
+    {
+        delete territory;
+    }
+    territories.clear();
 }
 
 void HumanPlayerStrategy::advanceArmies()
@@ -179,11 +190,11 @@ void HumanPlayerStrategy::advanceArmies()
     }
     else
     {
-            cout << "Player was " << territoryOwner->getPlayerStrategy()->getStrategyName() << " and neutral is " << typeid(NeutralPlayerStrategy).name() << endl;
+        cout << "Player was " << territoryOwner->getPlayerStrategy()->getStrategyName() << " and neutral is " << typeid(NeutralPlayerStrategy).name() << endl;
         if (territoryOwner->getPlayerStrategy()->getStrategyName() == "neutral")
         {
             territoryOwner->setPlayerStrategy(new AggressivePlayerStrategy(territoryOwner));
-            cout << "Player is now " << *territoryOwner->getPlayerStrategy() << endl;
+            cout << territoryOwner->getName() << " is now " << *territoryOwner->getPlayerStrategy() << endl;
             return;
         }
 
@@ -221,6 +232,19 @@ void HumanPlayerStrategy::advanceArmies()
             return;
         }
     }
+
+    for (Territory *territory : territoriesToDefend)
+    {
+        delete territory;
+    }
+
+    for (Territory *territory : adjacentTerritories)
+    {
+        delete territory;
+    }
+
+    territoriesToDefend.clear();
+    adjacentTerritories.clear();
 }
 
 void HumanPlayerStrategy::playCards()
@@ -339,6 +363,12 @@ vector<Territory *> HumanPlayerStrategy::toAttack()
     }
 
     sort(possibleToAttack.begin(), possibleToAttack.end(), compareTerritoriesByName);
+    for (Territory *territory : ownedTerritories)
+    {
+        delete territory;
+    }
+    ownedTerritories.clear();
+
     return possibleToAttack;
 }
 
@@ -380,23 +410,198 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player)
     this->player = player;
 }
 
-// TO IMPLEMENT
 vector<Territory *> AggressivePlayerStrategy::toAttack()
 {
-    cout << "AggressivePlayerStrategy::toAttack" << endl;
-    return vector<Territory *>();
+    vector<Territory *> possibleToAttack;
+    vector<Territory *> ownedTerritories = player->getTerritories();
+    for (auto &t : ownedTerritories)
+    {
+        for (auto &tt : t->getAdjacentTerritories())
+        {
+            if (find(ownedTerritories.begin(), ownedTerritories.end(), tt.get()) == ownedTerritories.end() &&
+                find(possibleToAttack.begin(), possibleToAttack.end(), tt.get()) == possibleToAttack.end())
+            {
+                possibleToAttack.push_back(tt.get());
+            }
+        }
+    }
+
+    sort(possibleToAttack.begin(), possibleToAttack.end(), compareTerritoriesByName);
+    for (Territory *territory : ownedTerritories)
+    {
+        delete territory;
+    }
+    ownedTerritories.clear();
+    return possibleToAttack;
 }
 
-// TO IMPLEMENT
 vector<Territory *> AggressivePlayerStrategy::toDefend()
 {
-    cout << "AggressivePlayerStrategy::toDefend" << endl;
-    return vector<Territory *>();
+    if (player == nullptr)
+    {
+        return vector<Territory *>();
+    }
+    vector<Territory *> listOfTerritories = player->getTerritories();
+    if (listOfTerritories.size() == 0)
+    {
+        return listOfTerritories;
+    }
+    sort(listOfTerritories.begin(), listOfTerritories.end(), compareTerritoriesByArmyCount);
+    return listOfTerritories;
 }
 
-// TO IMPLEMENT
+void AggressivePlayerStrategy::deployArmies()
+{
+    int availableArmyCount = player->getReinforcementPool();
+    vector<Territory *> territories = toDefend();
+    if (territories.size() == 0)
+    {
+        return;
+    }
+    territories[0]->setArmies(territories[0]->getArmies() + availableArmyCount);
+    player->setReinforcementPool(0);
+}
+
+Territory *AggressivePlayerStrategy::advanceArmies(Territory *territory)
+{
+    if (territory == nullptr)
+    {
+        cout << "territory is null" << endl;
+        return nullptr;
+    }
+    int availableArmyCount = territory->getArmies();
+    if (availableArmyCount == 1)
+    {
+        return nullptr;
+    }
+
+    if (player->getTerritories().size() == mapTerritoriesCount)
+    {
+        cout << "Player " << player->getName() << " has conquered the world!" << endl;
+        return nullptr;
+    }
+    vector<Territory *> possibleToAttack;
+    int armiesToAdvanceCount = availableArmyCount - 1;
+    int armiesDefending = 0, defenceDeath = 0, attackDeath = 0;
+
+    for (auto &t : territory->getAdjacentTerritories())
+    {
+        if (t.get()->getOwner()->getName() != territory->getOwner()->getName() &&
+            find(possibleToAttack.begin(), possibleToAttack.end(), t.get()) == possibleToAttack.end())
+        {
+            possibleToAttack.push_back(t.get());
+        }
+    }
+
+    vector<Territory *> previousPassedTerritories;
+    bool wentInCondition = false;
+    while (possibleToAttack.size() == 0)
+    {
+        previousPassedTerritories.push_back(territory);
+        territory->setArmies(0);
+        for (auto &t : territory->getAdjacentTerritories())
+        {
+            if (std::find(previousPassedTerritories.begin(), previousPassedTerritories.end(), t.get()) == previousPassedTerritories.end())
+            {
+                territory = t.get();
+                wentInCondition = true;
+                break;
+            }
+        }
+        if(!wentInCondition)
+        {
+            return nullptr;
+        }
+        territory->setArmies(territory->getArmies() + armiesToAdvanceCount + 1);
+        break;
+    }
+    
+    if (possibleToAttack.size() == 0)
+    {
+        vector<Territory *> adjacentOwnedTerritories{};
+        for (auto &t : territory->getAdjacentTerritories())
+        {
+            adjacentOwnedTerritories.push_back(t.get());
+        }
+        sort(adjacentOwnedTerritories.begin(), adjacentOwnedTerritories.end(), compareTerritoriesByArmyCount);
+        int randomVariable = rand() % adjacentOwnedTerritories.size();
+        adjacentOwnedTerritories[randomVariable]->setArmies(adjacentOwnedTerritories[randomVariable]->getArmies() + armiesToAdvanceCount + 1);
+        territory->setArmies(0);
+        return adjacentOwnedTerritories[randomVariable];
+    }
+
+    std::shared_ptr<Player> territoryOwnerPtr = possibleToAttack[0]->getOwner();
+    Player *territoryOwner = territoryOwnerPtr.get();
+
+    if (territoryOwner->getPlayerStrategy()->getStrategyName() == "neutral")
+    {
+        territoryOwner->setPlayerStrategy(new AggressivePlayerStrategy(territoryOwner));
+        cout << territoryOwner->getName() << " is now " << *territoryOwner->getPlayerStrategy() << endl;
+    }
+
+    if (possibleToAttack.size() > 0)
+    {
+        armiesDefending = possibleToAttack[0]->getArmies();
+        for (int i = 0; i < armiesToAdvanceCount; i++)
+        {
+            if (rand() % 100 >= 60)
+            {
+                defenceDeath++;
+            }
+        }
+
+        for (int i = 0; i < armiesDefending; i++)
+        {
+            if (rand() % 100 >= 70)
+            {
+                attackDeath++;
+            }
+        }
+
+        if (defenceDeath >= armiesDefending) // Defender loss
+        {
+            territory->setArmies(1);
+            possibleToAttack[0]->setArmies(armiesToAdvanceCount - attackDeath);
+            player->setTerritories(possibleToAttack[0]);
+            possibleToAttack[0]->setOwner(std::make_shared<Player>(*player));
+            player->setConqueredTerritory(true);
+            return possibleToAttack[0];
+        }
+        else if (attackDeath >= armiesToAdvanceCount) // Attack Loss
+        {
+            territory->setArmies(1);
+            possibleToAttack[0]->setArmies(armiesDefending - defenceDeath);
+        }
+    }
+    for (Territory *territory : possibleToAttack)
+    {
+        delete territory;
+    }
+
+    for (Territory *territory : previousPassedTerritories)
+    {
+        delete territory;
+    }
+    previousPassedTerritories.clear();
+    possibleToAttack.clear();
+}
+
 void AggressivePlayerStrategy::issueOrder()
 {
+    vector<Territory *> territories1 = toDefend();
+    Territory *nextTerritory = territories1[0];
+    deployArmies();
+    do
+    {
+        cout << *nextTerritory << endl;
+        nextTerritory = advanceArmies(nextTerritory);
+    } while (nextTerritory != nullptr);
+    cout << "\n\n==========================================================================================\n\n";
+    for (Territory *territory : territories1)
+    {
+        delete territory;
+    }
+    territories1.clear();
 }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &strategy)
@@ -556,6 +761,12 @@ void CheaterPlayerStrategy::issueOrder()
              << "\n"
              << endl;
     }
+
+    for (Territory *territory : territories)
+    {
+        delete territory;
+    }
+    territories.clear();
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy &strategy)

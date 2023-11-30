@@ -5,6 +5,9 @@
 #include "GameEngine.h"
 #include "Drivers.h"
 #include "PlayerStrategies.h"
+#include "GlobalVariables.h"
+
+int mapTerritoriesCount = 0;
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +25,8 @@ int main(int argc, char *argv[])
     MapLoader loader;
     loader.load("maps/Alberta/Alberta.map");
     game.setMap(loader.getMap());
+    auto t = loader.getMap()->getTerritories();
+    mapTerritoriesCount = t->size();
     string name1 = "pl1";
     string name2 = "pl2";
     string neutral = "neutral";
@@ -45,7 +50,7 @@ int main(int argc, char *argv[])
     uint64_t iter = 0;
     for (auto &it : *terr)
     {
-        it.second.get()->setArmies(1);
+        it.second.get()->setArmies(rand() % 10 + 1);
         if (dis(gen) == 0)
         {
             player1->setTerritories(it.second.get());

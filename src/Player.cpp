@@ -85,9 +85,6 @@ ostream &operator<<(ostream &os, const Player &player) // insertion stream opera
 // Destructor
 Player::~Player()
 {
-	delete name;
-	delete reinforcementPool;
-
 	for (auto ord : orders)
 	{
 		delete ord;
