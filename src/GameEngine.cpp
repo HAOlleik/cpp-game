@@ -129,6 +129,43 @@ void GameEngine::startupPhase()
             result = "STATE::players_added";
             break;
 
+        case ACTION::tournament: // Add this case for tournament setup
+        {
+            std::cout << "Tournament setup:" << std::endl;
+
+            // Prompt the user for the number of games
+            int numberOfGames;
+            std::cout << "Enter the number of games for the tournament: ";
+            std::cin >> numberOfGames;
+
+            // Prompt the user for the map file
+            std::string mapFile;
+            std::cout << "Enter the map file for the tournament: ";
+            std::cin >> mapFile;
+
+            // Run the tournament
+            for (int i = 0; i < numberOfGames; ++i)
+            {
+                std::cout << "\n--- Tournament Game " << (i + 1) << " ---\n";
+
+                // Load the map
+                MapLoader loader;
+                if (!loader.load(mapFile))
+                {
+                    std::cout << "Map was not loaded. Skipping game." << std::endl;
+                    continue;
+                }
+
+                _map = std::make_unique<Map>(*loader.getMap().get());
+
+                // Run the game
+                startupPhase();
+            }
+
+            // Transition to the next state after the tournament
+            setState(STATE::tournament_is_finished);
+            break;
+        }
         default:
             continue;
         }
@@ -360,7 +397,8 @@ void GameEngine::issueOrdersPhase()
     }
 
     // Call issueOrder with the converted vector
-    for(auto &player : _players) {
+    for (auto &player : _players)
+    {
         player->issueOrder();
     }
 
@@ -375,8 +413,10 @@ void GameEngine::executeOrdersPhase()
     // one more order, the game engine proceeds to execute the top order on the list of orders of each player in a round-robin fashion(i.e.the “Order Execution Phase”—see below).Once all the players’ orders have been executed, the main game loop goes back to the reinforcement phase.This must be implemented in a function / method named executeOrdersPhase() in the game engine.
 
     // Iterate through each player and execute their top order
-    for (auto &player : _players) {
-        std::cout << "Player " << player->getName() << " started.\n" << std::endl;
+    for (auto &player : _players)
+    {
+        std::cout << "Player " << player->getName() << " started.\n"
+                  << std::endl;
         list<Order *> orders = player->getOrders();
         while (!orders.empty())
         {
@@ -384,7 +424,8 @@ void GameEngine::executeOrdersPhase()
             orders.pop_front();
             std::cout << "Player " << player->getName() << " executed an order." << std::endl;
         }
-        std::cout << "Player " << player->getName() << " finished.\n" << std::endl;
+        std::cout << "Player " << player->getName() << " finished.\n"
+                  << std::endl;
     }
 
     std::cout << "Exit from execute order" << std::endl;

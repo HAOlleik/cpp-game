@@ -1,9 +1,9 @@
 #include "GameEngineState.h"
 
-
 // transform string to state enum, kind hack
 std::map<std::string, STATE> stateMap = {
     {"start", STATE::start},
+    {"tournament", STATE::tournament_is_started},
     {"map_loaded", STATE::map_loaded},
     {"map_validated", STATE::map_validated},
     {"players_added", STATE::players_added},
@@ -14,9 +14,9 @@ std::map<std::string, STATE> stateMap = {
     {"game_ended", STATE::game_ended},
 };
 
-
 // transform string to action enum, kind hack
 std::map<std::string, ACTION> actionMap = {
+    {"tournament", ACTION::tournament},
     {"load_map", ACTION::load_map},
     {"validate_map", ACTION::validate_map},
     {"add_player", ACTION::add_player},
@@ -33,7 +33,9 @@ std::map<std::string, ACTION> actionMap = {
 
 // map of possible actions from a state, and the leading state of that action
 std::map<STATE, std::map<ACTION, STATE>> mapStateToActions{
+    {STATE::start, {{ACTION::tournament, STATE::tournament_is_started}}},
     {STATE::start, {{ACTION::load_map, STATE::map_loaded}}},
+    {STATE::tournament_is_started, {{ACTION::load_map, STATE::map_loaded}}},
     {STATE::map_loaded, {{ACTION::load_map, STATE::map_loaded}, {ACTION::validate_map, STATE::map_validated}}},
     {STATE::map_validated, {{ACTION::add_player, STATE::players_added}}},
     {STATE::players_added, {{ACTION::add_player, STATE::players_added}, {ACTION::gamestart, STATE::assign_reinforcement}}},

@@ -11,7 +11,7 @@ using namespace std;
 
 string strToLower(string str);
 
-class CommandProcessor: public ILoggable, public Subject
+class CommandProcessor : public ILoggable, public Subject
 {
 private:
     list<Command> *savedCommands;
@@ -19,19 +19,24 @@ private:
     Command saveCommand(string command, string effect);
     void validate(STATE currentState, string checkedCommand, string &effect);
 
+    std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> tournamentParameters;
+
 protected:
-    list<Command>& getSavedCommands() const {
+    list<Command> &getSavedCommands() const
+    {
         return *savedCommands;
     }
 
 public:
-    CommandProcessor() : savedCommands(new list<Command>()){};                  // default
-    CommandProcessor(const CommandProcessor &cp);            // copy constr
-    CommandProcessor &operator=(const CommandProcessor &cp); // assignment operator overload
-    ~CommandProcessor();                                     // destructor
+    CommandProcessor() : savedCommands(new list<Command>()){}; // default
+    CommandProcessor(const CommandProcessor &cp);              // copy constr
+    CommandProcessor &operator=(const CommandProcessor &cp);   // assignment operator overload
+    ~CommandProcessor();                                       // destructor
     Command getCommand(STATE currentState);
     friend ostream &operator<<(ostream &os, CommandProcessor &cp);
     string stringToLog();
+    bool processTournamentCommand(const std::string &command);
+    std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> getTournamentParameters() const;
 };
 
 class FileLineReader
@@ -57,11 +62,11 @@ private:
     void readCommand(string &command) override;
 
 public:
-    FileCommandProcessorAdapter() : fileLineReader(nullptr) {}                                                       // default
-    FileCommandProcessorAdapter(string fileName);                                                      // default
+    FileCommandProcessorAdapter() : fileLineReader(nullptr) {}                                                                      // default
+    FileCommandProcessorAdapter(string fileName);                                                                                   // default
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter &cp) : CommandProcessor(cp), fileLineReader(cp.fileLineReader) {} // copy constr
-    FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp);                            // assignment operator overload
-    ~FileCommandProcessorAdapter() {delete fileLineReader;}
+    FileCommandProcessorAdapter &operator=(const FileCommandProcessorAdapter &cp);                                                  // assignment operator overload
+    ~FileCommandProcessorAdapter() { delete fileLineReader; }
     friend ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa);
 };
 

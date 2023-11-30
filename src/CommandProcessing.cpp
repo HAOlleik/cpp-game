@@ -220,3 +220,74 @@ ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa)
     }
     return os;
 }
+
+#include <sstream>
+
+bool CommandProcessor::processTournamentCommand(const std::string &command)
+{
+    // Validate and process the tournament command
+    std::istringstream iss(command);
+    std::vector<std::string> tokens{std::istream_iterator<std::string>{iss},
+                                    std::istream_iterator<std::string>{}};
+
+    // Validate the number of tokens
+    if (tokens.size() < 9 || tokens.size() % 2 != 1)
+    {
+        std::cerr << "Error: Invalid number of parameters for the tournament command." << std::endl;
+        return false;
+    }
+
+    // Validate the command format
+    if (tokens[0] != "tournament" || tokens[2] != "-M" || tokens[4] != "-P" || tokens[6] != "-G" || tokens[8] != "-D")
+    {
+        std::cerr << "Error: Invalid format for the tournament command." << std::endl;
+        return false;
+    }
+
+    // Extract and store tournament parameters
+    std::vector<std::string> mapFiles;
+    std::vector<std::string> playerStrategies;
+    int numGames = 0;
+    int maxTurns = 0;
+
+    for (size_t i = 3; i < tokens.size(); i += 2)
+    {
+        if (tokens[i] == "-M")
+        {
+            mapFiles.push_back(tokens[i + 1]);
+        }
+        else if (tokens[i] == "-P")
+        {
+            playerStrategies.push_back(tokens[i + 1]);
+        }
+        else if (tokens[i] == "-G")
+        {
+            numGames = std::stoi(tokens[i + 1]);
+        }
+        else if (tokens[i] == "-D")
+        {
+            maxTurns = std::stoi(tokens[i + 1]);
+        }
+    }
+
+    // Check if the parameters are within the specified range
+    if (mapFiles.size() < 1 || mapFiles.size() > 5 ||
+        playerStrategies.size() < 2 || playerStrategies.size() > 4 ||
+        numGames < 1 || numGames > 5 ||
+        maxTurns < 10 || maxTurns > 50)
+    {
+        std::cerr << "Error: Invalid parameter values for the tournament command." << std::endl;
+        return false;
+    }
+
+    // Store the tournament parameters
+    tournamentParameters = std::make_tuple(mapFiles, playerStrategies, numGames, maxTurns);
+
+    return true;
+}
+
+std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> CommandProcessor::getTournamentParameters() const
+{
+    // Return the stored tournament parameters
+    return tournamentParameters;
+}
