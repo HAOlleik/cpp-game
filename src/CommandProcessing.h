@@ -35,7 +35,8 @@ public:
     Command getCommand(STATE currentState);
     friend ostream &operator<<(ostream &os, CommandProcessor &cp);
     string stringToLog();
-    bool processTournamentCommand(const std::string &command);
+    Command processTournamentCommand(STATE currentState);
+    std::vector<std::string> splitCommand(const std::string &command);
     std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> getTournamentParameters() const;
 };
 

@@ -48,7 +48,18 @@ void GameEngine::startupPhase()
         std::string result;
 
         // getCommand(currentStaet:state) -> process
-        Command command = _cli->getCommand(*(_state.get()));
+        Command command;
+
+        // If it's not a tournament setup, get the command normally
+        if (*_state != STATE::tournament_is_started)
+        {
+            command = _cli->getCommand(*(_state.get()));
+        }
+        else
+        {
+            // If it's a tournament setup, process the tournament command
+            command = _cli->processTournamentCommand(*(_state.get()));
+        }
 
         // need to discuss what to do with this
         // effect represent error from command at the initial stage
@@ -69,6 +80,7 @@ void GameEngine::startupPhase()
             request.push_back(buffer);
         }
 
+        std::vector<std::string> request = splitCommand(command.getCommand());
         // if effect is not empty then it is an error
         switch (actionMap[request[0]])
         {

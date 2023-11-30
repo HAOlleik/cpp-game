@@ -223,25 +223,35 @@ ostream &operator<<(ostream &os, FileCommandProcessorAdapter &fcpa)
 
 #include <sstream>
 
-bool CommandProcessor::processTournamentCommand(const std::string &command)
+Command CommandProcessor::processTournamentCommand(STATE currentState)
 {
-    // Validate and process the tournament command
-    std::istringstream iss(command);
-    std::vector<std::string> tokens{std::istream_iterator<std::string>{iss},
-                                    std::istream_iterator<std::string>{}};
+    string command;
+    string effect;
+    readCommand(command);
+    validate(currentState, command, effect);
+
+    // Handle validation error
+    if (!effect.empty())
+    {
+        return saveCommand(command, effect);
+    }
+
+    std::vector<std::string> tokens = splitCommand(command);
 
     // Validate the number of tokens
     if (tokens.size() < 9 || tokens.size() % 2 != 1)
     {
         std::cerr << "Error: Invalid number of parameters for the tournament command." << std::endl;
-        return false;
+        // Set an error message in the Command object
+        return saveCommand(command, "Invalid number of parameters for the tournament command.");
     }
 
     // Validate the command format
     if (tokens[0] != "tournament" || tokens[2] != "-M" || tokens[4] != "-P" || tokens[6] != "-G" || tokens[8] != "-D")
     {
         std::cerr << "Error: Invalid format for the tournament command." << std::endl;
-        return false;
+        // Set an error message in the Command object
+        return saveCommand(command, "Invalid format for the tournament command.");
     }
 
     // Extract and store tournament parameters
@@ -277,15 +287,22 @@ bool CommandProcessor::processTournamentCommand(const std::string &command)
         maxTurns < 10 || maxTurns > 50)
     {
         std::cerr << "Error: Invalid parameter values for the tournament command." << std::endl;
-        return false;
+        // Set an error message in the Command object
+        return saveCommand(command, "Invalid parameter values for the tournament command.");
     }
 
     // Store the tournament parameters
     tournamentParameters = std::make_tuple(mapFiles, playerStrategies, numGames, maxTurns);
 
-    return true;
+    // Set a success message in the Command object
+    return saveCommand(command, "Tournament parameters processed successfully.");
 }
 
+std::vector<std::string> splitCommand(const std::string &command)
+{
+    std::istringstream iss(command);
+    return {std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+}
 std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> CommandProcessor::getTournamentParameters() const
 {
     // Return the stored tournament parameters
