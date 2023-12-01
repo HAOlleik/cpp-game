@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     GameEngine game;
     MapLoader loader;
-    loader.load("../maps/Alberta/Alberta.map");
+    loader.load("maps/Alberta/Alberta.map");
     game.setMap(loader.getMap());
     auto t = loader.getMap()->getTerritories();
     mapTerritoriesCount = t->size();
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     std::string strategyName = "";
     while (true)
     {
-        cout << "Next\n";
+        cout << "Next\nPlease enter player1's strategy name:\n";
         cin >> strategyName;
         PlayerStrategy *strategy1 = PlayerStrategy::handleStrategyCreation(player1.get(), strategyName);
         PlayerStrategy *strategy2 = PlayerStrategy::handleStrategyCreation(player2.get(), neutral);

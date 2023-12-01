@@ -427,10 +427,10 @@ vector<Territory *> AggressivePlayerStrategy::toAttack()
     }
 
     sort(possibleToAttack.begin(), possibleToAttack.end(), compareTerritoriesByName);
-    for (Territory *territory : ownedTerritories)
-    {
-        delete territory;
-    }
+    // for (Territory *territory : ownedTerritories)
+    // {
+    //     delete territory;
+    // }
     ownedTerritories.clear();
     return possibleToAttack;
 }
@@ -494,8 +494,8 @@ Territory *AggressivePlayerStrategy::advanceArmies(Territory *territory)
     }
 
     vector<Territory *> previousPassedTerritories;
-    bool wentInCondition = false;
-    while (true)
+
+    while (!previousPassedTerritories.empty())
     {
         bool foundTerritory = false;
 
@@ -509,31 +509,34 @@ Territory *AggressivePlayerStrategy::advanceArmies(Territory *territory)
             }
         }
 
-        if (!foundTerritory)
+        if (foundTerritory)
         {
-            return nullptr;
-        }
+            possibleToAttack.clear();
 
-        possibleToAttack.clear();
-
-        for (auto &t : territory->getAdjacentTerritories())
-        {
-            if (t.get()->getOwner()->getName() != territory->getOwner()->getName() &&
-                std::find(possibleToAttack.begin(), possibleToAttack.end(), t.get()) == possibleToAttack.end())
+            for (auto &t : territory->getAdjacentTerritories())
             {
-                possibleToAttack.push_back(t.get());
+                if (t.get()->getOwner()->getName() != territory->getOwner()->getName() &&
+                    std::find(possibleToAttack.begin(), possibleToAttack.end(), t.get()) == possibleToAttack.end())
+                {
+                    possibleToAttack.push_back(t.get());
+                }
             }
-        }
 
-        if (possibleToAttack.size() > 0)
-        {
-            territory->setArmies(territory->getArmies() + armiesToAdvanceCount + 1);
-            break;
+            if (possibleToAttack.size() > 0)
+            {
+                territory->setArmies(territory->getArmies() + armiesToAdvanceCount + 1);
+                break;
+            }
+            else
+            {
+                previousPassedTerritories.push_back(territory);
+                territory->setArmies(0);
+            }
         }
         else
         {
-            previousPassedTerritories.push_back(territory);
-            territory->setArmies(0);
+            // No more territories to explore, exit the loop.
+            break;
         }
     }
 
@@ -596,15 +599,15 @@ Territory *AggressivePlayerStrategy::advanceArmies(Territory *territory)
             possibleToAttack[0]->setArmies(armiesDefending - defenceDeath);
         }
     }
-    for (Territory *territory : possibleToAttack)
-    {
-        delete territory;
-    }
+    // for (Territory *territory : possibleToAttack)
+    // {
+    //     delete territory;
+    // }
 
-    for (Territory *territory : previousPassedTerritories)
-    {
-        delete territory;
-    }
+    // for (Territory *territory : previousPassedTerritories)
+    // {
+    //     delete territory;
+    // }
     previousPassedTerritories.clear();
     possibleToAttack.clear();
 }
@@ -620,10 +623,10 @@ void AggressivePlayerStrategy::issueOrder()
         nextTerritory = advanceArmies(nextTerritory);
     } while (nextTerritory != nullptr);
     cout << "\n\n==========================================================================================\n\n";
-    for (Territory *territory : territories1)
-    {
-        delete territory;
-    }
+    // for (Territory *territory : territories1)
+    // {
+    //     delete territory;
+    // }
     territories1.clear();
 }
 
