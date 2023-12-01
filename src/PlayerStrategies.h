@@ -74,12 +74,15 @@ public:
     ~BenevolentPlayerStrategy();
     void issueOrder() override;
     vector<Territory *> toAttack() override;
+    vector<Territory *> findWeakestTerritories();
     vector<Territory *> toDefend() override;
     void print(std::ostream &out) const override
     {
         out << "BenevolentPlayerStrategy";
     }
     BenevolentPlayerStrategy &operator=(const BenevolentPlayerStrategy &strategy);
+    void deployArmies();
+    Territory* advanceArmies(Territory *territory);
 };
 
 // concrete strategy class

@@ -660,23 +660,49 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player)
     this->player = player;
 }
 
-// TO IMPLEMENT
 vector<Territory *> BenevolentPlayerStrategy::toAttack()
 {
-    cout << "BenevolentPlayerStrategy::toAttack" << endl;
+    // Benevolent player does not attack
     return vector<Territory *>();
 }
 
-// TO IMPLEMENT
 vector<Territory *> BenevolentPlayerStrategy::toDefend()
 {
-    cout << "BenevolentPlayerStrategy::toDefend" << endl;
-    return vector<Territory *>();
+    if (player == nullptr)
+    {
+        return vector<Territory *>();
+    }
+    vector<Territory *> listOfTerritories = player->getTerritories();
+    if (listOfTerritories.size() == 0)
+    {
+        return listOfTerritories;
+    }
+    sort(listOfTerritories.begin(), listOfTerritories.end(), compareTerritoriesByArmyCount);
+    return listOfTerritories;
 }
 
-// TO IMPLEMENT
+void BenevolentPlayerStrategy::deployArmies()
+{
+    int availableArmyCount = player->getReinforcementPool();
+    vector<Territory *> territories = toDefend();
+    if (territories.size() == 0)
+    {
+        return;
+    }
+    territories.back()->setArmies(territories.back()->getArmies() + availableArmyCount);
+    player->setReinforcementPool(0);
+}
+
+Territory *BenevolentPlayerStrategy::advanceArmies(Territory *territory)
+{
+    // Benevolent player does not advance
+    return nullptr;
+}
+
 void BenevolentPlayerStrategy::issueOrder()
 {
+    deployArmies();
+    // Benevolent player does not issue orders to advance
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy &strategy)
