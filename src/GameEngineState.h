@@ -7,6 +7,7 @@
 enum STATE
 {
     start = 1,
+    tournament_is_started,
     map_loaded,
     map_validated,
     players_added,
@@ -28,7 +29,8 @@ extern std::map<std::string, STATE> stateMap;
 // available actions
 enum ACTION
 {
-    load_map = 1,
+    tournament = 1,
+    load_map,
     validate_map,
     add_player,
     gamestart,
