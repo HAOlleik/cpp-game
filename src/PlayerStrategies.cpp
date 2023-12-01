@@ -61,7 +61,7 @@ std::ostream &operator<<(std::ostream &out, const PlayerStrategy &strategy)
 }
 
 //*******************************************
-//  HumanPlayerStrategy Comcrete Class
+//  HumanPlayerStrategy Concrete Class
 //*******************************************
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player *player)
@@ -402,7 +402,7 @@ HumanPlayerStrategy &HumanPlayerStrategy::operator=(const HumanPlayerStrategy &s
 }
 
 //*******************************************
-//  AggressivePlayerStrategy Comcrete Class
+//  AggressivePlayerStrategy Concrete Class
 //*******************************************
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player *player)
@@ -495,26 +495,49 @@ Territory *AggressivePlayerStrategy::advanceArmies(Territory *territory)
 
     vector<Territory *> previousPassedTerritories;
     bool wentInCondition = false;
-    while (possibleToAttack.size() == 0)
+    while (true)
     {
-        previousPassedTerritories.push_back(territory);
-        territory->setArmies(0);
+        bool foundTerritory = false;
+
         for (auto &t : territory->getAdjacentTerritories())
         {
             if (std::find(previousPassedTerritories.begin(), previousPassedTerritories.end(), t.get()) == previousPassedTerritories.end())
             {
                 territory = t.get();
-                wentInCondition = true;
+                foundTerritory = true;
                 break;
             }
         }
-        if(!wentInCondition)
+
+        if (!foundTerritory)
         {
             return nullptr;
         }
-        territory->setArmies(territory->getArmies() + armiesToAdvanceCount + 1);
-        break;
+
+        possibleToAttack.clear();
+
+        for (auto &t : territory->getAdjacentTerritories())
+        {
+            if (t.get()->getOwner()->getName() != territory->getOwner()->getName() &&
+                std::find(possibleToAttack.begin(), possibleToAttack.end(), t.get()) == possibleToAttack.end())
+            {
+                possibleToAttack.push_back(t.get());
+            }
+        }
+
+        if (possibleToAttack.size() > 0)
+        {
+            territory->setArmies(territory->getArmies() + armiesToAdvanceCount + 1);
+            break;
+        }
+        else
+        {
+            previousPassedTerritories.push_back(territory);
+            territory->setArmies(0);
+        }
     }
+
+
     
     if (possibleToAttack.size() == 0)
     {
@@ -604,6 +627,7 @@ void AggressivePlayerStrategy::issueOrder()
     territories1.clear();
 }
 
+
 AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy &strategy)
 {
     this->player = new Player(*strategy.player);
@@ -625,7 +649,7 @@ AggressivePlayerStrategy &AggressivePlayerStrategy::operator=(const AggressivePl
 }
 
 //*******************************************
-//  BenevolentPlayerStrategy Comcrete Class
+//  BenevolentPlayerStrategy Concrete Class
 //*******************************************
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player *player)
@@ -673,7 +697,7 @@ BenevolentPlayerStrategy &BenevolentPlayerStrategy::operator=(const BenevolentPl
 }
 
 //*******************************************
-//  NeutralPlayerStrategy Comcrete Class
+//  NeutralPlayerStrategy Concrete Class
 //*******************************************
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player *player)
@@ -716,7 +740,7 @@ NeutralPlayerStrategy &NeutralPlayerStrategy::operator=(const NeutralPlayerStrat
 }
 
 //*******************************************
-//  CheaterPlayerStrategy Comcrete Class
+//  CheaterPlayerStrategy Concrete Class
 //*******************************************
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player *player)

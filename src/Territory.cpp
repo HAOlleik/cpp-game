@@ -139,7 +139,7 @@ const Territory *Territory::findAdjacentTerritory(Territory *t) const
 // Overloaded stream insertion operator for Territory
 ostream &operator<<(ostream &os, const Territory &t)
 {
-    os << "Territory Name: " << t.getName() << "\n";
+    os << "\nTerritory Name: " << t.getName() << "\n";
     os << "Owner: " << (t._owner ? t._owner->getName() : "None") << "\n";
     os << "Armies: " << *(t._armies) << "\n";
     os << "Adjacent Territories: ";

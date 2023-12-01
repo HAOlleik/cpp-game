@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     GameEngine game;
     MapLoader loader;
-    loader.load("maps/Alberta/Alberta.map");
+    loader.load("../maps/Alberta/Alberta.map");
     game.setMap(loader.getMap());
     auto t = loader.getMap()->getTerritories();
     mapTerritoriesCount = t->size();
