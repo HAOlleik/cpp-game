@@ -685,12 +685,21 @@ void BenevolentPlayerStrategy::deployArmies()
 {
     int availableArmyCount = player->getReinforcementPool();
     vector<Territory *> territories = toDefend();
-    if (territories.size() == 0)
+    if (territories.empty())
     {
+        cout << "No territories to deploy armies to." << endl;
         return;
     }
-    territories.back()->setArmies(territories.back()->getArmies() + availableArmyCount);
-    player->setReinforcementPool(0);
+
+    Territory *weakestTerritory = territories.back();
+    
+    // Deploy a percentage (e.g., 50%) of available armies to the weakest territory
+    int deployedArmies = availableArmyCount / 2;
+
+    cout << "Deploying " << deployedArmies << " armies to the weakest territory: " << *weakestTerritory << endl;
+
+    weakestTerritory->setArmies(weakestTerritory->getArmies() + deployedArmies);
+    player->setReinforcementPool(availableArmyCount - deployedArmies);
 }
 
 Territory *BenevolentPlayerStrategy::advanceArmies(Territory *territory)
