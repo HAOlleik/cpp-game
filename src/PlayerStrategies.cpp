@@ -695,7 +695,10 @@ void BenevolentPlayerStrategy::deployArmies()
     
     // Deploy a percentage (e.g., 50%) of available armies to the weakest territory
     int deployedArmies = availableArmyCount / 2;
-
+    if (deployedArmies == 0){
+        cout << "There are no armies left for the player to deploy\n";
+        return;
+    }
     cout << "Deploying " << deployedArmies << " armies to the weakest territory: " << *weakestTerritory << endl;
 
     weakestTerritory->setArmies(weakestTerritory->getArmies() + deployedArmies);
