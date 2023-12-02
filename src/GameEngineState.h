@@ -7,6 +7,7 @@
 enum STATE
 {
     start = 1,
+    tournament_is_started,
     map_loaded,
     map_validated,
     players_added,
@@ -15,6 +16,7 @@ enum STATE
     execute_orders,
     win,
     game_ended,
+    tournament_is_finished,
 
     // this should be remove, cause names are incorrect per part A, look carefully
     reinforcement_phase, // Part 3 2023-11-11
@@ -28,7 +30,8 @@ extern std::map<std::string, STATE> stateMap;
 // available actions
 enum ACTION
 {
-    load_map = 1,
+    tournament = 1,
+    load_map,
     validate_map,
     add_player,
     gamestart,

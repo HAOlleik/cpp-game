@@ -29,6 +29,7 @@ public:
     ~GameEngine();                              // destructor
     void startupPhase();                        // startup phase of the game
 
+    std::vector<std::string> splitCommand(const std::string &command);
     void addPlayer(const std::string &playerName); // Part 3
     void setMap(std::shared_ptr<Map> map);         // Part 3
 

@@ -7,7 +7,7 @@
 #include "PlayerStrategies.h"
 #include "GlobalVariables.h"
 
-//int mapTerritoriesCount = 0;
+// int mapTerritoriesCount = 0;
 
 int main(int argc, char *argv[])
 {
@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
     // testLoadMaps();
     // testCommandProcessor(arguments, arguments.size());
     // testGameEngineStates();
-    // testMainGameLoop();
+    testMainGameLoop();
     // testLoggingObserver();
-    testPlayerStrategies();
+    // testPlayerStrategies();
 
     return 0;
 }

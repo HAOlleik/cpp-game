@@ -6,7 +6,7 @@ Command::Command()
     this->effect = nullptr;
 }
 
-Command::Command(string& com, string& eff)
+Command::Command(string &com, string &eff)
 { // parametrized constructor
     this->command = new string(com);
     this->effect = new string(eff);
@@ -24,17 +24,37 @@ Command::~Command()
     delete effect;
 }
 
+// Assignment operator
+Command &Command::operator=(const Command &other)
+{
+    if (this != &other)
+    {
+        // Delete existing resources
+        delete command;
+        delete effect;
+
+        // Copy new resources
+        command = new std::string(*(other.command));
+        effect = new std::string(*(other.effect));
+    }
+    return *this;
+}
+
 void Command::saveEffect(string eff)
 {
-    if (effect) {
+    if (effect)
+    {
         *effect = eff; // Update the existing string
-    } else {
+    }
+    else
+    {
         effect = new string(eff); // If effect is nullptr, create a new string
     }
     notify(this);
 }
 
-string Command::stringToLog(){
+string Command::stringToLog()
+{
     string returnString = "The command's effect is: " + getEffect();
     return returnString;
 }
