@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include "Territory.h"
+#include <tuple>
 
 // default constructor
 GameEngine::GameEngine()
@@ -51,11 +52,11 @@ void GameEngine::startupPhase()
         Command command;
 
         // If it's not a tournament setup, get the command normally
-        if (*_state != STATE::tournament_is_started)
-        {
-            command = _cli->getCommand(*(_state.get()));
-        }
-        else
+        // if (*_state != STATE::tournament_is_started)
+        // {
+        //     command = _cli->getCommand(*(_state.get()));
+        // }
+        // else
         {
             // If it's a tournament setup, process the tournament command
             command = _cli->processTournamentCommand(*(_state.get()));
@@ -141,37 +142,99 @@ void GameEngine::startupPhase()
             result = "STATE::players_added";
             break;
 
-        case ACTION::tournament: // Add this case for tournament setup
+            // case ACTION::tournament: // Add this case for tournament setup
+            // {
+            //     std::cout << "Tournament setup:" << std::endl;
+
+            //     // Prompt the user for the number of games
+            //     int numberOfGames;
+            //     std::cout << "Enter the number of games for the tournament: ";
+            //     std::cin >> numberOfGames;
+
+            //     // Prompt the user for the map file
+            //     std::string mapFile;
+            //     std::cout << "Enter the map file for the tournament: ";
+            //     std::cin >> mapFile;
+
+            //     // Run the tournament
+            //     for (int i = 0; i < numberOfGames; ++i)
+            //     {
+            //         std::cout << "\n--- Tournament Game " << (i + 1) << " ---\n";
+
+            //         // Load the map
+            //         MapLoader loader;
+            //         if (!loader.load(mapFile))
+            //         {
+            //             std::cout << "Map was not loaded. Skipping game." << std::endl;
+            //             continue;
+            //         }
+
+            //         _map = std::make_unique<Map>(*loader.getMap().get());
+
+            //         // Run the game
+            //         startupPhase();
+            //     }
+
+            //     // Transition to the next state after the tournament
+            //     setState(STATE::tournament_is_finished);
+            //     break;
+            // }
+
+        case ACTION::tournament:
         {
             std::cout << "Tournament setup:" << std::endl;
 
-            // Prompt the user for the number of games
-            int numberOfGames;
-            std::cout << "Enter the number of games for the tournament: ";
-            std::cin >> numberOfGames;
+            // Extract tournament parameters from the Command object
+            std::vector<std::string> mapFiles;
+            std::vector<std::string> playerStrategies;
+            int numGames = 0;
+            int maxTurns = 0;
 
-            // Prompt the user for the map file
-            std::string mapFile;
-            std::cout << "Enter the map file for the tournament: ";
-            std::cin >> mapFile;
+            std::tie(mapFiles, playerStrategies, numGames, maxTurns) = command.getTournamentParameters();
 
             // Run the tournament
-            for (int i = 0; i < numberOfGames; ++i)
+            for (const auto &mapFile : mapFiles)
             {
-                std::cout << "\n--- Tournament Game " << (i + 1) << " ---\n";
-
-                // Load the map
-                MapLoader loader;
-                if (!loader.load(mapFile))
+                for (const auto &strategy : playerStrategies)
                 {
-                    std::cout << "Map was not loaded. Skipping game." << std::endl;
-                    continue;
+                    std::cout << "\n--- Tournament Game on Map " << mapFile << " with Player Strategy " << strategy << " ---\n";
+
+                    // Load the map
+                    MapLoader loader;
+                    if (!loader.load(mapFile))
+                    {
+                        std::cout << "Map was not loaded. Skipping game." << std::endl;
+                        continue;
+                    }
+
+                    _map = std::make_unique<Map>(*loader.getMap().get());
+
+                    // Set player strategies based on the tournament setup
+                    for (auto &player : _players)
+                    {
+                        (player.get())->setPlayerStrategy((player.get())->getPlayerStrategy());
+                    }
+
+                    // Run the game for the specified number of times
+                    for (int i = 0; i < numGames; ++i)
+                    {
+                        std::cout << "\n--- Game " << (i + 1) << " ---\n";
+
+                        // Reset the game state for each game
+                        // resetGameState();
+
+                        // Run the game
+                        // startupPhase();
+                        // mainGameLoop();
+
+                        // Check if a player has won
+                        if (conditionToCheckForWinner())
+                        {
+                            std::cout << "Player " << _players[0]->getName() << " wins!" << std::endl;
+                            // Log or store the results as needed
+                        }
+                    }
                 }
-
-                _map = std::make_unique<Map>(*loader.getMap().get());
-
-                // Run the game
-                startupPhase();
             }
 
             // Transition to the next state after the tournament

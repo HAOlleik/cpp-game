@@ -298,14 +298,31 @@ Command CommandProcessor::processTournamentCommand(STATE currentState)
     return saveCommand(command, "Tournament parameters processed successfully.");
 }
 
+#include <vector>
+#include <string>
 #include <sstream>
 #include <iterator>
-#include <vector>
 
 std::vector<std::string> CommandProcessor::splitCommand(const std::string &command)
 {
+    std::vector<std::string> tokens;
     std::istringstream iss(command);
-    return std::vector<std::string>{std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>()};
+    std::string token;
+
+    while (std::getline(iss, token, ' '))
+    {
+        if (!token.empty())
+        {
+            // Remove surrounding quotation marks if present
+            if (token.front() == '"' && token.back() == '"')
+            {
+                token = token.substr(1, token.size() - 2);
+            }
+            tokens.push_back(token);
+        }
+    }
+
+    return tokens;
 }
 
 std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> CommandProcessor::getTournamentParameters() const

@@ -3,3 +3,5 @@ validate_map
 add_player pl1
 add_player pl2
 gamestart
+
+tournament -M Map1 Map2 Map3 -P Aggressive Benevolent Neutral Cheater -G 4 -D 30

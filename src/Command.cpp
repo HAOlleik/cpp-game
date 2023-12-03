@@ -58,3 +58,9 @@ string Command::stringToLog()
     string returnString = "The command's effect is: " + getEffect();
     return returnString;
 }
+
+std::tuple<std::vector<std::string>, std::vector<std::string>, int, int> Command::getTournamentParameters() const
+{
+    // Return the stored tournament parameters
+    return tournamentParameters;
+}
