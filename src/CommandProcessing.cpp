@@ -238,20 +238,12 @@ Command CommandProcessor::processTournamentCommand(STATE currentState)
 
     std::vector<std::string> tokens = splitCommand(command);
 
-    // Validate the number of tokens
-    if (tokens.size() < 9 || tokens.size() % 2 != 1)
-    {
-        std::cerr << "Error: Invalid number of parameters for the tournament command." << std::endl;
-        // Set an error message in the Command object
-        return saveCommand(command, "Invalid number of parameters for the tournament command.");
-    }
-
     // Validate the command format
-    if (tokens[0] != "tournament" || tokens[2] != "-M" || tokens[4] != "-P" || tokens[6] != "-G" || tokens[8] != "-D")
+    if (tokens[0] != "tournament")
     {
-        std::cerr << "Error: Invalid format for the tournament command." << std::endl;
+        std::cerr << "Error: Invalid command. Expected 'tournament'." << std::endl;
         // Set an error message in the Command object
-        return saveCommand(command, "Invalid format for the tournament command.");
+        return saveCommand(command, "Invalid command. Expected 'tournament'.");
     }
 
     // Extract and store tournament parameters
@@ -260,23 +252,48 @@ Command CommandProcessor::processTournamentCommand(STATE currentState)
     int numGames = 0;
     int maxTurns = 0;
 
-    for (size_t i = 3; i < tokens.size(); i += 2)
+    // Indices for accessing tokens
+    // size_t mapIndex = 0;
+    // size_t playerIndex = 0;
+    // size_t gameIndex = 0;
+    // size_t turnIndex = 0;
+
+    int counter = 2;
+
+    while (counter < tokens.size())
     {
-        if (tokens[i] == "-M")
+        while (tokens[counter] != "-P")
         {
-            mapFiles.push_back(tokens[i + 1]);
+            mapFiles.push_back(tokens[counter]);
+            std::cout << tokens[counter] << std::endl;
+            counter++;
         }
-        else if (tokens[i] == "-P")
+        counter++;
+        while (tokens[counter] != "-G")
         {
-            playerStrategies.push_back(tokens[i + 1]);
+            playerStrategies.push_back(tokens[counter]);
+            std::cout << tokens[counter] << std::endl;
+            counter++;
         }
-        else if (tokens[i] == "-G")
+        counter++;
+        while (tokens[counter] != "-D")
         {
-            numGames = std::stoi(tokens[i + 1]);
+            numGames = std::stoi(tokens[counter]);
+            std::cout << tokens[counter] << std::endl;
+            counter++;
         }
-        else if (tokens[i] == "-D")
+        counter++;
+        while (counter < tokens.size())
         {
-            maxTurns = std::stoi(tokens[i + 1]);
+            maxTurns = std::stoi(tokens[counter]);
+            std::cout << tokens[counter] << std::endl;
+            counter++;
+        }
+        if (counter != tokens.size())
+        {
+            std::cerr << "Error: Invalid parameter in the tournament command." << std::endl;
+            // Set an error message in the Command object
+            return saveCommand(command, "Invalid parameter in the tournament command.");
         }
     }
 
